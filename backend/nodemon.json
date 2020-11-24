@@ -1,5 +1,0 @@
-{
-	"watch": ["./Server"],
-	"exec": "babel-node --config-file ./Server/.babelrc ./Server/app.js",
-	"ext": "js json jsx"
-}

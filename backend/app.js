@@ -2,13 +2,23 @@ import express from 'express'
 import path from 'path'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
+import mongoose from 'mongoose'
 import controller from './controller'
 import statusCode from './util/statusCode'
 import resMessage from './util/resMessage'
-
 require('dotenv').config()
 
 const app = express()
+
+mongoose
+  .connect(process.env.MONGOURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+  })
+  .then(() => console.log('MongoDB Connected...'))
+  .catch(err => console.error(err))
 
 app.use(logger('dev'))
 app.use(express.json())

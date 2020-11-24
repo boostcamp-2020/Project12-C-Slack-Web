@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "concurrently \"cp ./.env.prod ./.env\" \"babel-node --config-file ./.babelrc ./app.js\"",
-		"dev": "babel-node --config-file ./.babelrc ./app.js"
+		"dev": "concurrently \"cp ./.env.dev ./.env\" \"nodemon --exec babel-node --config-file ./.babelrc ./app.js\""
 	},
 	"repository": {
 		"type": "git",
@@ -24,6 +24,7 @@
 		"debug": "~2.6.9",
 		"dotenv": "^8.2.0",
 		"express": "~4.16.1",
+		"mongoose": "^5.10.15",
 		"morgan": "~1.9.1",
 		"nodemon": "^2.0.4"
 	},
