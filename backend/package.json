@@ -1,44 +1,43 @@
 {
-	"name": "backend",
-	"version": "0.1.0",
-	"description": "slack-c-team",
-	"main": "index.js",
-	"scripts": {
-		"start": "concurrently \"cp ./.env.prod ./.env\" \"babel-node --config-file ./.babelrc ./app.js\"",
-		"dev": "concurrently \"cp ./.env.dev ./.env\" \"nodemon --exec babel-node --config-file ./.babelrc ./app.js\""
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/boostcamp-2020/Project12-C-Slack-Web"
-	},
-	"author": "slack-c-team",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/boostcamp-2020/Project12-C-Slack-Web/issues"
-	},
-	"homepage": "https://github.com/boostcamp-2020/Project12-C-Slack-Web",
-	"dependencies": {
-		"concurrently": "^5.3.0",
-		"cookie-parser": "~1.4.4",
-		"core-js": "^3.6.5",
-		"debug": "~2.6.9",
-		"dotenv": "^8.2.0",
-		"express": "~4.16.1",
-		"mongoose": "^5.10.15",
-		"morgan": "~1.9.1",
-		"nodemon": "^2.0.4"
-	},
-	"devDependencies": {
-		"@babel/cli": "^7.11.6",
-		"@babel/core": "^7.11.6",
-		"@babel/node": "^7.10.5",
-		"@babel/preset-env": "^7.11.5",
-		"eslint": "^7.13.0",
-		"eslint-config-prettier": "^6.15.0",
-		"eslint-plugin-import": "^2.22.1",
-		"eslint-plugin-node": "^11.1.0",
-		"eslint-plugin-prettier": "^3.1.4",
-		"eslint-plugin-promise": "^4.2.1",
-		"prettier": "^2.1.2"
-	}
+  "name": "backend",
+  "version": "0.1.0",
+  "description": "slack-c-team",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"cp ./.env.prod ./.env\" \"babel-node ./app.js\"",
+    "dev": "concurrently \"cp ./.env.dev ./.env\" \"nodemon --exec babel-node ./app.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/boostcamp-2020/Project12-C-Slack-Web"
+  },
+  "author": "slack-c-team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/boostcamp-2020/Project12-C-Slack-Web/issues"
+  },
+  "homepage": "https://github.com/boostcamp-2020/Project12-C-Slack-Web",
+  "dependencies": {
+    "concurrently": "^5.3.0",
+    "cookie-parser": "~1.4.4",
+    "core-js": "^3.6.5",
+    "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
+    "express": "~4.16.1",
+    "mongoose": "^5.10.15",
+    "morgan": "~1.9.1",
+    "nodemon": "^2.0.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.8",
+    "@babel/node": "^7.12.6",
+    "@babel/preset-env": "^7.12.7",
+    "eslint": "^7.13.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "prettier": "^2.1.2"
+  }
 }
