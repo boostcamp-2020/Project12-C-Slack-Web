@@ -6,6 +6,8 @@ import mongoose from 'mongoose'
 import controller from './controller'
 import statusCode from './util/statusCode'
 import resMessage from './util/resMessage'
+import cors from 'cors'
+
 require('dotenv').config()
 
 const app = express()
@@ -21,6 +23,7 @@ mongoose
   .catch(err => console.error(err))
 
 app.use(logger('dev'))
+app.use(cors({ origin: true, credentials: true }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
