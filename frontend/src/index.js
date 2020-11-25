@@ -4,11 +4,14 @@ import './index.css'
 import App from './page/App'
 import { BrowserRouter, Route } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
+import LoginPage from './page/LoginPage'
+import WorkspaceSelectPage from './page/WorkspaceSelectPage'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Route exact path="/" component={App} />
+      <Route exact path="/" component={LoginPage} />
+      <Route exact path="/workspace-select" component={WorkspaceSelectPage} />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root'),
