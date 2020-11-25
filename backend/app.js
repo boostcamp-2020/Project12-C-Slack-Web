@@ -6,6 +6,10 @@ import mongoose from 'mongoose'
 import controller from './controller'
 import statusCode from './util/statusCode'
 import resMessage from './util/resMessage'
+import passport from 'passport'
+import passportConfig from './config/passport'
+const cors = require('cors')
+
 require('dotenv').config()
 
 const app = express()
@@ -23,8 +27,16 @@ mongoose
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(cookieParser())
 app.use(express.static(path.join(__dirname, '../dist')))
+app.use(cookieParser(process.env.COOKIE_SECRET))
+app.use(passport.initialize())
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  }),
+)
+passportConfig()
 
 app.use('/api', controller)
 app.use('/docs', express.static(path.join(__dirname, './docs')))
