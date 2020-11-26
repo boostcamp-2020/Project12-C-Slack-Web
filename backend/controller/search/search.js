@@ -16,14 +16,14 @@ const searchUser = async (req, res, next) => {
         workspaceId: workspaceId,
       },
       { displayName: 1, profileUrl: 1, isActive: 1 },
-    ).exec()
+    ).lean()
     const existMember = await ChannelConfig.find(
       {
         workspaceUserInfoId: { $in: userInfo.map(el => el._id) },
         channelId: channelId,
       },
-      { _id: 1 },
-    )
+      { _id: 0, workspaceUserInfoId: 1 },
+    ).lean()
 
     res.status(200).json({ success: true, result: { userInfo, existMember } })
   } catch (err) {
