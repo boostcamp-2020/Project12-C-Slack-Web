@@ -1,12 +1,10 @@
 import express from 'express'
 import userController from './user'
+import channelController from './channel'
 
 const router = express.Router()
 
-/* GET home page. */
-router.get('/', function (req, res, next) {
-  res.json({ success: true })
-})
+router.use('/channel', channelController)
 
 router.use('/user', userController)
 

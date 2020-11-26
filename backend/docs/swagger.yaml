@@ -1,9 +1,7 @@
 openapi: 3.0.0
 info:
-  title: Simple Inventory API
-  description: This is a simple API
-  contact:
-    email: you@your-company.com
+  title: Project12-C-Slack-clone API
+  description: Project12-C-Slack-clone API
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
@@ -17,10 +15,17 @@ tags:
     description: Operations available to regular developers
 paths:
   /api/workspace:
-    post:
-      summary: create new workspace
-      description: Create new workspace
-      operationId: creaateWorkspace
+    get:
+      summary: select user workspace
+      description: select user workspace userID 미들웨어에서 추가
+      parameters:
+        - name: userID
+          in: query
+          description: user id
+          required: true
+          explode: true
+          schema:
+            type: integer
       responses:
         '200':
           content:
@@ -28,10 +33,55 @@ paths:
               schema:
                 type: object
                 properties:
+                  workspaces:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        workspaceID:
+                          type: integer
+                        workspaceName:
+                          type: string
+                        workspaceURL:
+                          type: string
+                    description: invite url
+          description: success
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: bad request
+        default:
+          description: Default error sample response
+    post:
+      summary: create new workspace
+      description: Create new workspace
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
                   url:
                     type: string
                     description: workspace url
           description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: bad request
         default:
           description: Default error sample response
       parameters:
@@ -59,40 +109,6 @@ paths:
           explode: true
           schema:
             type: string
-    get:
-      summary: select user workspace
-      description: select user workspace
-      operationId: ''
-      parameters:
-        - name: oauthId
-          in: query
-          description: user id
-          required: true
-          explode: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  workspaces:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        workspaceID:
-                          type: integer
-                        workspaceName:
-                          type: string
-                        workspaceURL:
-                          type: string
-                    description: invite url
-          description: success response
-        default:
-          description: Default error sample response
   /api/workspace/invite:
     summary: invite to workspace
     description: invite to workspace
@@ -107,10 +123,21 @@ paths:
               schema:
                 type: object
                 properties:
+                  success:
+                    type: boolean
                   url:
                     type: string
                     description: invite url
           description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: bad request
         default:
           description: Default error sample response
       parameters:
@@ -130,9 +157,195 @@ paths:
           explode: true
           schema:
             type: string
+
+  /api/thread/follow:
+    summary: update follow config
+    description: follow 설정을 변경한다.
+    patch:
+      summary: update follow config
+      description: follow 설정을 변경한다.
+      parameters:
+        - name: workspaceUserInfoId
+          in: query
+          description: workspaceUserInfoId
+          required: true
+          explode: true
+          schema:
+            type: integer
+        - name: chatId
+          in: query
+          description: chatId
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: bad request
+        default:
+          description: Default error sample response
+  /api/channel/description:
+    summary: update channel description
+    description: channel description 변경
+    patch:
+      summary: update channel description
+      description: channel description 변경
+      parameters:
+        - name: channelId
+          in: query
+          description: channelId
+          required: true
+          explode: true
+          schema:
+            type: integer
+        - name: description
+          in: query
+          description: 변경 될 description
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: bad request
+        default:
+          description: Default error sample response
+  /api/channel/topic:
+    summary: update channel topic
+    description: channel topic 변경
+    patch:
+      summary: update channel topic
+      description: channel topic 변경
+      parameters:
+        - name: channelId
+          in: query
+          description: channelId
+          required: true
+          explode: true
+          schema:
+            type: integer
+        - name: topic
+          in: query
+          description: 변경 될 topic
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: success
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: bad request
+        default:
+          description: Default error sample response
+  /api/channel:
+    summary: create channel
+    description: channel 생성
+    post:
+      summary: create channel
+      description: channel 생성
+      parameters:
+        - name: title
+          in: query
+          description: channel title
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: creator
+          in: query
+          description: channel creator, middleware로 userId 전달
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: description
+          in: query
+          description: channel description
+          explode: true
+          schema:
+            type: string
+        - name: channelType
+          in: query
+          description: channel type, (private = 0, public = 1, DM = 2)
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  channelId:
+                    type: integer
+                    description: channelId
+          description: success response
+
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: bad request
+        default:
+          description: Default error sample response
   /api/user/sign-in/github:
-    summary: workspace user login
-    description: selectworkspace user login
+    summary: workspace user login 
+    description: selectworkspace user login 
     post:
       summary: workspace user login
       description: workspace user login
@@ -151,11 +364,11 @@ paths:
         '400':
           description: bad input parameter
   /api/user/sign-out:
-    summary: workspace user signout
-    description: selectworkspace user signout
+    summary: workspace user signout 
+    description: selectworkspace user signout 
     delete:
-      summary: workspace user signout
-      description: workspace user signout
+      summary: workspace user signout 
+      description: workspace user signout 
       operationId: ''
       parameters:
         - name: workspaceUserInfoId
@@ -170,3 +383,42 @@ paths:
           description: search results matching criteria
         '400':
           description: bad input parameter
+       
+
+components:
+  schemas:
+    InventoryItem:
+      required:
+        - id
+        - manufacturer
+        - name
+        - releaseDate
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        name:
+          type: string
+          example: Widget Adapter
+        releaseDate:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        manufacturer:
+          $ref: '#/components/schemas/Manufacturer'
+    Manufacturer:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: ACME Corporation
+        homePage:
+          type: string
+          format: url
+          example: 'https://www.acme-corp.com'
+        phone:
+          type: string
+          example: 408-867-5309

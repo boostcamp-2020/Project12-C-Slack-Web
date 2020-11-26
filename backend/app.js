@@ -1,3 +1,4 @@
+require('dotenv').config()
 import express from 'express'
 import path from 'path'
 import cookieParser from 'cookie-parser'
@@ -8,9 +9,8 @@ import statusCode from './util/statusCode'
 import resMessage from './util/resMessage'
 import passport from 'passport'
 import passportConfig from './config/passport'
-const cors = require('cors')
-
-require('dotenv').config()
+import './chatServer'
+import cors from 'cors'
 
 const app = express()
 
@@ -25,6 +25,7 @@ mongoose
   .catch(err => console.error(err))
 
 app.use(logger('dev'))
+app.use(cors({ origin: true, credentials: true }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, '../dist')))
