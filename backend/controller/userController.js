@@ -25,7 +25,7 @@ exports.githubCallback = async (req, res, next) => {
   })(req, res)
 }
 
-exports.auth = (req, res) => {
+exports.authCheck = (req, res) => {
   let token = req.signedCookies.token
   if (token) {
     try {

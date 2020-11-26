@@ -1,5 +1,6 @@
 const passport = require('passport')
 const GitHubStrategy = require('passport-github').Strategy
+const JWTStrategy = require('passport-jwt').Strategy
 const { User } = require('../model/User')
 
 require('dotenv').config()
@@ -44,6 +45,40 @@ async function githubVerify(accessToken, refreshToken, profile, done) {
   }
 }
 
+const cookieExtractor = req => {
+  if (req.signedCookies) return req.signedCookies.token
+  if (req.cookies) return req.cookies
+}
+
+const isExist = async userId => {
+  try {
+    let user = await User.findOne({ OAuthId: userId })
+    return {
+      success: true,
+      userId: user.OAuthId,
+    }
+  } catch (err) {
+    return { success: false }
+  }
+}
+
+const jwtStrategyOption = {
+  jwtFromRequest: cookieExtractor,
+  secretOrKey: process.env.JWT_SECRET,
+}
+async function jwtVerift(payload, done) {
+  try {
+    const result = await isExist(payload.userId)
+    if (!result.success) {
+      return done(null, false, { message: 'JWT 토큰 인증에 실패했습니다.' })
+    }
+    return done(null, result)
+  } catch (err) {
+    return done(null, false, { message: 'JWT verify err 발생' })
+  }
+}
+
 module.exports = () => {
   passport.use(new GitHubStrategy(githubStrategyOption, githubVerify))
+  passport.use(new JWTStrategy(jwtStrategyOption, jwtVerift))
 }
