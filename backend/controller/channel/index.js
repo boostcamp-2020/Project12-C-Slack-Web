@@ -78,4 +78,29 @@ router.get('/:channelId/info', async (req, res, next) => {
   }
 })
 
+/* POST /api/channle/invite  invite user to channel  */
+router.post('/invite', async (req, res, next) => {
+  try {
+    const workspaceUserInfoId = req.body.workspaceUserInfoId
+    const channelId = req.body.channelId
+
+    console.log(workspaceUserInfoId, channelId)
+    workspaceUserInfoId.forEach(el => {
+      const channelConfig = ChannelConfig({
+        workspaceUserInfoId: el,
+        channelId: channelId,
+        isMute: false,
+        notification: 0,
+        sectionId: null,
+      })
+      channelConfig.save()
+    })
+
+    res.status(200).json({ success: true })
+  } catch (err) {
+    console.log(err)
+    next(err)
+  }
+})
+
 module.exports = router
