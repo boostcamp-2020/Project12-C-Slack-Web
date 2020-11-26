@@ -40,7 +40,7 @@ const workspaceUserInfoSchema = mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    workSpaceId: {
+    workspaceId: {
       type: Schema.Types.ObjectId,
       ref: 'Workspace',
     },
