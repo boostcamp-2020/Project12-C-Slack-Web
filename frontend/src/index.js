@@ -12,7 +12,11 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Route exact path="/login" component={Auth(LoginPage, false)} />
-      <Route exact path="/workspaceSelect" component={Auth(WorkspaceSelectPage, true)} />\
+      <Route
+        exact
+        path="/workspaceSelect"
+        component={Auth(WorkspaceSelectPage, true)}
+      />
       <Route exact path="/" component={Channel} />
     </BrowserRouter>
   </React.StrictMode>,
