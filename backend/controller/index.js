@@ -1,10 +1,10 @@
 import express from 'express'
-import channelRouter from './channel'
-import searchRouter from './search'
+import channelCotroller from './channel'
+import searchCotroller from './search'
 
 const router = express.Router()
 
-router.use('/channel', channelRouter)
-router.use('/search', searchRouter)
+router.use('/channel', channelCotroller)
+router.use('/search', searchCotroller)
 
 module.exports = router
