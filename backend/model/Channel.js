@@ -5,6 +5,7 @@ const channelSchema = mongoose.Schema(
   {
     title: {
       type: String,
+      required: true,
     },
     description: {
       type: String,
@@ -15,9 +16,11 @@ const channelSchema = mongoose.Schema(
     creator: {
       type: Schema.Types.ObjectId,
       ref: 'WorkspaceUserInfo',
+      required: true,
     },
     channelType: {
       type: Number,
+      required: true,
     },
     isDeleted: {
       type: Boolean,

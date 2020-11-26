@@ -1,9 +1,11 @@
+import { asyncWrapper } from '../../util'
+import service from '../../service/channel'
+
 const { WorkspaceUserInfo } = require('../../model/WorkspaceUserInfo')
 const { Channel } = require('../../model/Channel')
 const { ChannelConfig } = require('../../model/ChannelConfig')
 const { Chat } = require('../../model/Chat')
 
-/* GET /api/channle  get channel list  */
 const getChannelList = async (req, res, next) => {
   try {
     const workspaceUserInfoId = req.query.workspaceUserInfoId
@@ -116,9 +118,20 @@ const muteChannel = async (req, res, next) => {
   }
 }
 
+
+const createChannel = asyncWrapper(async (req, res) => {
+  const { code, success, data } = await service.createChannel({
+    ...req.body,
+    creator: req.user,
+  })
+  return res.status(code).json({ success, data })
+})
+
 module.exports = {
   getChannelList,
   getChannelHeaderInfo,
   inviteUser,
   muteChannel,
+  createChannel
 }
+
