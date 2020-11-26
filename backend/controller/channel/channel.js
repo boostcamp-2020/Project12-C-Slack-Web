@@ -12,7 +12,14 @@ const getChannelList = async (req, res, next) => {
       {
         workspaceUserInfoId: workspaceUserInfoId,
       },
-      { channelId: 1, readChatId: 1, isMute: 1, notification: 1, sectionId: 1 },
+      {
+        _id: 0,
+        channelId: 1,
+        readChatId: 1,
+        isMute: 1,
+        notification: 1,
+        sectionId: 1,
+      },
     ).lean()
 
     const channel = await Channel.find(
