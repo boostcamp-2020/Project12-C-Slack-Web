@@ -343,6 +343,48 @@ paths:
           description: bad request
         default:
           description: Default error sample response
+  /api/user/sign-in/github:
+    summary: workspace user login 
+    description: selectworkspace user login 
+    post:
+      summary: workspace user login
+      description: workspace user login
+      operationId: ''
+      parameters:
+        - name: oauthId
+          in: query
+          description: workspace user id
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: signin success
+        '400':
+          description: bad input parameter
+  /api/user/sign-out:
+    summary: workspace user signout 
+    description: selectworkspace user signout 
+    delete:
+      summary: workspace user signout 
+      description: workspace user signout 
+      operationId: ''
+      parameters:
+        - name: workspaceUserInfoId
+          in: query
+          description: workspace user id
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+       
+
 components:
   schemas:
     InventoryItem:

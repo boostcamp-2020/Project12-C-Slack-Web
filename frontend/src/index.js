@@ -1,14 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
-
 import Channel from './page/channel/Channel'
 import { BrowserRouter, Route } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
+import LoginPage from './page/LoginPage'
+import WorkspaceSelectPage from './page/WorkspaceSelectPage'
+import Auth from './hooks/Auth'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
+      <Route exact path="/login" component={Auth(LoginPage, false)} />
+      <Route exact path="/workspaceSelect" component={Auth(WorkspaceSelectPage, true)} />\
       <Route exact path="/" component={Channel} />
     </BrowserRouter>
   </React.StrictMode>,
