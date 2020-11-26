@@ -1,8 +1,8 @@
 import express from 'express'
-import channelController from './channel'
+import controller from './channel'
 
 const router = express.Router()
 
-router.use('/channel', channelController)
+router.post('/', controller.createChannel)
 
 module.exports = router
