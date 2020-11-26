@@ -298,9 +298,9 @@ paths:
           explode: true
           schema:
             type: string
-        - name: userId
+        - name: creator
           in: query
-          description: channel creator, middleware로 전달
+          description: channel creator, middleware로 userId 전달
           required: true
           explode: true
           schema:
