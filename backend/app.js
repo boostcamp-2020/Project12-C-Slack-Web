@@ -1,3 +1,4 @@
+require('dotenv').config()
 import express from 'express'
 import path from 'path'
 import cookieParser from 'cookie-parser'
@@ -6,9 +7,8 @@ import mongoose from 'mongoose'
 import controller from './controller'
 import statusCode from './util/statusCode'
 import resMessage from './util/resMessage'
+import './chatServer'
 import cors from 'cors'
-
-require('dotenv').config()
 
 const app = express()
 
