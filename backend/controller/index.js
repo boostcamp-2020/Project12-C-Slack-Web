@@ -8,7 +8,7 @@ router.get('/', function (req, res, next) {
 })
 
 router.get('/user/sign-in/github', userController.githubLogin)
-
 router.get('/user/sign-in/github/callback', userController.githubCallback)
+router.get('/user/auth', userController.auth)
 
 module.exports = router
