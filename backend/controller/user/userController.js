@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 exports.githubLogin = passport.authenticate('github')
 
 exports.githubCallback = async (req, res, next) => {
-  const frontHost = process.env.FRONT_HOST
+  const frontHost = process.env.FRONTEND_HOST
   passport.authenticate('github', (err, id) => {
     if (err || !id) {
       return res.status(200).redirect(frontHost)
