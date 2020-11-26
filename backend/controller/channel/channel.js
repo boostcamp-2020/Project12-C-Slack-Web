@@ -46,24 +46,24 @@ const getChannelHeaderInfo = async (req, res, next) => {
     const pinned = await Chat.find({ pinned: true, channel: channelId }).exec()
     const channelConfig = await ChannelConfig.find({
       channelId: channelId,
-    }).exec()
+    }).lean()
     const workspaceUserInfo = await WorkspaceUserInfo.find({
       _id: { $in: channelConfig.map(el => el.workspaceUserInfoId) },
-    }).exec()
+    }).lean()
 
-    const channel = await Channel.find(
+    const channel = await Channel.findOne(
       {
         _id: channelId,
       },
       { title: 1, topic: 1, channelType: 1 },
-    ).exec()
+    ).lean()
     const extraData = {
       pinnedNum: pinned.length,
       memberNum: workspaceUserInfo.length,
       member: workspaceUserInfo,
     }
 
-    let result = { ...JSON.parse(JSON.stringify(channel[0])), ...extraData }
+    let result = { ...channel, ...extraData }
 
     res.status(200).json({ success: true, result })
   } catch (err) {
@@ -89,7 +89,6 @@ const inviteUser = (req, res, next) => {
 
     res.status(200).json({ success: true })
   } catch (err) {
-    console.log(err)
     next(err)
   }
 }
