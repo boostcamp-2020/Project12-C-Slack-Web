@@ -15,26 +15,29 @@ async function gitStrategyLogin(profiles) {
   try {
     let user = await User.findOne({ OAuthId: profiles.id })
     if (user === null) {
-      await User.create({
+      const data = await User.create({
         OAuthId: profiles.id,
         fullName: profiles.username,
         isDeleted: false,
       })
+      return {
+        success: true,
+        id: data._id,
+      }
+    }
+    return {
+      success: true,
+      id: user._id,
     }
   } catch (err) {
     return { success: false }
-  }
-
-  return {
-    success: true,
-    userId: profiles.id,
   }
 }
 
 async function githubVerify(accessToken, refreshToken, profile, done) {
   try {
     const result = await gitStrategyLogin(profile)
-    const user = { userId: result.userId }
+    const user = { id: result.id }
 
     if (result.success) {
       return done(null, user)
@@ -52,10 +55,10 @@ const cookieExtractor = req => {
 
 const isExist = async userId => {
   try {
-    let user = await User.findOne({ OAuthId: userId })
+    let user = await User.findOne({ _id: userId })
     return {
       success: true,
-      userId: user.OAuthId,
+      id: user._id,
     }
   } catch (err) {
     return { success: false }
@@ -68,7 +71,7 @@ const jwtStrategyOption = {
 }
 async function jwtVerift(payload, done) {
   try {
-    const result = await isExist(payload.userId)
+    const result = await isExist(payload.id)
     if (!result.success) {
       return done(null, false, { message: 'JWT 토큰 인증에 실패했습니다.' })
     }
