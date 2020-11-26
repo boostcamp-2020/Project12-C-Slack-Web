@@ -14,7 +14,7 @@ exports.githubCallback = async (req, res, next) => {
         res.send(err)
       }
 
-      const token = jwt.sign(id, process.env.JWT_SECRET)
+      const token = jwt.sign(id, process.env.JWT_SECRET, { expiresIn: '1H' })
       res.cookie('token', token, {
         maxAge: 1000 * 60 * 60,
         httpOnly: true,
