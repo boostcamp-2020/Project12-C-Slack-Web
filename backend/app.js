@@ -1,3 +1,4 @@
+require('dotenv').config()
 import express from 'express'
 import path from 'path'
 import cookieParser from 'cookie-parser'
@@ -6,7 +7,8 @@ import mongoose from 'mongoose'
 import controller from './controller'
 import statusCode from './util/statusCode'
 import resMessage from './util/resMessage'
-require('dotenv').config()
+import './chatServer'
+import cors from 'cors'
 
 const app = express()
 
@@ -21,6 +23,7 @@ mongoose
   .catch(err => console.error(err))
 
 app.use(logger('dev'))
+app.use(cors({ origin: true, credentials: true }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
