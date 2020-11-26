@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const fileSchema = mongoose.Schema(
+const userHistorySchema = mongoose.Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -18,5 +18,5 @@ const fileSchema = mongoose.Schema(
   },
   { timestamps: true },
 )
-const File = mongoose.model('File', fileSchema)
-module.exports = { File }
+const UserHistory = mongoose.model('UserHistroy', userHistorySchema)
+module.exports = { UserHistory }
