@@ -1,122 +1,172 @@
----
 openapi: 3.0.0
 info:
-  description: This is a simple API
-  version: 1.0.0
   title: Simple Inventory API
+  description: This is a simple API
   contact:
     email: you@your-company.com
   license:
     name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-host: virtserver.swaggerhub.com
-basePath: /solo295/test/1.0.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 1.0.0-oas3
+servers:
+  - url: 'https://virtserver.swaggerhub.com/solo295/test/1.0.0'
 tags:
   - name: admins
     description: Secured Admin-only calls
   - name: developers
     description: Operations available to regular developers
-schemes:
-  - https
 paths:
-  /inventory:
-    get:
-      tags:
-        - developers
-      summary: searches inventory
-      description: |
-        By passing in the appropriate options, you can search for
-        available inventory in the system
-      operationId: searchInventory
-      produces:
-        - application/json
+  /api/workspace:
+    post:
+      summary: create new workspace
+      description: Create new workspace
+      operationId: creaateWorkspace
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    description: workspace url
+          description: success response
+        default:
+          description: Default error sample response
       parameters:
-        - name: searchString
+        - name: userID
           in: query
-          description: pass an optional search string for looking up inventory
-          required: false
-          type: string
-        - name: skip
+          description: user id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: name
           in: query
-          description: number of records to skip for pagination
-          required: false
-          type: integer
-          minimum: 0
-          format: int32
-        - name: limit
+          description: workspace name
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: channelName
           in: query
-          description: maximum number of records to return
+          description: Channel name created by default
           required: false
-          type: integer
-          maximum: 50
-          minimum: 0
-          format: int32
+          style: form
+          explode: true
+          schema:
+            type: string
+    get:
+      summary: select user workspace
+      description: select user workspace
+      operationId: ''
+      parameters:
+        - name: oauthId
+          in: query
+          description: user id
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  workspaces:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        workspaceID:
+                          type: integer
+                        workspaceName:
+                          type: string
+                        workspaceURL:
+                          type: string
+                    description: invite url
+          description: success response
+        default:
+          description: Default error sample response
+  /api/workspace/invite:
+    summary: invite to workspace
+    description: invite to workspace
+    post:
+      summary: invite to workspace
+      description: invite to workspace
+      operationId: ''
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    description: invite url
+          description: success response
+        default:
+          description: Default error sample response
+      parameters:
+        - name: workspaceID
+          in: query
+          description: workspace id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: userID
+          in: query
+          description: user id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+  /api/user/sign-in/github:
+    summary: workspace user login
+    description: selectworkspace user login
+    post:
+      summary: workspace user login
+      description: workspace user login
+      operationId: ''
+      parameters:
+        - name: oauthId
+          in: query
+          description: workspace user id
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: signin success
+        '400':
+          description: bad input parameter
+  /api/user/sign-out:
+    summary: workspace user signout
+    description: selectworkspace user signout
+    delete:
+      summary: workspace user signout
+      description: workspace user signout
+      operationId: ''
+      parameters:
+        - name: workspaceUserInfoId
+          in: query
+          description: workspace user id
+          required: true
+          explode: true
+          schema:
+            type: integer
       responses:
         '200':
           description: search results matching criteria
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/InventoryItem'
         '400':
           description: bad input parameter
-    post:
-      tags:
-        - admins
-      summary: adds an inventory item
-      description: Adds an item to the system
-      operationId: addInventory
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: inventoryItem
-          description: Inventory item to add
-          required: false
-          schema:
-            $ref: '#/definitions/InventoryItem'
-      responses:
-        '201':
-          description: item created
-        '400':
-          description: invalid input, object invalid
-        '409':
-          description: an existing item already exists
-definitions:
-  InventoryItem:
-    type: object
-    required:
-      - id
-      - manufacturer
-      - name
-      - releaseDate
-    properties:
-      id:
-        type: string
-        format: uuid
-        example: d290f1ee-6c54-4b01-90e6-d701748f0851
-      name:
-        type: string
-        example: Widget Adapter
-      releaseDate:
-        type: string
-        format: date-time
-        example: 2016-08-29T09:12:33.001Z
-      manufacturer:
-        $ref: '#/definitions/Manufacturer'
-  Manufacturer:
-    required:
-      - name
-    properties:
-      name:
-        type: string
-        example: ACME Corporation
-      homePage:
-        type: string
-        format: url
-        example: https://www.acme-corp.com
-      phone:
-        type: string
-        example: 408-867-5309
