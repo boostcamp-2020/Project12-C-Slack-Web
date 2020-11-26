@@ -9,13 +9,13 @@ const io = createChatServer(server, {
   cors: { origin: process.env.FRONTEND_HOST, credentials: true },
 })
 
-const nsp = io.of('chat')
-nsp.use((socket, next) => {
+const namespace = io.of('chat')
+namespace.use((socket, next) => {
   // TODO jwt 검증 로직 필요
   next()
 })
 
-nsp.on('connection', socket => {
+namespace.on('connection', socket => {
   socket.on('new message', data => {
     // TODO 특정 채널로 전송하도록 변경, db에 저장 필요 (현재는 자신 제외 전체 전송)
     socket.broadcast.emit('new message', {
