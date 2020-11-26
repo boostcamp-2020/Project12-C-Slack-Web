@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import request from '../util/request'
 
 export default function Auth(Component, loginRequired) {
-  const apiURL = 'http://localhost:5000'
   function Authentication(props) {
     const [loading, setloading] = useState(true)
     useEffect(() => {
-      axios
-        .get(apiURL + '/api/user/auth', { withCredentials: true })
-        .then(res => {
-          if (!res.data.verify) {
+      ;(async () => {
+        try {
+          const data = await request.GET('/api/user/auth')
+          if (!data.verify) {
             // 로그인이 되어 있지 않을때
             if (loginRequired) {
               props.history.push('/login')
@@ -21,7 +20,10 @@ export default function Auth(Component, loginRequired) {
             }
           }
           setloading(false)
-        })
+        } catch (err) {
+          console.error(err)
+        }
+      })()
     }, [])
     return !loading && <Component {...props} />
   }
