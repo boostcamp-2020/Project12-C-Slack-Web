@@ -103,4 +103,25 @@ router.post('/invite', async (req, res, next) => {
   }
 })
 
+/* PATCH /api/channle/mute  mute channel  */
+router.patch('/mute', async (req, res, next) => {
+  try {
+    const workspaceUserInfoId = req.body.workspaceUserInfoId
+    const channelId = req.body.channelId
+    const isMute = req.body.isMute
+
+    await ChannelConfig.updateOne(
+      {
+        workspaceUserInfoId: workspaceUserInfoId,
+        channelId: channelId,
+      },
+      { isMute: isMute },
+    ).exec()
+
+    res.status(200).json({ success: true })
+  } catch (err) {
+    next(err)
+  }
+})
+
 module.exports = router
