@@ -69,7 +69,7 @@ const jwtStrategyOption = {
   jwtFromRequest: cookieExtractor,
   secretOrKey: process.env.JWT_SECRET,
 }
-async function jwtVerift(payload, done) {
+async function jwtVerify(payload, done) {
   try {
     const result = await isExist(payload.id)
     if (!result.success) {
@@ -83,5 +83,5 @@ async function jwtVerift(payload, done) {
 
 module.exports = () => {
   passport.use(new GitHubStrategy(githubStrategyOption, githubVerify))
-  passport.use(new JWTStrategy(jwtStrategyOption, jwtVerift))
+  passport.use(new JWTStrategy(jwtStrategyOption, jwtVerify))
 }

@@ -30,12 +30,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, '../dist')))
 app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(passport.initialize())
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  }),
-)
+app.use(cors({ origin: true, credentials: true }))
 passportConfig()
 
 app.use('/api', controller)
