@@ -30,17 +30,13 @@ const getChannelList = async (req, res, next) => {
     ).lean()
 
     const result = channel.map(el => {
-      let temp = {}
-      channelConfig.some(val => {
-        if (el._id.toString() == val.channelId.toString()) {
-          temp = { ...val, ...el }
-          return true
-        }
-      })
-      return temp
+      const [currentConfig] = channelConfig.filter(
+        val => val.channelId.toString() === el._id.toString(),
+      )
+      return { ...currentConfig, ...el }
     })
 
-    res.status(200).json({ success: true, result: result })
+    res.status(200).json({ success: true, result })
   } catch (err) {
     next(err)
   }
@@ -50,7 +46,7 @@ const getChannelHeaderInfo = async (req, res, next) => {
   try {
     const channelId = req.params.channelId
 
-    const pinned = await Chat.find({ pinned: true, channel: channelId }).exec()
+    const pinned = await Chat.find({ pinned: true, channel: channelId })
     const channelConfig = await ChannelConfig.find({
       channelId: channelId,
     }).lean()
@@ -65,7 +61,7 @@ const getChannelHeaderInfo = async (req, res, next) => {
       { title: 1, topic: 1, channelType: 1 },
     ).lean()
     const extraData = {
-      pinnedNum: pinned.length,
+      pinnedCount: pinned.length,
       memberNum: workspaceUserInfo.length,
       member: workspaceUserInfo,
     }
@@ -86,7 +82,7 @@ const inviteUser = (req, res, next) => {
     workspaceUserInfoId.forEach(el => {
       const channelConfig = ChannelConfig({
         workspaceUserInfoId: el,
-        channelId: channelId,
+        channelId,
         isMute: false,
         notification: 0,
         sectionId: null,
@@ -108,11 +104,11 @@ const muteChannel = async (req, res, next) => {
 
     await ChannelConfig.updateOne(
       {
-        workspaceUserInfoId: workspaceUserInfoId,
-        channelId: channelId,
+        workspaceUserInfoId,
+        channelId,
       },
       { isMute: isMute },
-    ).exec()
+    )
 
     res.status(200).json({ success: true })
   } catch (err) {
