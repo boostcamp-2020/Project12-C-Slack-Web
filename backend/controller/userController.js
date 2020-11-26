@@ -5,17 +5,16 @@ exports.githubLogin = passport.authenticate('github')
 
 exports.githubCallback = async (req, res, next) => {
   const frontHost = process.env.FRONT_HOST
-  passport.authenticate('github', (err, profile) => {
-    if (err || !profile) {
+  passport.authenticate('github', (err, userId) => {
+    if (err || !userId) {
       return res.status(200).redirect(frontHost)
     }
-    req.login(profile, { session: false }, err => {
+    req.login(userId, { session: false }, err => {
       if (err) {
         res.send(err)
       }
 
-      const token = jwt.sign(profile, process.env.JWT_SECRET)
-      console.log('token: ', token)
+      const token = jwt.sign(userId, process.env.JWT_SECRET)
       res.cookie('token', token, {
         maxAge: 1000 * 60 * 60,
         httpOnly: true,
