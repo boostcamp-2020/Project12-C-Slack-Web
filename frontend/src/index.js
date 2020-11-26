@@ -1,17 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
-import App from './page/App'
 import { BrowserRouter, Route } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
 import LoginPage from './page/LoginPage'
 import WorkspaceSelectPage from './page/WorkspaceSelectPage'
+import Auth from './hooks/Auth'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Route exact path="/" component={LoginPage} />
-      <Route exact path="/workspace-select" component={WorkspaceSelectPage} />
+      <Route exact path="/login" component={Auth(LoginPage, false)} />
+      <Route exact path="/" component={Auth(WorkspaceSelectPage, true)} />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root'),
