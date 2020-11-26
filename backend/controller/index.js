@@ -1,11 +1,13 @@
 import express from 'express'
+
+import channelCotroller from './channel'
+import searchCotroller from './search'
 import userController from './user'
-import channelController from './channel'
 
 const router = express.Router()
 
-router.use('/channel', channelController)
-
+router.use('/channel', channelCotroller)
+router.use('/search', searchCotroller)
 router.use('/user', userController)
 
 module.exports = router
