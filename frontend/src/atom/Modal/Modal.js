@@ -1,10 +1,15 @@
 import React from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
-function Modal({ children, handleClose }) {
+function Modal({ children, handleClose, withBackgound = false }) {
+  const stopPropagation = e => {
+    e.stopPropagation()
+  }
   return createPortal(
-    <StyledModalOverlay onClick={handleClose}>
-      <StyledModalContent role="dialog">{children}</StyledModalContent>
+    <StyledModalOverlay withBackgound={withBackgound} onClick={handleClose}>
+      <StyledModalContent onClick={stopPropagation} role="dialog">
+        {children}
+      </StyledModalContent>
     </StyledModalOverlay>,
     document.getElementById('portal'),
   )
@@ -18,10 +23,13 @@ const StyledModalOverlay = styled.div`
   top: 0;
   justify-content: center;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  ${({ withBackgound }) =>
+    withBackgound ? 'background-color:rgba(0, 0, 0, 0.3);' : ''}
 `
 const StyledModalContent = styled.div`
   border-radius: 8px;
+  z-index: 1100;
   display: flex;
   flex-direction: column;
   max-height: 100%;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import Input from '../../atom/input/Input'
+import Input from '../../atom/Input'
 
 function MessageEditor({ channelTitle, sendMessage }) {
   const [message, setMessage] = useState('')
