@@ -8,19 +8,21 @@ import reportWebVitals from './reportWebVitals'
 import LoginPage from './page/LoginPage'
 import WorkspaceSelectPage from './page/WorkspaceSelectPage'
 import Auth from './hooks/Auth'
+import GithubOAuth from './hooks/GithubOAuth'
 
 const App = () => {
   return (
     <React.StrictMode>
       <GlobalStyle />
       <BrowserRouter>
+        <Route exact path="/" component={Channel} />
         <Route exact path="/login" component={Auth(LoginPage, false)} />
+        <Route path="/github-oauth" component={GithubOAuth(LoginPage, false)} />
         <Route
           exact
-          path="/workspaceSelect"
+          path="/workspace-select"
           component={Auth(WorkspaceSelectPage, true)}
         />
-        <Route exact path="/" component={Channel} />
       </BrowserRouter>
     </React.StrictMode>
   )
