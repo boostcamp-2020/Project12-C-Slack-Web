@@ -1,6 +1,9 @@
 import axios from 'axios'
 
-const baseURL = /*process.env.API_URL | */ 'http://localhost:5000'
+const baseURL =
+  process.env.NODE_ENV === 'development'
+    ? process.env.REACT_APP_DEV_API_URL
+    : process.env.REACT_APP_API_URL
 
 const options = {
   withCredentials: true,
