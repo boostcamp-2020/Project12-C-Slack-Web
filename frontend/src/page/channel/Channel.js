@@ -3,7 +3,12 @@ import MessageEditor from '../../organism/messageEditor/MessageEditor'
 import io from 'socket.io-client'
 import { useState, useEffect } from 'react'
 
-const socket = io('http://localhost:4000/chat', {
+const baseURL =
+  process.env.NODE_ENV === 'development'
+    ? process.env.REACT_APP_DEV_CHAT_HOST
+    : process.env.REACT_APP_CHAT_HOST
+
+const socket = io(baseURL, {
   query: { username: 'test1' },
 })
 
