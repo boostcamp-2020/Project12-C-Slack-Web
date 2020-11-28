@@ -1,6 +1,20 @@
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
 
+const httpCookieOption = {
+  maxAge: 1000 * 60 * 60,
+  httpOnly: true,
+  signed: true,
+}
+
+const httpsCookieOption = {
+  maxAge: 1000 * 60 * 60,
+  httpOnly: true,
+  signed: true,
+  sameSite: false,
+  secure: true,
+}
+
 exports.githubLogin = passport.authenticate('github')
 
 exports.githubCallback = async (req, res, next) => {
@@ -14,11 +28,14 @@ exports.githubCallback = async (req, res, next) => {
       }
 
       const token = jwt.sign(id, process.env.JWT_SECRET, { expiresIn: '1H' })
-      res.cookie('token', token, {
-        maxAge: 1000 * 60 * 60,
-        httpOnly: true,
-        signed: true,
-      })
+      console.log('process.env.NODE_ENV: ', process.env.NODE_ENV)
+      res.cookie(
+        'token',
+        token,
+        process.env.NODE_ENV === 'production'
+          ? httpsCookieOption
+          : httpCookieOption,
+      )
       return res.status(200).json({ verify: true })
     })
   })(req, res)
