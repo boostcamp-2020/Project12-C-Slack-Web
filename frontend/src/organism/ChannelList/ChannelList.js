@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import request from '../../util/request'
 import styled from 'styled-components'
-import ChannelCard from '../../atom/ChannelCard'
+
+import SectionLabel from '../SectionLabel'
 
 require('dotenv').config()
 
 function ChannelList(props) {
   const [Channels, setChannels] = useState([])
+  const [List, setList] = useState([])
   const history = useHistory()
   useEffect(() => {
     ;(async () => {
@@ -23,11 +25,49 @@ function ChannelList(props) {
     })()
   }, [])
 
-  const renderChannelCards = Channels.map((channel, index) => {
-    return <ChannelCard key={index} channel={channel} />
+  useEffect(() => {
+    SectionOrganizing()
+  }, [Channels])
+
+  let sections = new Map()
+  const SectionOrganizing = () => {
+    Channels.map((channel, index) => {
+      try {
+        if (channel.sectionId === null && channel.channelType === 2) {
+          if (sections.has('Direct messages')) {
+            let value = sections.get('Direct messages')
+            value.push(channel)
+            sections.set('Direct messages', value)
+          } else {
+            sections.set('Direct messages', [channel])
+          }
+        } else {
+          if (sections.has(channel.sectionId)) {
+            let value = sections.get(channel.sectionId)
+            value.push(channel)
+            sections.set(channel.sectionId, value)
+          } else {
+            sections.set(channel.sectionId, [channel])
+          }
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    })
+    setList([...sections])
+  }
+
+  const renderChannelSectionList = List.map((section, index) => {
+    return (
+      <SectionLabel
+        key={index}
+        sectionName={section[0] === null ? 'Channels' : section[0]}
+        lists={section[1]}
+      ></SectionLabel>
+    )
   })
 
-  return <ChannelListStyle>{renderChannelCards}</ChannelListStyle>
+  return <ChannelListStyle>{renderChannelSectionList}</ChannelListStyle>
 }
 
 const ChannelListStyle = styled.div`
