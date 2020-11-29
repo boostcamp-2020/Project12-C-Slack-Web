@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const baseURL =
   process.env.NODE_ENV === 'development'
@@ -12,9 +13,10 @@ const options = {
 
 const GET = async (path, params = null) => {
   try {
-    const res = await axios.get(baseURL + path, { params, ...options })
-    return res.data
+    const response = await axios.get(baseURL + path, { params, ...options })
+    return response
   } catch (err) {
+    toast.error(err)
     console.error(err)
   }
 }
@@ -27,8 +29,9 @@ const POST = async (path, data, contentType = 'application/json') => {
       },
       ...options,
     })
-    return response.data
+    return response
   } catch (err) {
+    toast.error(err)
     console.error(err)
   }
 }
@@ -39,8 +42,9 @@ const DELETE = async (path, params = null) => {
       params,
       ...options,
     })
-    return response.data
+    return response
   } catch (err) {
+    toast.error(err)
     console.error(err)
   }
 }
@@ -53,8 +57,9 @@ const PATCH = async (path, data, contentType = 'application/json') => {
       },
       ...options,
     })
-    return response.data
+    return response
   } catch (err) {
+    toast.error(err)
     console.error(err)
   }
 }
@@ -67,8 +72,9 @@ const PUT = async (path, data, contentType = 'application/json') => {
       },
       ...options,
     })
-    return response.data
+    return response
   } catch (err) {
+    toast.error(err)
     console.error(err)
   }
 }

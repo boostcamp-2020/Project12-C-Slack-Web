@@ -18,11 +18,11 @@ exports.githubLogin = passport.authenticate('github')
 exports.githubCallback = async (req, res, next) => {
   passport.authenticate('github', (err, id) => {
     if (err || !id) {
-      return res.sendStatus(503)
+      return res.sendStatus(400)
     }
     req.login(id, { session: false }, err => {
       if (err) {
-        res.send(err)
+        res.sendStatus(400)
       }
 
       const token = jwt.sign(id, process.env.JWT_SECRET, { expiresIn: '1H' })
@@ -43,11 +43,11 @@ exports.authCheck = (req, res) => {
   if (token) {
     try {
       let decoded = jwt.verify(token, process.env.JWT_SECRET)
-      return res.json({ verify: true })
+      return res.sendStatus(200)
     } catch (err) {
-      return res.json({ verify: false })
+      return res.sendStatus(400)
     }
   } else {
-    return res.json({ verify: false, message: 'token does not exist' })
+    return res.sendStatus(204)
   }
 }

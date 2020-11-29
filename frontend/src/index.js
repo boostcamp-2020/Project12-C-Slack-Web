@@ -9,10 +9,13 @@ import LoginPage from './page/LoginPage'
 import WorkspaceSelectPage from './page/WorkspaceSelectPage'
 import Auth from './hooks/Auth'
 import GithubOAuth from './hooks/GithubOAuth'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const App = () => {
   return (
     <React.StrictMode>
+      <ToastContainer />
       <GlobalStyle />
       <BrowserRouter>
         <Route exact path="/" component={Channel} />
