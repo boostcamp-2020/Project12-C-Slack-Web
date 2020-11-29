@@ -29,13 +29,59 @@ const getChannelList = async (req, res, next) => {
         _id: { $in: channelConfig.map(el => el.channelId) },
       },
       { _id: 1, title: 1, channelType: 1 },
+    )
+      .sort({ channelType: -1 })
+      .lean()
+
+    const directMessage = await ChannelConfig.find(
+      {
+        channelId: {
+          $in: channel
+            .filter(el => {
+              if (el.channelType === 2) return true
+              return false
+            })
+            .map(el => el._id),
+        },
+      },
+      { _id: 1, workspaceUserInfoId: 1, channelId: 1 },
     ).lean()
+
+    const directMessageMemberInfo = await WorkspaceUserInfo.find(
+      {
+        _id: {
+          $in: directMessage.map(el => el.workspaceUserInfoId),
+        },
+      },
+      {
+        _id: 1,
+        displayName: 1,
+        profileUrl: 1,
+        isActive: 1,
+      },
+    ).lean()
+
+    const directMessageMember = directMessage.map(el => {
+      const [currentConfig] = directMessageMemberInfo.filter(
+        val => val._id.toString() === el.workspaceUserInfoId.toString(),
+      )
+      return { ...el, userInfo: currentConfig }
+    })
 
     const result = channel.map(el => {
       const [currentConfig] = channelConfig.filter(
         val => val.channelId.toString() === el._id.toString(),
       )
-      return { ...currentConfig, ...el }
+      const directMessageMemberConfig = directMessageMember
+        .filter(val => val.channelId.toString() === el._id.toString())
+        .map(el => el.userInfo)
+        .filter(el => el)
+
+      return { ...currentConfig, ...el, member: directMessageMemberConfig }
+    })
+
+    result.sort(function (a, b) {
+      return b.sectionId > a.sectionId ? -1 : b.sectionId == a.sectionId ? 0 : 1
     })
 
     res.status(200).json({ success: true, result })
@@ -118,7 +164,6 @@ const muteChannel = async (req, res, next) => {
   }
 }
 
-
 const createChannel = asyncWrapper(async (req, res) => {
   const { code, success, data } = await service.createChannel({
     ...req.body,
@@ -132,6 +177,5 @@ module.exports = {
   getChannelHeaderInfo,
   inviteUser,
   muteChannel,
-  createChannel
+  createChannel,
 }
-
