@@ -3,12 +3,15 @@ import styled from 'styled-components'
 
 function DirectMessageCard(props) {
   const directMessage = props.directMessage
-
+  console.log(directMessage.member[0].isActive)
   return (
     <DirectMessageCardLabel>
       <ImgArea>
-        {directMessage.member.length <= 1 ? (
-          <SoloImg src={directMessage.member[0].profileUrl} size="20" />
+        {directMessage.member.length <= 2 ? (
+          <>
+            <SoloImg src={directMessage.member[0].profileUrl} size="20" />
+            <UserActive isActive={!directMessage.member[0].isActive} />
+          </>
         ) : (
           <>
             <SoloImg src={directMessage.member[0].profileUrl} size="13" />
@@ -55,6 +58,17 @@ const SoloImg = styled.img`
   width: ${props => props.size}px;
   height: ${props => props.size}px;
   border-radius: 3px;
+`
+
+const UserActive = styled.div`
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 8px;
+  height: 8px;
+  background: ${props => (props.isActive ? '#2AAD75' : 'white')};
+  border: 1px solid black;
+  border-radius: 5px;
 `
 
 const PeopleNum = styled.div`
