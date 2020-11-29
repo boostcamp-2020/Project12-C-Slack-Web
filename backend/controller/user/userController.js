@@ -28,7 +28,6 @@ exports.githubCallback = async (req, res, next) => {
       }
 
       const token = jwt.sign(id, process.env.JWT_SECRET, { expiresIn: '1H' })
-      console.log('process.env.NODE_ENV: ', process.env.NODE_ENV)
       res.cookie(
         'token',
         token,

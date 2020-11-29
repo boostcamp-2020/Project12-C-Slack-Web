@@ -11,18 +11,14 @@ export default function GithubOAuth(Component, loginRequired) {
           const query = QueryString.parse(props.location.search, {
             ignoreQueryPrefix: true,
           })
-          console.log('query.code: ', query.code)
           const data = await request.GET(
             '/api/user/sign-in/github/callback?code=' + query.code,
           )
-          if (!data.verify) {
-            if (loginRequired) {
-              props.history.push('/login')
-            }
-          } else {
-            if (!loginRequired) {
-              props.history.push('/')
-            }
+          if (!data.verify && loginRequired) {
+            props.history.push('/login')
+          }
+          if (!loginRequired) {
+            props.history.push('/')
           }
           setloading(false)
         } catch (err) {
