@@ -1,20 +1,27 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import UserProfileImg from '../UserProfileImg'
+
 function DirectMessageCard(props) {
   const directMessage = props.directMessage
-  console.log(directMessage.member[0].isActive)
+
   return (
     <DirectMessageCardLabel>
       <ImgArea>
-        {directMessage.member.length <= 2 ? (
-          <>
-            <SoloImg src={directMessage.member[0].profileUrl} size="20" />
-            <UserActive isActive={!directMessage.member[0].isActive} />
-          </>
+        {directMessage.member.length <= 1 ? (
+          <UserProfileImg
+            user={directMessage.member[0]}
+            size="20"
+            showActive={true}
+          />
         ) : (
           <>
-            <SoloImg src={directMessage.member[0].profileUrl} size="13" />
+            <UserProfileImg
+              user={directMessage.member[0]}
+              size="13"
+              showActive={false}
+            />
             <PeopleNum size="13">{directMessage.member.length}</PeopleNum>
           </>
         )}
@@ -48,27 +55,6 @@ const ImgArea = styled.div`
   height: 20px;
   margin: 0 10px 0 15px;
   border-radius: 3px;
-`
-
-const SoloImg = styled.img`
-  position: absolute;
-  display: flex;
-  left: 0;
-  top: 0;
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
-  border-radius: 3px;
-`
-
-const UserActive = styled.div`
-  position: absolute;
-  right: -2px;
-  bottom: -2px;
-  width: 8px;
-  height: 8px;
-  background: ${props => (props.isActive ? '#2AAD75' : 'white')};
-  border: 1px solid black;
-  border-radius: 5px;
 `
 
 const PeopleNum = styled.div`
