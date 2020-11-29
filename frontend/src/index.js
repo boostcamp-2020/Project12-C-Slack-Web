@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { createGlobalStyle } from 'styled-components'
 import './index.css'
 import Channel from './page/channel/Channel'
+import WorkspacePage from './page/WorkspacePage'
 import { BrowserRouter, Route } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
 import LoginPage from './page/LoginPage'
@@ -21,6 +22,7 @@ const App = () => {
           component={Auth(WorkspaceSelectPage, true)}
         />
         <Route exact path="/" component={Channel} />
+        <Route exact path="/workspace" component={Auth(WorkspacePage, false)} />
       </BrowserRouter>
     </React.StrictMode>
   )
