@@ -2,13 +2,11 @@ const passport = require('passport')
 const jwt = require('jsonwebtoken')
 
 const httpCookieOption = {
-  maxAge: 1000 * 60 * 60,
   httpOnly: true,
   signed: true,
 }
 
 const httpsCookieOption = {
-  maxAge: 1000 * 60 * 60,
   httpOnly: true,
   signed: true,
   sameSite: false,
