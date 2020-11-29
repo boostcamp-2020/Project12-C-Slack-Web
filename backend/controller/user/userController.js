@@ -20,7 +20,7 @@ exports.githubLogin = passport.authenticate('github')
 exports.githubCallback = async (req, res, next) => {
   passport.authenticate('github', (err, id) => {
     if (err || !id) {
-      return res.status(200).json({ verify: false })
+      return res.sendStatus(503)
     }
     req.login(id, { session: false }, err => {
       if (err) {
@@ -35,7 +35,7 @@ exports.githubCallback = async (req, res, next) => {
           ? httpsCookieOption
           : httpCookieOption,
       )
-      return res.status(200).json({ verify: true })
+      return res.sendStatus(200)
     })
   })(req, res)
 }
