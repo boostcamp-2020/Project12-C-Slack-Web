@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import ChannelList from '../organism/ChannelList'
+import ChannelHeader from '../organism/ChannelHeader'
 
-function WorkspacePage() {
+function WorkspacePage(props) {
   const [LineWidth, setLineWidth] = useState(30)
   const moveLine = e => {
     if (e.pageX == 0) {
@@ -30,8 +31,10 @@ function WorkspacePage() {
         <ListLine draggable="true" onDrag={moveLine} />
         <ContentsArea width={LineWidth}>
           <ChatArea>
-            <ChatHeader></ChatHeader>
-            <ChatContents></ChatContents>
+            <ChatHeader>
+              <ChannelHeader {...props} />
+            </ChatHeader>
+            <ChatContents>채팅방 내역 / 메시지에디터 위치</ChatContents>
           </ChatArea>
           <SideBarArea>사이드 바 위치</SideBarArea>
         </ContentsArea>
