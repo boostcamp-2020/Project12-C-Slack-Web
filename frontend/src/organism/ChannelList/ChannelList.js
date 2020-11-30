@@ -13,7 +13,7 @@ function ChannelList(props) {
     ;(async () => {
       try {
         const data = await request.GET(
-          '/api/channel?workspaceUserInfoId=5fbe7a85d01a6e891154b432',
+          '/api/channel?workspaceUserInfoId=5fc4fe427b2d5f6ae44dc15e',
         )
 
         if (data.data.success) setChannels(data.data.result)

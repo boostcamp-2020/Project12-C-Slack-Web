@@ -17,13 +17,16 @@ function SectionLabel(props) {
       lists.map((list, idx) => {
         if (list.channelType === 2) {
           return (
-            <DirectMessageCard
-              key={idx}
-              directMessage={list}
-            ></DirectMessageCard>
+            <ChannelLabel key={idx}>
+              <DirectMessageCard key={idx} directMessage={list} />
+            </ChannelLabel>
           )
         }
-        return <ChannelCard key={idx} channel={list}></ChannelCard>
+        return (
+          <ChannelLabel key={idx}>
+            <ChannelCard key={idx} channel={list}></ChannelCard>
+          </ChannelLabel>
+        )
       })
     ) : (
       <div></div>
@@ -41,6 +44,16 @@ function SectionLabel(props) {
     </SectionLabelStyle>
   )
 }
+
+const ChannelLabel = styled.div`
+  width: auto;
+  padding-left: 20px;
+  margin-right: 5px;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+  }
+`
 
 const SectionLabelStyle = styled.div`
   width: 100%;
@@ -83,10 +96,6 @@ const IconArea = styled.div`
   padding: 4px;
 
   color: #f0f0f0;
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-  }
 `
 const TriangleIcon = styled.div`
   width: 18px;
@@ -117,7 +126,6 @@ const SectionTitle = styled.div`
 const ListArea = styled.div`
   display: ${props => (props.isOpen ? 'flex' : 'none')};
   width: 100%;
-  padding-left: 10px;
   flex-direction: column;
 `
 export default SectionLabel
