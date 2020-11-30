@@ -13,7 +13,7 @@ function ChannelHeader({ match }) {
       try {
         const data = await request.GET('/api/channel/' + channelId + '/info')
         if (data.data.success) setChannelInfo(data.data.result)
-        else throw new Error('채널 정보를 가져오는데 오류가 발생했습니다.')
+        else throw '채널 정보 요청 오류'
       } catch (err) {
         toast.error('채널 정보를 가져오는데 오류가 발생했습니다.', {
           onClose: () => history.goBack(),

@@ -17,7 +17,7 @@ function ChannelList(props) {
         )
 
         if (data.data.success) setChannels(data.data.result)
-        else throw new Error('채널 목록을 가져오는데 오류가 발생했습니다.')
+        else throw '채널 목록 요청 오류'
       } catch (err) {
         toast.error('채널 목록을 가져오는데 오류가 발생했습니다.', {
           onClose: () => history.goBack(),
