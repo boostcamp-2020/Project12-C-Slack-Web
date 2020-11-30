@@ -17,9 +17,9 @@ export default function Auth(Component, loginRequired) {
           }
           setloading(false)
         } catch (err) {
-          props.history.push('/login')
-          toast.error(err)
-          console.error(err)
+          toast.error('잘못된 접근입니다.', {
+            onClose: () => props.history.push('/login'),
+          })
         }
       })()
     }, [])

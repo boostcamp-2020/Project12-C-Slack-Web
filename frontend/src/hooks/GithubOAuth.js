@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import request from '../util/request'
 import QueryString from 'qs'
+import { toast } from 'react-toastify'
 
 export default function GithubOAuth(Component, loginRequired) {
   function Authentication(props) {
@@ -22,8 +23,9 @@ export default function GithubOAuth(Component, loginRequired) {
           }
           setloading(false)
         } catch (err) {
-          props.history.push('/login')
-          console.error(err)
+          toast.error('인증이 실패하였습니다', {
+            onClose: () => props.history.push('/login'),
+          })
         }
       })()
     }, [])
