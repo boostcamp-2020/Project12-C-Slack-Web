@@ -1,10 +1,13 @@
 import { asyncWrapper } from '../../util'
 import service from '../../service/channel'
-
+const mongoose = require('mongoose')
 const { WorkspaceUserInfo } = require('../../model/WorkspaceUserInfo')
 const { Channel } = require('../../model/Channel')
 const { ChannelConfig } = require('../../model/ChannelConfig')
 const { Chat } = require('../../model/Chat')
+const { Section } = require('../../model/Section')
+
+const ObjectId = mongoose.Types.ObjectId
 
 const getChannelList = async (req, res, next) => {
   try {
@@ -93,28 +96,79 @@ const getChannelList = async (req, res, next) => {
 const getChannelHeaderInfo = async (req, res, next) => {
   try {
     const channelId = req.params.channelId
+    const workspaceUserInfoId = req.query.workspaceUserInfoId
+
+    const channel = await ChannelConfig.aggregate([
+      {
+        $match: {
+          channelId: ObjectId(channelId),
+          workspaceUserInfoId: ObjectId(workspaceUserInfoId),
+        },
+      },
+      {
+        $lookup: {
+          from: 'channels',
+          let: {
+            channelId: '$channelId',
+            workspaceUserInfoId: '$workspaceUserInfoId',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [{ $eq: ['$_id', '$$channelId'] }],
+                },
+              },
+            },
+            { $project: { _id: 0 } },
+          ],
+          as: 'channelId',
+        },
+      },
+      {
+        $lookup: {
+          from: 'sections',
+          let: {
+            sectionId: '$sectionId',
+            workspaceUserInfoId: '$workspaceUserInfoId',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [{ $eq: ['$_id', '$$sectionId'] }],
+                },
+              },
+            },
+            { $project: { _id: 0 } },
+          ],
+          as: 'sectionId',
+        },
+      },
+    ])
 
     const pinned = await Chat.find({ pinned: true, channel: channelId })
     const channelConfig = await ChannelConfig.find({
       channelId: channelId,
     }).lean()
-    const workspaceUserInfo = await WorkspaceUserInfo.find({
-      _id: { $in: channelConfig.map(el => el.workspaceUserInfoId) },
-    }).lean()
-
-    const channel = await Channel.findOne(
+    const workspaceUserInfo = await WorkspaceUserInfo.find(
       {
-        _id: channelId,
+        _id: { $in: channelConfig.map(el => el.workspaceUserInfoId) },
       },
-      { title: 1, topic: 1, channelType: 1 },
+      { _id: 1, displayName: 1, profileUrl: 1, isActive: 1 },
     ).lean()
+
     const extraData = {
       pinnedCount: pinned.length,
       memberNum: workspaceUserInfo.length,
-      member: workspaceUserInfo,
+      member: [
+        workspaceUserInfo[0],
+        workspaceUserInfo[1],
+        workspaceUserInfo[2],
+      ],
     }
 
-    let result = { ...channel, ...extraData }
+    let result = { ...channel[0], ...extraData }
 
     res.status(200).json({ success: true, result })
   } catch (err) {
