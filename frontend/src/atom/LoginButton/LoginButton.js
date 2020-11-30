@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 function SubmitButton({ icon, label }) {
   return (
-    <LoginButton type={'submit'}>
+    <LoginButton type="submit">
       {icon}
       {label}
     </LoginButton>
