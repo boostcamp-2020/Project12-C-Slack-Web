@@ -16,14 +16,14 @@ function DirectMessageCard(props) {
             showActive={true}
           />
         ) : (
-          <>
+          <UserProfileImgAndCount size="18">
             <UserProfileImg
               user={directMessage.member[0]}
               size="13"
               showActive={false}
             />
             <PeopleNum size="13">{directMessage.member.length}</PeopleNum>
-          </>
+          </UserProfileImgAndCount>
         )}
       </ImgArea>
       <TitleLabel>
@@ -43,18 +43,17 @@ const DirectMessageCardLabel = styled.div`
   justify-content: start;
   align-items: center;
   padding: 4px 0;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-  }
 `
 const ImgArea = styled.div`
   position: relative;
   width: 25px;
   height: 20px;
-  margin: 0 10px 0 15px;
+  margin-right: 10px;
   border-radius: 3px;
+`
+const UserProfileImgAndCount = styled.div`
+  width: ${props => props.size}px;
+  height: ${props => props.size}px;
 `
 
 const PeopleNum = styled.div`
@@ -73,8 +72,8 @@ const PeopleNum = styled.div`
 `
 
 const TitleLabel = styled.div`
-  width: 100%;
-  padding-right: 15px;
+  width: auto;
+
   color: #f0f0f0;
   white-space: nowrap;
   text-overflow: ellipsis;
