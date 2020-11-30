@@ -5,9 +5,9 @@ export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
 }
 
-addDecorator(s => (
+addDecorator(story => (
   <>
     <GlobalStyle />
-    {s()}
+    {story()}
   </>
 ))
