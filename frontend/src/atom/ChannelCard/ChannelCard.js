@@ -7,10 +7,10 @@ function ChannelCard(props) {
   const { title, channelType } = props.channel
   return (
     <ChannelCardLabel>
-      <IconImgArea className="icon">
+      <IconImgArea>
         <img src={channelType == 0 ? lockImg : hashImg} />
       </IconImgArea>
-      <TitleLabel className="channel-title">{title}</TitleLabel>
+      <TitleLabel>{title}</TitleLabel>
     </ChannelCardLabel>
   )
 }

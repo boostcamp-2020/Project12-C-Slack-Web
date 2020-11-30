@@ -26,7 +26,7 @@ function DirectMessageCard(props) {
           </>
         )}
       </ImgArea>
-      <TitleLabel className="channel-title">
+      <TitleLabel>
         {directMessage.member.reduce(function (acc, curr, idx) {
           if (idx === 0) return curr.displayName
           return acc + ', ' + curr.displayName
