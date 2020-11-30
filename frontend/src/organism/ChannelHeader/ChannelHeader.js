@@ -11,7 +11,8 @@ function ChannelHeader({ match }) {
     ;(async () => {
       try {
         const data = await request.GET('/api/channel/' + channelId + '/info')
-        if (data.success) setChannelInfo(data.result)
+
+        if (data.data.success) setChannelInfo(data.data.result)
         else throw new Error('채널 정보를 가져오는데 오류가 발생했습니다.')
       } catch (err) {
         alert('채널 정보를 가져오는데 오류가 발생했습니다.')

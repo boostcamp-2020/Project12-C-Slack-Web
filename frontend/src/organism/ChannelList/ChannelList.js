@@ -17,7 +17,8 @@ function ChannelList(props) {
         const data = await request.GET(
           '/api/channel?workspaceUserInfoId=5fbe7a85d01a6e891154b432',
         )
-        setChannels(data.result)
+
+        if (data.data.success) setChannels(data.data.result)
       } catch (err) {
         alert('채널 목록을 가져오는데 오류가 발생했습니다.')
         history.goBack()
@@ -31,8 +32,8 @@ function ChannelList(props) {
 
   let sections = new Map()
   const SectionOrganizing = () => {
-    Channels.map((channel, index) => {
-      try {
+    try {
+      Channels.map((channel, index) => {
         if (channel.sectionId === null && channel.channelType === 2) {
           if (sections.has('Direct messages')) {
             let value = sections.get('Direct messages')
@@ -50,11 +51,12 @@ function ChannelList(props) {
             sections.set(channel.sectionId, [channel])
           }
         }
-      } catch (err) {
-        console.log(err)
-      }
-    })
-    setList([...sections])
+      })
+      setList([...sections])
+    } catch (err) {
+      alert('채널 목록 설정 오류가 발생했습니다.')
+      history.goBack()
+    }
   }
 
   const renderChannelSectionList = List.map((section, index) => {
