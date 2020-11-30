@@ -1,26 +1,39 @@
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
 
+const httpCookieOption = {
+  httpOnly: true,
+  signed: true,
+}
+
+const httpsCookieOption = {
+  httpOnly: true,
+  signed: true,
+  sameSite: false,
+  secure: true,
+}
+
 exports.githubLogin = passport.authenticate('github')
 
 exports.githubCallback = async (req, res, next) => {
-  const frontHost = process.env.FRONTEND_HOST
   passport.authenticate('github', (err, id) => {
     if (err || !id) {
-      return res.status(200).redirect(frontHost)
+      return res.sendStatus(400)
     }
     req.login(id, { session: false }, err => {
       if (err) {
-        res.send(err)
+        res.sendStatus(400)
       }
 
       const token = jwt.sign(id, process.env.JWT_SECRET, { expiresIn: '1H' })
-      res.cookie('token', token, {
-        maxAge: 1000 * 60 * 60,
-        httpOnly: true,
-        signed: true,
-      })
-      return res.status(200).redirect(frontHost)
+      res.cookie(
+        'token',
+        token,
+        process.env.NODE_ENV === 'production'
+          ? httpsCookieOption
+          : httpCookieOption,
+      )
+      return res.sendStatus(200)
     })
   })(req, res)
 }
@@ -30,11 +43,11 @@ exports.authCheck = (req, res) => {
   if (token) {
     try {
       let decoded = jwt.verify(token, process.env.JWT_SECRET)
-      return res.json({ verify: true })
+      return res.sendStatus(200)
     } catch (err) {
-      return res.json({ verify: false })
+      return res.sendStatus(400)
     }
   } else {
-    return res.json({ verify: false, message: 'token does not exist' })
+    return res.sendStatus(204)
   }
 }

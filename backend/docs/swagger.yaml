@@ -7,15 +7,12 @@ info:
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
   version: 1.0.0-oas3
 servers:
-  - url: 'https://virtserver.swaggerhub.com/solo295/test/1.0.0'
-tags:
-  - name: admins
-    description: Secured Admin-only calls
-  - name: developers
-    description: Operations available to regular developers
+  - url: 'http://101.101.218.104:5000'
 paths:
   /api/workspace:
     get:
+      tags:
+        - workspace
       summary: select user workspace
       description: select user workspace userID 미들웨어에서 추가
       parameters:
@@ -58,6 +55,8 @@ paths:
         default:
           description: Default error sample response
     post:
+      tags:
+        - workspace
       summary: create new workspace
       description: Create new workspace
       responses:
@@ -113,6 +112,8 @@ paths:
     summary: invite to workspace
     description: invite to workspace
     post:
+      tags:
+        - workspace
       summary: invite to workspace
       description: invite to workspace
       operationId: ''
@@ -162,6 +163,8 @@ paths:
     summary: update follow config
     description: follow 설정을 변경한다.
     patch:
+      tags:
+        - thread
       summary: update follow config
       description: follow 설정을 변경한다.
       parameters:
@@ -204,6 +207,8 @@ paths:
     summary: update channel description
     description: channel description 변경
     patch:
+      tags:
+        - channel
       summary: update channel description
       description: channel description 변경
       parameters:
@@ -246,6 +251,8 @@ paths:
     summary: update channel topic
     description: channel topic 변경
     patch:
+      tags:
+        - channel
       summary: update channel topic
       description: channel topic 변경
       parameters:
@@ -288,6 +295,8 @@ paths:
     summary: create channel
     description: channel 생성
     post:
+      tags:
+        - channel
       summary: create channel
       description: channel 생성
       parameters:
@@ -343,10 +352,62 @@ paths:
           description: bad request
         default:
           description: Default error sample response
+    get:
+      tags:
+        - channel
+      summary: get channel list //get userId from JWT
+      description: get channel list
+      operationId: ''
+      parameters:
+        - name: workspaceUserInfoId
+          in: query
+          description: workspaceUserInfo id
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        channelId:
+                          type: string
+                        title:
+                          type: string
+                        channelType:
+                          type: number
+                        section:
+                          type: object
+                          properties:
+                            sectionId:
+                              type: string
+                            name:
+                              type: string
+                        readChatId:
+                          type: string
+                        isMute:
+                          type: boolean
+                        notification:
+                          type: number
+
+          description: success response
+
   /api/user/sign-in/github:
-    summary: workspace user login 
-    description: selectworkspace user login 
+    summary: workspace user login
+    description: selectworkspace user login
     post:
+      tags:
+        - user
       summary: workspace user login
       description: workspace user login
       operationId: ''
@@ -364,11 +425,13 @@ paths:
         '400':
           description: bad input parameter
   /api/user/sign-out:
-    summary: workspace user signout 
-    description: selectworkspace user signout 
+    summary: workspace user signout
+    description: selectworkspace user signout
     delete:
-      summary: workspace user signout 
-      description: workspace user signout 
+      tags:
+        - user
+      summary: workspace user signout
+      description: workspace user signout
       operationId: ''
       parameters:
         - name: workspaceUserInfoId
@@ -383,42 +446,534 @@ paths:
           description: search results matching criteria
         '400':
           description: bad input parameter
-       
+  /api/user/sign-in/google:
+    summary: google login
+    description: google login
+    get:
+      tags:
+        - user
+      summary: google login
+      description: google login
+      operationId: ''
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: google login
+
+  /api/user/sign-in/google/callback:
+    summary: google login callback
+    description: google login callback
+    get:
+      tags:
+        - user
+      summary: google login
+      description: google login
+      operationId: ''
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  redirectUrl:
+                    type: string
+          description: google login callback
+
+  /api/channel/{channelId}/info:
+    summary: get channel info for channel header// private=0, public=1, DM=2
+    description: get channel info for channel header// private=0, public=1, DM=2
+    get:
+      tags:
+        - channel
+      summary: get channel info for channel header// private=0, public=1, DM=2
+      description: get channel info for channel header// private=0, public=1, DM=2
+      parameters:
+        - name: channelId
+          in: path
+          description: channel id
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  result:
+                    type: object
+                    properties:
+                      channelId:
+                        type: string
+                      title:
+                        type: string
+                      topic:
+                        type: string
+                      channelType:
+                        type: number
+                      pinnedNum:
+                        type: number
+                      memberNum:
+                        type: number
+                      member:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            userId:
+                              type: string
+                            profileUrl:
+                              type: string
+                            workspaceURL:
+                              type: string
+          description: get channel info for channel header
+
+  /api/channel/invite:
+    summary: invite user to channel
+    description: invite user to channel
+    post:
+      tags:
+        - channel
+      summary: invite user to channel
+      description: invite user to channel
+      operationId: ''
+      parameters:
+        - name: workspaceUserInfoId
+          in: query
+          description: workspaceUserInfo id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                workspaceUserInfoId:
+                  type: string
+        - name: channelId
+          in: query
+          description: channelId id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: invite user to channel
+
+  /api/channel/mute:
+    summary: update channel mute option
+    description: update channel mute option
+    patch:
+      tags:
+        - channel
+      summary: update channel mute option
+      description: update channel mute option
+      operationId: ''
+      parameters:
+        - name: workspaceUserInfoId
+          in: query
+          description: workspaceUserInfo id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: channelId
+          in: query
+          description: channel id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: update channel mute option
+
+  /api/search/userId:
+    summary: invite user to channel
+    description: invite user to channel
+    post:
+      tags:
+        - search
+      summary: invite user to channel
+      description: invite user to channel
+      operationId: ''
+      parameters:
+        - name: keyword
+          in: query
+          description: keyword
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        workspaceUserInfoId:
+                          type: string
+                        displayName:
+                          type: string
+                        profileUrl:
+                          type: string
+                        isActive:
+                          type: boolean
+          description: invite user to channel
+
+  /api/direct-message:
+    summary: get users last dm
+    description: get users last dm
+    get:
+      tags:
+        - direct message
+      summary: get users last dm
+      description: get users last dm
+      operationId: ''
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        channel:
+                          type: object
+                          properties:
+                            channelId:
+                              type: string
+                            channelTitle:
+                              type: string
+                        user:
+                          type: object
+                          properties:
+                            workspaceUserInfoId:
+                              type: string
+                            displayName:
+                              type: string
+                            profileUrl:
+                              type: string
+                        contents:
+                          type: string
+                        createdAt:
+                          format: date-time
+                          type: string
+          description: get users last dm
+
+  /api/mention-reaction:
+    summary: get user mention and reaction
+    description: get user mention and reaction
+    get:
+      tags:
+        - mention & reaction
+      summary: get user mention and reaction
+      description: get user mention and reaction
+      operationId: ''
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        chat:
+                          type: object
+                          properties:
+                            chatId:
+                              type: string
+                            creatorId:
+                              type: string
+                            creatorDisplayName:
+                              type: string
+                            contents:
+                              type: string
+                            createdAt:
+                              format: date-time
+                              type: string
+                        reaction:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              workspaceUserInfoId:
+                                type: string
+                              displayName:
+                                type: string
+                              profileUrl:
+                                type: string
+                              emotion:
+                                type: string
+                              createdAt:
+                                format: date-time
+                                type: string
+                        channel:
+                          type: object
+                          properties:
+                            channelId:
+                              type: string
+                            channelType:
+                              type: number
+                            channelName:
+                              type: string
+                        actionType:
+                          type: number
+
+          description: get user mention and reaction
 
 components:
   schemas:
-    InventoryItem:
-      required:
-        - id
-        - manufacturer
-        - name
-        - releaseDate
-      type: object
+    workspaceUserInfo:
+      type: 'object'
       properties:
-        id:
+        _id:
           type: string
           format: uuid
-          example: d290f1ee-6c54-4b01-90e6-d701748f0851
-        name:
+        title:
           type: string
-          example: Widget Adapter
-        releaseDate:
+        fullName:
+          type: string
+        displayName:
+          type: string
+        pause:
+          type: string
+        phoneNumber:
+          type: integer
+        timeZone:
+          type: string
+        profileUrl:
+          type: string
+        status:
+          type: string
+        expireStatus:
           type: string
           format: date-time
-          example: '2016-08-29T09:12:33.001Z'
-        manufacturer:
-          $ref: '#/components/schemas/Manufacturer'
-    Manufacturer:
-      required:
-        - name
+        isAdmin:
+          type: boolean
+        isActive:
+          type: boolean
+        userId:
+          type: string
+        workspaceId:
+          type: string
+
+    workspace:
+      type: object
       properties:
+        _id:
+          type: string
+          format: uuid
         name:
           type: string
-          example: ACME Corporation
-        homePage:
+        createdAt:
           type: string
-          format: url
-          example: 'https://www.acme-corp.com'
-        phone:
+          format: date-time
+        creator:
           type: string
-          example: 408-867-5309
+        profileUrl:
+          type: string
+
+    user:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuid
+        OAuthId:
+          type: string
+        fullName:
+          type: string
+        isDeleted:
+          type: boolean
+
+    channelConfig:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuid
+        workspaceUserInfoId:
+          type: string
+        channelId:
+          type: string
+        readChatId:
+          type: string
+        isMute:
+          type: string
+        norification:
+          type: string
+        sectionId:
+          type: string
+
+    follow:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuid
+        workspaceUserInfoId:
+          type: string
+        chatId:
+          type: string
+
+    section:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        workspaceUserInfoId:
+          type: string
+
+    channel:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        creator:
+          type: string
+        topic:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        channelType:
+          type: number
+        isDelete:
+          type: boolean
+
+    chat:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuid
+        pinned:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        editedAt:
+          type: string
+          format: date-time
+        contents:
+          type: string
+        channel:
+          type: string
+        creator:
+          type: string
+        parentId:
+          type: string
+        isDelete:
+          type: boolean
+
+    file:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuid
+        path:
+          type: string
+        fileType:
+          type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        creator:
+          type: string
+
+    reaction:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuid
+        emotion:
+          type: string
+        workspaceUserInfoId:
+          type: string
+        chatId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    userHistory:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+        workspaceId:
+          type: string
+        path:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
