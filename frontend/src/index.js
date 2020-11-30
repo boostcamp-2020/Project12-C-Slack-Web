@@ -22,7 +22,10 @@ const App = () => {
           component={Auth(WorkspaceSelectPage, true)}
         />
         <Route exact path="/" component={Channel} />
-        <Route exact path="/workspace" component={Auth(WorkspacePage, false)} />
+        <Route
+          path="/workspace/:channelId"
+          component={Auth(WorkspacePage, false)}
+        />
       </BrowserRouter>
     </React.StrictMode>
   )
