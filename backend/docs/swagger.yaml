@@ -7,7 +7,7 @@ info:
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
   version: 1.0.0-oas3
 servers:
-  - url: 'http://101.101.218.104'
+  - url: 'http://101.101.218.104:5000'
 paths:
   /api/workspace:
     get:
