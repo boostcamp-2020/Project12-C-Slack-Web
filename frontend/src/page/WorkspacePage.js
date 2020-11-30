@@ -5,11 +5,9 @@ import ChannelList from '../organism/ChannelList'
 import ChannelHeader from '../organism/ChannelHeader'
 
 function WorkspacePage(props) {
-  const [LineWidth, setLineWidth] = useState(30)
+  const [lineWidth, setLineWidth] = useState(30)
   const moveLine = e => {
-    if (e.pageX == 0) {
-      return
-    }
+    if (e.pageX == 0) return false
     let mouse = e.pageX
     let viewWidth = e.view.innerWidth
 
@@ -25,11 +23,11 @@ function WorkspacePage(props) {
     <PageStyle>
       <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
       <MainArea>
-        <ChannelListArea width={LineWidth}>
+        <ChannelListArea width={lineWidth}>
           <ChannelList />
         </ChannelListArea>
         <ListLine draggable="true" onDrag={moveLine} />
-        <ContentsArea width={LineWidth}>
+        <ContentsArea width={lineWidth}>
           <ChatArea>
             <ChatHeader>
               <ChannelHeader {...props} />

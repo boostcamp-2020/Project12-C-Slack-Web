@@ -5,11 +5,9 @@ import styled from 'styled-components'
 import { toast } from 'react-toastify'
 import SectionLabel from '../SectionLabel'
 
-require('dotenv').config()
-
 function ChannelList(props) {
-  const [Channels, setChannels] = useState([])
-  const [List, setList] = useState([])
+  const [channels, setChannels] = useState([])
+  const [list, setList] = useState([])
   const history = useHistory()
   useEffect(() => {
     ;(async () => {
@@ -30,12 +28,12 @@ function ChannelList(props) {
 
   useEffect(() => {
     SectionOrganizing()
-  }, [Channels])
+  }, [channels])
 
   let sections = new Map()
   const SectionOrganizing = () => {
     try {
-      Channels.map((channel, index) => {
+      channels.map((channel, index) => {
         if (channel.sectionId === null && channel.channelType === 2) {
           if (sections.has('Direct messages')) {
             let value = sections.get('Direct messages')
@@ -61,7 +59,7 @@ function ChannelList(props) {
     }
   }
 
-  const renderChannelSectionList = List.map((section, index) => {
+  const renderChannelSectionList = list.map((section, index) => {
     return (
       <SectionLabel
         key={index}

@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 
 function ChannelHeader({ match }) {
   const { channelId } = match.params
-  const [ChannelInfo, setChannelInfo] = useState('')
+  const [channelInfo, setChannelInfo] = useState('')
   const history = useHistory()
   useEffect(() => {
     ;(async () => {
@@ -22,7 +22,7 @@ function ChannelHeader({ match }) {
     })()
   }, [])
 
-  return <ChannelHeaderStyle>{ChannelInfo.title}</ChannelHeaderStyle>
+  return <ChannelHeaderStyle>{channelInfo.title}</ChannelHeaderStyle>
 }
 
 const ChannelHeaderStyle = styled.div`

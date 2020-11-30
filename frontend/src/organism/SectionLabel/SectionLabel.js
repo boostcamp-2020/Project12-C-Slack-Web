@@ -5,11 +5,11 @@ import ChannelCard from '../../atom/ChannelCard'
 import DirectMessageCard from '../../atom/DirectMessageCard'
 
 function SectionLabel(props) {
-  const [IsOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(true)
   const { sectionName, lists } = props
 
   const openSection = () => {
-    setIsOpen(!IsOpen)
+    setIsOpen(!isOpen)
   }
 
   const renderChannelCards =
@@ -33,11 +33,11 @@ function SectionLabel(props) {
     <SectionLabelStyle>
       <TitleArea onClick={openSection}>
         <IconArea>
-          <TriangleIcon IsOpen={IsOpen}>▶</TriangleIcon>
+          <TriangleIcon isOpen={isOpen}>▶</TriangleIcon>
         </IconArea>
         <SectionTitle>{sectionName}</SectionTitle>
       </TitleArea>
-      <ListArea IsOpen={IsOpen}>{renderChannelCards}</ListArea>
+      <ListArea isOpen={isOpen}>{renderChannelCards}</ListArea>
     </SectionLabelStyle>
   )
 }
@@ -96,7 +96,7 @@ const TriangleIcon = styled.div`
   text-align: center;
   transform: rotate(90deg);
   ${props =>
-    props.IsOpen
+    props.isOpen
       ? css`
           animation: 0.1s linear ${openSection};
           animation-direction: alternate;
@@ -115,7 +115,7 @@ const SectionTitle = styled.div`
   display: inline-block;
 `
 const ListArea = styled.div`
-  display: ${props => (props.IsOpen ? 'flex' : 'none')};
+  display: ${props => (props.isOpen ? 'flex' : 'none')};
   width: 100%;
   padding-left: 10px;
   flex-direction: column;
