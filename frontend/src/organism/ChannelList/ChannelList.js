@@ -54,8 +54,9 @@ function ChannelList(props) {
       })
       setList([...sections])
     } catch (err) {
-      alert('채널 목록 설정 오류가 발생했습니다.')
-      history.goBack()
+      toast.error('채널 목록 설정 오류가 발생했습니다.', {
+        onClose: () => history.goBack(),
+      })
     }
   }
 
