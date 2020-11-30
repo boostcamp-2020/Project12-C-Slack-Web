@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import request from '../../util/request'
 import styled from 'styled-components'
-
+import { toast } from 'react-toastify'
 import SectionLabel from '../SectionLabel'
 
 require('dotenv').config()
@@ -19,9 +19,11 @@ function ChannelList(props) {
         )
 
         if (data.data.success) setChannels(data.data.result)
+        else throw new Error('채널 목록을 가져오는데 오류가 발생했습니다.')
       } catch (err) {
-        alert('채널 목록을 가져오는데 오류가 발생했습니다.')
-        history.goBack()
+        toast.error('채널 목록을 가져오는데 오류가 발생했습니다.', {
+          onClose: () => history.goBack(),
+        })
       }
     })()
   }, [])
