@@ -218,6 +218,51 @@ const muteChannel = async (req, res, next) => {
   }
 }
 
+const updateChannelSection = async (req, res, next) => {
+  try {
+    const workspaceUserInfoId = req.body.workspaceUserInfoId
+    const channelId = req.body.channelId
+    const sectionName = req.body.sectionName
+
+    if (sectionName === null) {
+      await ChannelConfig.updateOne(
+        {
+          workspaceUserInfoId,
+          channelId,
+        },
+        { sectionId: null },
+      )
+    } else {
+      let sectionId = ''
+      const section = await Section.find({
+        name: sectionName,
+        workspaceUserInfoId,
+      }).lean()
+      console.log(section, sectionName, workspaceUserInfoId)
+      if (section.length === 0) {
+        const insertSection = await Section.create({
+          name: sectionName,
+          workspaceUserInfoId,
+        })
+        sectionId = insertSection._id
+      } else {
+        sectionId = section[0]._id
+      }
+      await ChannelConfig.updateOne(
+        {
+          workspaceUserInfoId,
+          channelId,
+        },
+        { sectionId },
+      )
+    }
+
+    res.status(200).json({ success: true })
+  } catch (err) {
+    next(err)
+  }
+}
+
 const createChannel = asyncWrapper(async (req, res) => {
   const { code, success, data } = await service.createChannel({
     ...req.body,
@@ -231,5 +276,6 @@ module.exports = {
   getChannelHeaderInfo,
   inviteUser,
   muteChannel,
+  updateChannelSection,
   createChannel,
 }
