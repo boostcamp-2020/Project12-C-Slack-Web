@@ -16,7 +16,7 @@ function ChannelStarBtn(props) {
     try {
       let sectionName = null
       if (sectionInfo === null) sectionName = 'Starred'
-      console.log(sectionInfo)
+
       const data = await request.PATCH('/api/channel/section', {
         workspaceUserInfoId: '5fc4fe427b2d5f6ae44dc15e',
         channelId: '5fc4fe66f303676bad052e9b',

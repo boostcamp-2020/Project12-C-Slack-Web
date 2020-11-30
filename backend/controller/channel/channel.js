@@ -238,7 +238,6 @@ const updateChannelSection = async (req, res, next) => {
         name: sectionName,
         workspaceUserInfoId,
       }).lean()
-      console.log(section, sectionName, workspaceUserInfoId)
       if (section.length === 0) {
         const insertSection = await Section.create({
           name: sectionName,
