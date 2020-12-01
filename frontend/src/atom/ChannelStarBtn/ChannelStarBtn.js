@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router'
 import request from '../../util/request'
 import styled from 'styled-components'
@@ -10,11 +10,8 @@ import { STAR, COLOREDSTAR } from '../../constant/icon'
 
 function ChannelStarBtn(props) {
   const section = props.section
-  const [sectionInfo, setSectionInfo] = useState(null)
+  const [sectionInfo, setSectionInfo] = useState(section ? section.name : null)
   const history = useHistory()
-  useEffect(() => {
-    section !== undefined ? setSectionInfo(section.name) : setSectionInfo(null)
-  }, [])
 
   const updateSection = async () => {
     try {

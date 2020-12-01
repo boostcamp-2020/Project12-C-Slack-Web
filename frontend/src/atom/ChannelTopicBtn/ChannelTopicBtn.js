@@ -1,16 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 
-function ChannelTopicBtn(props) {
-  const topic = props.topic
-
-  return topic === null || topic === '' ? (
-    <AddTopicBtn>Add a Topic</AddTopicBtn>
-  ) : (
+function ChannelTopicBtn({ topic }) {
+  return topic ? (
     <TopicArea>
-      <Topic>{props.topic}</Topic>
+      <Topic>{topic}</Topic>
       <EditBtn>Edit</EditBtn>
     </TopicArea>
+  ) : (
+    <AddTopicBtn>Add a Topic</AddTopicBtn>
   )
 }
 
@@ -26,9 +24,6 @@ const Topic = styled.div`
   padding: 0 3px;
   border-radius: 4px;
   border: 1px solid transparent;
-  &:hover {
-    border: 1px solid gray;
-  }
 `
 
 const EditBtn = styled.div`
@@ -50,6 +45,9 @@ const TopicArea = styled.div`
   &:hover {
     ${EditBtn} {
       display: flex;
+    }
+    ${Topic} {
+      border: 1px solid black;
     }
   }
 `

@@ -98,7 +98,7 @@ const getChannelHeaderInfo = async (req, res, next) => {
     const channelId = req.params.channelId
     const workspaceUserInfoId = req.query.workspaceUserInfoId
 
-    const channel = await ChannelConfig.aggregate([
+    const [channel] = await ChannelConfig.aggregate([
       {
         $match: {
           channelId: ObjectId(channelId),
@@ -161,14 +161,10 @@ const getChannelHeaderInfo = async (req, res, next) => {
     const extraData = {
       pinnedCount: pinned.length,
       memberNum: workspaceUserInfo.length,
-      member: [
-        workspaceUserInfo[0],
-        workspaceUserInfo[1],
-        workspaceUserInfo[2],
-      ],
+      member: [...workspaceUserInfo.slice(0, 3)],
     }
 
-    let result = { ...channel[0], ...extraData }
+    let result = { ...channel, ...extraData }
 
     res.status(200).json({ success: true, result })
   } catch (err) {
@@ -220,9 +216,7 @@ const muteChannel = async (req, res, next) => {
 
 const updateChannelSection = async (req, res, next) => {
   try {
-    const workspaceUserInfoId = req.body.workspaceUserInfoId
-    const channelId = req.body.channelId
-    const sectionName = req.body.sectionName
+    const { sectionName, channelId, workspaceUserInfoId } = req.body
 
     if (sectionName === null) {
       await ChannelConfig.updateOne(
