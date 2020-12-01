@@ -291,6 +291,65 @@ paths:
           description: bad request
         default:
           description: Default error sample response
+  /api/channel/check-duplicate-name:
+    summary: check duplicated name
+    description: 채널 이름 중복 확인
+    get:
+      tags:
+        - channel
+      summary: check duplicated name
+      description: 채널 이름 중복 확인
+      parameters:
+        - name: title
+          in: query
+          description: 확인 할 채널 이름
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: workspaceId
+          in: query
+          description: 워크스페이스 id
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: boolean
+          description: success
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+          description: bad request
+        '600':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+          description: DB Error
+        default:
+          description: Default error sample response
   /api/channel:
     summary: create channel
     description: channel 생성

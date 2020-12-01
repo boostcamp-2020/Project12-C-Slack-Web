@@ -5,6 +5,7 @@ const controller = require('./channel')
 /* GET /api/channle  get channel list  */
 router.get('/', controller.getChannelList)
 
+router.get('/check-duplicate-name', controller.checkDuplicate)
 
 router.post('/', controller.createChannel)
 
