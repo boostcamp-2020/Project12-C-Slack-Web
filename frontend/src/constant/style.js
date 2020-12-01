@@ -8,6 +8,7 @@ const COLOR = {
   GREEN: '#007a5a',
   HOVER_GREEN: '#148567',
   WHITE: '#fff',
+  STARBLUE: '#1363A2',
 }
 
 export { COLOR }

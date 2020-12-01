@@ -24,7 +24,7 @@ function SectionLabel(props) {
         }
         return (
           <ChannelLabel key={idx}>
-            <ChannelCard key={idx} channel={list}></ChannelCard>
+            <ChannelCard key={idx} channel={list} color="white"></ChannelCard>
           </ChannelLabel>
         )
       })

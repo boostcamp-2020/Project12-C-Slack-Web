@@ -3,7 +3,8 @@ import { useHistory } from 'react-router'
 import request from '../../util/request'
 import styled from 'styled-components'
 import { toast } from 'react-toastify'
-
+import Icon from '../../atom/Icon'
+import { ADDUSER, INFOCIRCLE } from '../../constant/icon'
 import ChannelCard from '../../atom/ChannelCard'
 import ChannelStarBtn from '../../atom/ChannelStarBtn'
 import ChannelPinBtn from '../../atom/ChannelPinBtn'
@@ -64,8 +65,12 @@ function ChannelHeader({ match }) {
         />
       </ChannelMemberInfo>
       <ChannelOption>
-        <IconBtn>👤</IconBtn>
-        <IconBtn>ℹ️</IconBtn>
+        <IconBtn>
+          <Icon icon={ADDUSER} />
+        </IconBtn>
+        <IconBtn>
+          <Icon icon={INFOCIRCLE} />
+        </IconBtn>
       </ChannelOption>
     </ChannelHeaderStyle>
   )

@@ -4,6 +4,10 @@ import request from '../../util/request'
 import styled from 'styled-components'
 import { toast } from 'react-toastify'
 
+import { COLOR } from '../../constant/style'
+import Icon from '../Icon'
+import { STAR, COLOREDSTAR } from '../../constant/icon'
+
 function ChannelStarBtn(props) {
   const section = props.section
   const [sectionInfo, setSectionInfo] = useState(null)
@@ -34,7 +38,11 @@ function ChannelStarBtn(props) {
 
   return (
     <StarIconStyle onClick={updateSection}>
-      {sectionInfo !== null ? '★' : '☆'}
+      {sectionInfo !== null ? (
+        <Icon icon={STAR} color={COLOR.STARBLUE} />
+      ) : (
+        <Icon icon={COLOREDSTAR} color={COLOR.STARBLUE} />
+      )}
     </StarIconStyle>
   )
 }

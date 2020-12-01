@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import lockImg from './locker.svg'
-import hashImg from './hash.svg'
+
+import Icon from '../Icon'
+import { LOCK, HASHTAG } from '../../constant/icon'
 
 function ChannelCard(props) {
   const { title, channelType } = props.channel
@@ -9,7 +10,11 @@ function ChannelCard(props) {
   return (
     <ChannelCardLabel>
       <IconImgArea>
-        <img src={channelType == 0 ? lockImg : hashImg} />
+        {channelType === 0 ? (
+          <Icon icon={LOCK} color={color} />
+        ) : (
+          <Icon icon={HASHTAG} color={color} />
+        )}
       </IconImgArea>
       <TitleLabel color={color}>{title}</TitleLabel>
     </ChannelCardLabel>
