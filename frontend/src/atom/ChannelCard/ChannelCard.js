@@ -16,7 +16,7 @@ function ChannelCard(props) {
   )
 }
 const ChannelCardLabel = styled.div`
-  width: 100%;
+  width: auto;
   display: flex;
   flex-direction: row;
   justify-content: start;
