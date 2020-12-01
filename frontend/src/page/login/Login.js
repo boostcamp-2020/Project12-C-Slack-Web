@@ -1,8 +1,8 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import LoginButton from '../../atom/LoginButton/LoginButton'
-import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { GITHUB } from '../../constant/icon'
+import Icon from '../../atom/Icon'
 import styled from 'styled-components'
 import SlackIcon from '../../atom/SlackIcon'
 
@@ -13,7 +13,7 @@ const baseURL =
 
 const LoginPage = () => {
   const history = useHistory()
-  const githubIcon = <FontAwesomeIcon icon={faGithub} size="2x" />
+  const githubIcon = <Icon icon={GITHUB} size="1.6rem" />
 
   const gohomeHandle = () => {
     history.push('/')
