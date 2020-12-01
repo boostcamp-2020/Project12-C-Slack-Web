@@ -379,6 +379,13 @@ paths:
           explode: true
           schema:
             type: string
+        - name: workspaceId
+          in: query
+          description: workspace Id
+          required: true
+          explode: true
+          schema:
+            type: string
         - name: channelType
           in: query
           description: channel type, (private = 0, public = 1, DM = 2)
