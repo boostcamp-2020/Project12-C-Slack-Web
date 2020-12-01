@@ -17,9 +17,9 @@ const LoginButton = styled.button`
   border: 1px solid #1da1f2;
   outline: none;
   background-color: white;
-  width: ${props => props.width || '12rem'};
-  height: ${props => props.width || '2rem'};
-  border-radius: 20px;
+  width: ${props => props.width || '20rem'};
+  height: ${props => props.width || '2.5rem'};
+  border-radius: 4px;
   & > * {
     padding-right: 10px;
   }
