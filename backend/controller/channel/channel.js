@@ -270,6 +270,14 @@ const createChannel = asyncWrapper(async (req, res) => {
   return res.status(code).json({ success, data })
 })
 
+const checkDuplicate = asyncWrapper(async (req, res) => {
+  const { code, success, data } = await service.checkDuplicate({
+    title: req.query.title,
+    workspaceId: req.query.workspaceId,
+  })
+  return res.status(code).json({ success, data })
+})
+
 module.exports = {
   getChannelList,
   getChannelHeaderInfo,
@@ -277,4 +285,5 @@ module.exports = {
   muteChannel,
   updateChannelSection,
   createChannel,
+  checkDuplicate,
 }

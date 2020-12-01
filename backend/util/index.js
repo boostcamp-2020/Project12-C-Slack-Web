@@ -13,9 +13,9 @@ const verifyRequiredParams = (...params) => {
       throw { status: statusCode.BAD_REQUEST, message: resMessage.OUT_OF_VALUE }
 }
 
-const dbErrorHandler = async callback => {
+const dbErrorHandler = callback => {
   try {
-    return await callback()
+    return callback()
   } catch (err) {
     console.log(err)
     throw {
