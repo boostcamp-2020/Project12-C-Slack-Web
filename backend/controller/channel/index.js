@@ -18,4 +18,7 @@ router.post('/invite', controller.inviteUser)
 /* PATCH /api/channle/mute  mute channel  */
 router.patch('/mute', controller.muteChannel)
 
+/* PATCH /api/channle/section  update channel section */
+router.patch('/section', controller.updateChannelSection)
+
 module.exports = router
