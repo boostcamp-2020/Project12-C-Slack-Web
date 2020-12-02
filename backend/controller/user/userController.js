@@ -1,6 +1,6 @@
+import statusCode from '../../util/statusCode'
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
-
 const httpCookieOption = {
   httpOnly: true,
   signed: true,
@@ -50,4 +50,9 @@ exports.authCheck = (req, res) => {
   } else {
     return res.sendStatus(204)
   }
+}
+
+exports.signOut = (req, res) => {
+  res.clearCookie('token')
+  return res.sendStatus(statusCode.OK)
 }

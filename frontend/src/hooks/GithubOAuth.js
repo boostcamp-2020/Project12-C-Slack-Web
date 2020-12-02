@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import request from '../util/request'
 import QueryString from 'qs'
 import { toast } from 'react-toastify'
+import { useHistory } from 'react-router'
 
 export default function GithubOAuth(Component, loginRequired) {
   function Authentication(props) {
     const [loading, setloading] = useState(true)
+    const history = useHistory()
     useEffect(() => {
       ;(async () => {
         try {
@@ -16,15 +18,15 @@ export default function GithubOAuth(Component, loginRequired) {
             '/api/user/sign-in/github/callback?code=' + query.code,
           )
           if (loginRequired) {
-            props.history.push('/login')
+            history.push('/login')
           }
           if (!loginRequired) {
-            props.history.push('/')
+            history.push('/')
           }
           setloading(false)
         } catch (err) {
           toast.error('인증이 실패하였습니다', {
-            onClose: () => props.history.push('/login'),
+            onClose: () => history.goBack(),
           })
         }
       })()
