@@ -9,6 +9,8 @@ import { CLOSE, HASHTAG, LOCK } from '../../constant/icon'
 import { debounce } from '../../util'
 import Request from '../../util/request'
 import { COLOR } from '../../constant/style'
+
+const maxChannelName = 80
 const CreateChannelModal = ({ handleClose }) => {
   const [isPrivate, setPrivateOption] = useState(false)
   const [channelName, setChannelName] = useState('')
@@ -46,12 +48,14 @@ const CreateChannelModal = ({ handleClose }) => {
         <strong>Name</strong>
         {errorMessage}
         <div>
-          <Icon icon={isPrivate ? LOCK : HASHTAG} />
           <Input
             placeholder="e.g. plan-budget"
             handleChange={handleChange(setChannelName, handleDebounce)}
             value={channelName}
-          />
+            maxLength={maxChannelName}
+          >
+            <Icon icon={isPrivate ? LOCK : HASHTAG} padding="5px" />
+          </Input>
         </div>
         <Button
           handleClick={submitChannelInfo}
