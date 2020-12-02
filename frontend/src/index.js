@@ -7,7 +7,7 @@ import WorkspacePage from './page/WorkspacePage'
 import { BrowserRouter, Route } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
 import LoginPage from './page/login/Login'
-import WorkspaceSelectPage from './page/WorkspaceSelectPage'
+import SelectWorkspace from './page/selectWorkspace/SelectWorkspace'
 import Auth from './hooks/Auth'
 import GithubOAuth from './hooks/GithubOAuth'
 import { ToastContainer } from 'react-toastify'
@@ -24,8 +24,8 @@ const App = () => {
         <Route path="/github-oauth" component={GithubOAuth(LoginPage, false)} />
         <Route
           exact
-          path="/workspace-select"
-          component={Auth(WorkspaceSelectPage, true)}
+          path="/select-workspace"
+          component={Auth(SelectWorkspace, true)}
         />
         <Route
           path="/workspace/:channelId"
