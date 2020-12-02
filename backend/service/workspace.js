@@ -1,7 +1,9 @@
 import { Workspace } from '../model/Workspace'
 import { WorkspaceUserInfo } from '../model/WorkspaceUserInfo'
 import statusCode from '../util/statusCode'
-import { verifyRequiredParams, dbErrorHandler } from '../util'
+import resMessage from '../util/resMessage'
+import { verifyRequiredParams, dbErrorHandler } from '../util/'
+import { encrypt, decrypt } from '../util/encryption'
 
 exports.createWorkspace = async params => {
   verifyRequiredParams(params.creator, params.name, params.channelName)
@@ -37,5 +39,51 @@ exports.getWorkspaces = async ({ userId }) => {
     code: statusCode.CREATED,
     data: workspaceDatas,
     success: true,
+  }
+}
+
+exports.invite = ({ workspaceId }) => {
+  const data = workspaceId + ':' + new Date().getTime()
+  const encryptData = encrypt(data)
+  verifyRequiredParams(workspaceId)
+  return {
+    code: statusCode.CREATED,
+    data: encryptData,
+    success: true,
+  }
+}
+
+exports.invited = async ({ userId, code }) => {
+  verifyRequiredParams(code)
+  const data = decrypt(code)
+  const [workspaceId, date] = data.split(':')
+  let startTime = new Date(date * 1000)
+  const deltaTime = new Date().getTime() - startTime.getTime() / 1000
+  const deltaMinute = deltaTime / 1000 / 60
+
+  if (deltaMinute < 60) {
+    const workspaceUserData = await dbErrorHandler(() =>
+      WorkspaceUserInfo.findOne({
+        workspaceId,
+        userId,
+      }),
+    )
+    if (!workspaceUserData) {
+      const createdWorkspaceUserData = await dbErrorHandler(() =>
+        WorkspaceUserInfo.create({ userId, workspaceId }),
+      )
+      return {
+        code: statusCode.CREATED,
+        data: createdWorkspaceUserData,
+        success: true,
+      }
+    } else {
+      return {
+        code: statusCode.NOT_MODIFIED,
+        success: false,
+      }
+    }
+  } else {
+    throw { status: statusCode.UNAUTHORIZED, message: resMessage.OUT_OF_VALUE }
   }
 }

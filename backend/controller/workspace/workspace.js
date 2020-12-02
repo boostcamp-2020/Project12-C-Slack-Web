@@ -18,6 +18,16 @@ exports.getWorkspaces = asyncWrapper(async (req, res, next) => {
 })
 
 exports.invite = (req, res, next) => {
-  console.log('req.user: ', req.user)
-  return res.status(200).json()
+  const { code, success, data } = service.invite({
+    ...req.body,
+  })
+  return res.status(code).json({ success, data })
 }
+
+exports.invited = asyncWrapper(async (req, res, next) => {
+  const { code, success, data } = await service.invited({
+    ...req.params,
+    userId: req.user.id,
+  })
+  return res.status(code).json({ success, data })
+})
