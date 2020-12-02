@@ -30,6 +30,7 @@ export default function GithubOAuth(Component, loginRequired) {
           })
         }
       })()
+      return () => setloading(false)
     }, [])
     return !loading && <Component {...props} />
   }

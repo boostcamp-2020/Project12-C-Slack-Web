@@ -26,6 +26,7 @@ export default function Auth(Component, loginRequired) {
           })
         }
       })()
+      return () => setloading(false)
     }, [])
     return !loading && <Component {...props} />
   }
