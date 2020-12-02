@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
+import { useRecoilValue } from 'recoil'
+import { workspace } from '../../store'
 import Modal from '../../atom/Modal'
 import Title from '../../atom/Title'
 import Icon from '../../atom/Icon'
@@ -9,15 +11,25 @@ import { CLOSE, HASHTAG, LOCK } from '../../constant/icon'
 import { debounce } from '../../util'
 import Request from '../../util/request'
 import { COLOR } from '../../constant/style'
+import ModalInputSection from '../ModalInputSection'
 
 const maxChannelName = 80
+const maxChannelDescription = 250
+
 const CreateChannelModal = ({ handleClose }) => {
+  const workspaceId = useRecoilValue(workspace)
   const [isPrivate, setPrivateOption] = useState(false)
   const [channelName, setChannelName] = useState('')
+  const [channelDescription, setChannelDescription] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
-  const checkDuplicateName = async () => {
-    if (await Request.GET('/api/channel/check-duplicate-name', channelName))
+  const checkDuplicateName = async title => {
+    if (
+      await Request.GET('/api/channel/check-duplicate-name', {
+        title,
+        workspaceId,
+      })
+    )
       setErrorMessage('That name is already taken by a channel, username')
     else setErrorMessage('')
   }
@@ -28,9 +40,13 @@ const CreateChannelModal = ({ handleClose }) => {
     })
   }
   const handleDebounce = useRef(debounce(checkDuplicateName, 1000)).current
-  const handleChange = (setter, debounce) => e => {
+  const handleName = (setter, debounce) => e => {
     setter(e.target.value)
-    if (debounce) debounce()
+    if (debounce) debounce(e.target.value)
+  }
+  const handleDescription = async e => {
+    // TODO emoji 추가할 수 있도록 변경해야 함.
+    setChannelDescription(e.target.value)
   }
   return (
     <Modal handleClose={handleClose}>
@@ -45,18 +61,28 @@ const CreateChannelModal = ({ handleClose }) => {
           Channels are where your team communicates. They’re best when organized
           around a topic — #marketing, for example.
         </div>
-        <strong>Name</strong>
-        {errorMessage}
-        <div>
+        <ModalInputSection name="Name" errorMessage={errorMessage}>
           <Input
             placeholder="e.g. plan-budget"
-            handleChange={handleChange(setChannelName, handleDebounce)}
+            handleChange={handleName(setChannelName, handleDebounce)}
             value={channelName}
             maxLength={maxChannelName}
           >
             <Icon icon={isPrivate ? LOCK : HASHTAG} padding="5px" />
           </Input>
-        </div>
+        </ModalInputSection>
+        <ModalInputSection
+          name="Description"
+          errorMessage={errorMessage}
+          optionalText="(optional)"
+          description={'What’s this channel about?'}
+        >
+          <Input
+            handleChange={handleDescription}
+            value={channelDescription}
+            maxLength={maxChannelDescription}
+          />
+        </ModalInputSection>
         <Button
           handleClick={submitChannelInfo}
           children="Create"
