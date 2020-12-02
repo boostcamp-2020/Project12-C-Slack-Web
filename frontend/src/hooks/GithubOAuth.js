@@ -26,7 +26,7 @@ export default function GithubOAuth(Component, loginRequired) {
           setloading(false)
         } catch (err) {
           toast.error('인증이 실패하였습니다', {
-            onClose: () => history.goBack(),
+            onClose: () => history.go(0),
           })
         }
       })()

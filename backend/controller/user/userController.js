@@ -42,10 +42,10 @@ exports.authCheck = (req, res) => {
   let token = req.signedCookies.token
   if (token) {
     try {
-      let decoded = jwt.verify(token, process.env.JWT_SECRET)
+      jwt.verify(token, process.env.JWT_SECRET)
       return res.sendStatus(200)
     } catch (err) {
-      return res.sendStatus(400)
+      return res.sendStatus(401)
     }
   } else {
     return res.sendStatus(204)

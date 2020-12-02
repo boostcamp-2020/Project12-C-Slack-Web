@@ -19,9 +19,10 @@ export default function Auth(Component, loginRequired) {
           }
           setloading(false)
         } catch (err) {
+          // 토큰이 만료된 경우
           await request.DELETE('/api/user/sign-out')
-          toast.error('잘못된 접근입니다.', {
-            onClose: () => history.goBack(),
+          toast.error('로그인이 필요합니다.', {
+            onClose: () => history.go(0),
           })
         }
       })()
