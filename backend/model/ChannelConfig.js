@@ -32,7 +32,6 @@ const channelConfigSchema = mongoose.Schema(
 channelConfigSchema.statics.getChannelHeaderInfo = async function (
   channelId,
   workspaceUserInfoId,
-  cb,
 ) {
   try {
     const channelConfig = this
@@ -100,15 +99,14 @@ channelConfigSchema.statics.getChannelHeaderInfo = async function (
         },
       },
     ])
-    cb(null, result)
+    return result
   } catch (err) {
-    return cb(err)
+    return err
   }
 }
 
 channelConfigSchema.statics.getChannelList = async function (
   workspaceUserInfoId,
-  cb,
 ) {
   try {
     const channelConfig = this
@@ -201,9 +199,9 @@ channelConfigSchema.statics.getChannelList = async function (
       { $unwind: '$channelId' },
     ])
 
-    cb(null, result)
+    return result
   } catch (err) {
-    return cb(err)
+    return err
   }
 }
 
