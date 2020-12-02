@@ -7,7 +7,15 @@ import { encrypt, decrypt } from '../util/encryption'
 
 exports.createWorkspace = async params => {
   verifyRequiredParams(params.creator, params.name, params.channelName)
-
+  const findedWorkspaceData = await dbErrorHandler(() =>
+    Workspace.findOne({ name: params.name }),
+  )
+  if (findedWorkspaceData) {
+    throw {
+      status: statusCode.BAD_REQUEST,
+      message: resMessage.ALREADY_X('이름'),
+    }
+  }
   const workspaceData = await dbErrorHandler(() => Workspace.create(params))
   const workspaceUserData = await dbErrorHandler(() =>
     WorkspaceUserInfo.create({
