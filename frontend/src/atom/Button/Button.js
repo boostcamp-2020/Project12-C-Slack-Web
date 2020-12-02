@@ -22,14 +22,13 @@ const StyledButton = styled.button`
   border-radius: 4px;
   outline: none;
   color: ${({ type, disabled }) => {
-    if (disabled) return COLOR.LIGHT_GRAY
-    if (type === 'transparent') return COLOR.LIGHT_GRAY
-    if (type === 'icon') return COLOR.TRANSPARENT_GRAY
+    if (disabled) return COLOR.GRAY
+    if (type === 'transparent') return COLOR.GRAY
     return COLOR.WHITE
   }};
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   background-color: ${({ type, disabled }) => {
-    if (disabled) return COLOR.GRAY
+    if (disabled) return COLOR.LIGHT_GRAY
     if (type === 'transparent') return 'transparent'
     if (type === 'icon') return 'transparent'
     return COLOR.GREEN
@@ -48,8 +47,17 @@ const StyledButton = styled.button`
       if (type === 'default')
         return `background: ${COLOR.HOVER_GREEN}; box-shadow: 0 1px 4px rgba(0,0,0,0.3);`
       if (type === 'icon')
-        return `background: ${COLOR.HOVER_GRAY}; box-shadow:0 1px 3px 0 rgba(0,0,0, 0.08); color: ${COLOR.DARK_GRAY}`
+        return `background: ${COLOR.HOVER_GRAY}; 
+                box-shadow:0 1px 3px 0 rgba(0,0,0, 0.08);`
     }}
   }
+  ${({ type }) => {
+    if (type === 'icon')
+      return `
+        &:hover i svg {
+          color: ${COLOR.ICON_HOVER};
+        }
+      `
+  }}
 `
 export default Button

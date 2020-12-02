@@ -42,6 +42,9 @@ const StyledInputWrapper = styled.div`
   padding: 5px;
 `
 const StyledMaxLength = styled.div`
+  font-size: 18px;
+  line-height: 1.33334;
+  font-weight: 400;
   display: none;
   margin-left: 10px;
   color: ${COLOR.DARK_GRAY};
