@@ -259,7 +259,6 @@ const updateChannelSection = async (req, res, next) => {
 const createChannel = asyncWrapper(async (req, res) => {
   const { code, success, data } = await service.createChannel({
     ...req.body,
-    creator: req.user,
   })
   return res.status(code).json({ success, data })
 })
