@@ -27,7 +27,9 @@ const StyledErrorMessage = styled.span`
   word-break: break-all;
 `
 const StyledOptionalText = styled.span`
+  display: inline-block;
   font-size: 15px;
+  color: ${COLOR.GRAY};
 `
 const StyledDescription = styled.div`
   margin: 5px 0;

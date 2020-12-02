@@ -10,16 +10,17 @@ function Input({
   maxLength,
 }) {
   return (
-    <StyledInputWrapper tabIndex="0">
+    <StyledInputWrapper tabIndex="-1">
       {children}
       <StyledInput
         placeholder={placeholder}
         onChange={handleChange}
         onKeyDown={handleKey}
         value={value}
+        tabIndex="0"
       />
       {maxLength && (
-        <StyledMaxLength>{maxLength - value.length}</StyledMaxLength>
+        <StyledMaxLength>{maxLength - value?.length}</StyledMaxLength>
       )}
     </StyledInputWrapper>
   )
