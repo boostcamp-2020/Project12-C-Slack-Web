@@ -5,7 +5,7 @@ import resMessage from '../util/resMessage'
 import { verifyRequiredParams, dbErrorHandler } from '../util/'
 import { encrypt, decrypt } from '../util/encryption'
 
-exports.createWorkspace = async params => {
+const createWorkspace = async params => {
   verifyRequiredParams(params.creator, params.name, params.channelName)
   const findedWorkspaceData = await dbErrorHandler(() =>
     Workspace.findOne({ name: params.name }),
@@ -17,7 +17,7 @@ exports.createWorkspace = async params => {
     }
   }
   const workspaceData = await dbErrorHandler(() => Workspace.create(params))
-  const workspaceUserData = await dbErrorHandler(() =>
+  await dbErrorHandler(() =>
     WorkspaceUserInfo.create({
       userId: params.creator,
       workspaceId: workspaceData._id,
@@ -25,12 +25,12 @@ exports.createWorkspace = async params => {
   )
   return {
     code: statusCode.CREATED,
-    data: { workspace: workspaceData, workspaceUser: workspaceUserData },
+    data: invite({ workspaceId: workspaceData._id }),
     success: true,
   }
 }
 
-exports.getWorkspaces = async ({ userId }) => {
+const getWorkspaces = async ({ userId }) => {
   verifyRequiredParams(userId)
 
   const userInformations = await dbErrorHandler(() =>
@@ -50,7 +50,7 @@ exports.getWorkspaces = async ({ userId }) => {
   }
 }
 
-exports.invite = ({ workspaceId }) => {
+const invite = ({ workspaceId }) => {
   const data = workspaceId + ':' + new Date().getTime()
   const encryptData = encrypt(data)
   verifyRequiredParams(workspaceId)
@@ -61,7 +61,7 @@ exports.invite = ({ workspaceId }) => {
   }
 }
 
-exports.invited = async ({ userId, code }) => {
+const invited = async ({ userId, code }) => {
   verifyRequiredParams(code)
   const data = decrypt(code)
   const [workspaceId, date] = data.split(':')
@@ -95,3 +95,5 @@ exports.invited = async ({ userId, code }) => {
     throw { status: statusCode.UNAUTHORIZED, message: resMessage.OUT_OF_VALUE }
   }
 }
+
+module.exports = { createWorkspace, getWorkspaces, invite, invited }
