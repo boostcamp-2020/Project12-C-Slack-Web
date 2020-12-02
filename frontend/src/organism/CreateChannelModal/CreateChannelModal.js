@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
+import { useHistory } from 'react-router-dom'
+
 import { workspace } from '../../store'
 import Modal from '../../atom/Modal'
 import Title from '../../atom/Title'
@@ -12,8 +14,9 @@ import { debounce } from '../../util'
 import Request from '../../util/request'
 import { COLOR } from '../../constant/style'
 import ModalInputSection from '../ModalInputSection'
-import { checkDuplicateChannelName } from '../../api/channel'
+import { checkDuplicateChannelName, createChannel } from '../../api/channel'
 import ToggleButton from '../../atom/Button/ToggleButton'
+
 const MAX_CHANNEL_NAME = 80
 const MAX_CHANNEL_DESCRIPTION = 250
 const TIME_TO_WAIT_DEBOUNCE = 700
@@ -25,6 +28,7 @@ const DUPLICATED_NAME_ERROR =
   'That name is already taken by a channel, username'
 
 const CreateChannelModal = ({ handleClose }) => {
+  const history = useHistory()
   const { workspaceId, workspaceUseInfoId } = useRecoilValue(workspace)
   const [isPrivate, setPrivateOption] = useState(false)
   const [channelName, setChannelName] = useState('')
@@ -45,14 +49,15 @@ const CreateChannelModal = ({ handleClose }) => {
   }
 
   const submitChannelInfo = async () => {
-    const channelId = await Request.POST('/api/channel', {
+    const channelId = await createChannel({
       title: channelName,
       creator: workspaceUseInfoId,
       channelType: isPrivate ? 0 : 1,
       description: channelDescription,
       workspaceId,
     })
-    console.log(channelId)
+    history.push(`/${workspaceId}/${channelId}`)
+    handleClose()
   }
 
   const handleDebounce = useRef(
@@ -76,7 +81,9 @@ const CreateChannelModal = ({ handleClose }) => {
       setDescriptionError(MAXIMUM_DESCRIPTION_LENGH_ERROR)
     else setDescriptionError('')
   }
-
+  const handlePrivateOption = () => {
+    setPrivateOption(!isPrivate)
+  }
   return (
     <Modal handleClose={handleClose}>
       <StyledModalHeader>
@@ -120,10 +127,7 @@ const CreateChannelModal = ({ handleClose }) => {
               : 'When a channel is set to private, it can only be viewed or joined by invitation.'
           }
         >
-          <ToggleButton
-            handleChange={() => setPrivateOption(!isPrivate)}
-            value={isPrivate}
-          />
+          <ToggleButton handleChange={handlePrivateOption} value={isPrivate} />
         </ModalInputSection>
         <Button
           handleClick={submitChannelInfo}
