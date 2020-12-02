@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId
 const Schema = mongoose.Schema
 
 const channelConfigSchema = mongoose.Schema(
@@ -21,9 +22,8 @@ const channelConfigSchema = mongoose.Schema(
     notification: {
       type: Number,
     },
-    sectionId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Section',
+    sectionName: {
+      type: String,
     },
   },
   { timestamps: true },
