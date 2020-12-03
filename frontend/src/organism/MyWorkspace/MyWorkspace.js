@@ -14,7 +14,9 @@ const MyWorkspace = ({ workspaceName, path }) => {
       <StyleDiv>
         <StyledDivLeft>
           <Icon icon={ADDRESSBOOK} size="48px" />
-          <MainDescription fontSize="18px">{workspaceName}</MainDescription>
+          <MainDescription fontSize="18px" marginLeft="8px">
+            {workspaceName}
+          </MainDescription>
         </StyledDivLeft>
         <Button
           type="transparent"

@@ -27,7 +27,7 @@ const MyWorkspaceSection = () => {
   return (
     <>
       <section>
-        <MainDescription marginLeft="0px">내 워크스페이스</MainDescription>
+        <MainDescription>내 워크스페이스</MainDescription>
         {createMyWorkspace()}
       </section>
     </>
