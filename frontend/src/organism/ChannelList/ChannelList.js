@@ -1,58 +1,47 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
-import request from '../../util/request'
 import styled from 'styled-components'
 import { toast } from 'react-toastify'
 import SectionLabel from '../SectionLabel'
+import { useRecoilState } from 'recoil'
+
+import workspaceUserInfoAtom from '../../recoil/workspaceUserInfoAtom'
+import useChannelList from '../../hooks/useChannelList'
 
 function ChannelList(props) {
-  const [channels, setChannels] = useState([])
   const [list, setList] = useState([])
+  const [Channels, setChannels] = useChannelList()
+  const [userInfo, setUserInfo] = useRecoilState(workspaceUserInfoAtom)
+
   const history = useHistory()
-  useEffect(() => {
-    ;(async () => {
-      try {
-        const data = await request.GET(
-          '/api/channel?workspaceUserInfoId=5fc4fe427b2d5f6ae44dc15e',
-        )
 
-        if (data.data.success) setChannels(data.data.result)
-        else throw '채널 목록 요청 오류'
-      } catch (err) {
-        toast.error('채널 목록을 가져오는데 오류가 발생했습니다.', {
-          onClose: () => history.goBack(),
+  let sectionMap = new Map()
+
+  useEffect(() => {
+    if (Channels === undefined) return
+    if (Object.keys(Channels).length !== 0) {
+      if (userInfo.sections)
+        userInfo.sections.map((sectionName, idx) => {
+          sectionMap.set(sectionName, [])
         })
-      }
-    })()
-  }, [])
+      SectionOrganizing()
+    }
+  }, [Channels])
 
-  useEffect(() => {
-    SectionOrganizing()
-  }, [channels])
-
-  let sections = new Map()
   const SectionOrganizing = () => {
     try {
-      channels.map((channel, index) => {
-        if (channel.sectionId === null && channel.channelType === 2) {
-          if (sections.has('Direct messages')) {
-            let value = sections.get('Direct messages')
-            value.push(channel)
-            sections.set('Direct messages', value)
+      Channels.map((channel, index) => {
+        if (channel.sectionName == null) {
+          if (channel.channelId.channelType === 2) {
+            checkHasKeyAndSetKeyInMap(sectionMap, 'Direct messages', channel)
           } else {
-            sections.set('Direct messages', [channel])
+            checkHasKeyAndSetKeyInMap(sectionMap, 'Channels', channel)
           }
         } else {
-          if (sections.has(channel.sectionId)) {
-            let value = sections.get(channel.sectionId)
-            value.push(channel)
-            sections.set(channel.sectionId, value)
-          } else {
-            sections.set(channel.sectionId, [channel])
-          }
+          checkHasKeyAndSetKeyInMap(sectionMap, channel.sectionName, channel)
         }
       })
-      setList([...sections])
+      setList([...sectionMap])
     } catch (err) {
       toast.error('채널 목록 설정 오류가 발생했습니다.', {
         onClose: () => history.goBack(),
@@ -64,13 +53,24 @@ function ChannelList(props) {
     return (
       <SectionLabel
         key={index}
-        sectionName={section[0] === null ? 'Channels' : section[0]}
+        sectionName={section[0]}
         lists={section[1]}
+        {...props}
       ></SectionLabel>
     )
   })
 
   return <ChannelListStyle>{renderChannelSectionList}</ChannelListStyle>
+}
+
+const checkHasKeyAndSetKeyInMap = (map, key, data) => {
+  if (map.has(key)) {
+    let value = map.get(key)
+    value.push(data)
+    map.set(key, value)
+  } else {
+    map.set(key, [data])
+  }
 }
 
 const ChannelListStyle = styled.div`
