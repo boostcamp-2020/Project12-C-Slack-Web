@@ -71,6 +71,8 @@ paths:
                   inviteCode:
                     type: string
                     description: workspace url
+                  workspaceId:
+                    type: string
           description: success response
         '400':
           content:

@@ -25,7 +25,10 @@ const createWorkspace = async params => {
   )
   return {
     code: statusCode.CREATED,
-    data: invite({ workspaceId: workspaceData._id }),
+    data: {
+      inviteCode: invite({ workspaceId: workspaceData._id }),
+      workspaceId: workspaceData._id,
+    },
     success: true,
   }
 }
