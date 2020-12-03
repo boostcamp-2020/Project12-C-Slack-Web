@@ -25,6 +25,7 @@ const chatSchema = mongoose.Schema(
     },
     isDelete: {
       type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },
@@ -53,10 +54,11 @@ chatSchema.statics.getChatMessages = ({ channelId, filter = {} }) =>
                 { $match: { $expr: { $eq: ['$_id', '$$creator'] } } },
                 { $project: { profileUrl: 1, displayName: 1, _id: 1 } },
               ],
-              as: 'replyUser',
+              as: 'userInfo',
             },
           },
           { $project: { pinned: 0, contents: 0, channel: 0, parentId: 0 } },
+          { $unwind: '$userInfo' },
         ],
         as: 'reply',
       },
@@ -64,14 +66,18 @@ chatSchema.statics.getChatMessages = ({ channelId, filter = {} }) =>
     {
       $lookup: {
         from: 'workspaceuserinfos',
-        localField: 'creator',
-        foreignField: '_id',
+        let: { creator: '$creator' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$_id', '$$creator'] } } },
+          { $project: { profileUrl: 1, displayName: 1, _id: 1 } },
+        ],
         as: 'userInfo',
       },
     },
+    { $unwind: '$userInfo' },
+
     { $limit: MAX_CHAT_MESSAGE },
   ])
 
 const Chat = mongoose.model('Chat', chatSchema)
-
 module.exports = { Chat }

@@ -969,17 +969,24 @@ paths:
                               createdAt:
                                 format: date-time
                                 type: string
-                              replyUser:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    _id:
-                                      type: string
-                                    displayName:
-                                      type: string
-                                    profileUrl:
-                                      type: string
+                              userInfo:
+                                type: object
+                                properties:
+                                  _id:
+                                    type: string
+                                  displayName:
+                                    type: string
+                                  profileUrl:
+                                    type: string
+                        userInfo:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                            displayName:
+                              type: string
+                            profileUrl:
+                              type: string
           description: success response
         '400':
           content:
