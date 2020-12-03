@@ -23,7 +23,7 @@ const StyledP = styled.p`
     return marginBottom ? marginBottom : '28px'
   }};
   margin-left: ${({ marginLeft }) => {
-    return marginLeft ? marginLeft : '8px'
+    return marginLeft ? marginLeft : '0px'
   }};
 `
 

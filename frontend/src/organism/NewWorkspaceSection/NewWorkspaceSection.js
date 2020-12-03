@@ -10,8 +10,8 @@ const NewWorkspaceSection = ({ handler }) => {
   return (
     <>
       <StyledSection>
-        <MainDescription marginLeft="0px">새 워크스페이스 생성</MainDescription>
-        <Description marginLeft="0px">
+        <MainDescription>새 워크스페이스 생성</MainDescription>
+        <Description>
           다른 팀을 위해 새로운 워크스페이스를 생성하려고 하나요?
         </Description>
         <Button
