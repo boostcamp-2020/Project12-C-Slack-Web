@@ -18,7 +18,7 @@ const MyWorkspaceSection = () => {
         <MyWorkspace
           key={'MyWorkspace' + index}
           workspaceName={data.name}
-          path="/workspace"
+          path={'/workspace/' + data._id}
         />
       )
     })
