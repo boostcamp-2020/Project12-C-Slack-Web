@@ -38,7 +38,7 @@ const checkDuplicate = async ({ title, workspaceId }) => {
 
 const getChannelListDB = async ({ workspaceUserInfoId }) => {
   verifyRequiredParams(workspaceUserInfoId)
-  const [userInfo] = await Promise.all([
+  const [userInfo, channelConfig] = await Promise.all([
     dbErrorHandler(() =>
       WorkspaceUserInfo.find(
         {
@@ -47,9 +47,6 @@ const getChannelListDB = async ({ workspaceUserInfoId }) => {
         { _id: 1, displayName: 1, profileUrl: 1, isActive: 1, sections: 1 },
       ).lean(),
     ),
-  ])
-
-  const [channelConfig] = await Promise.all([
     dbErrorHandler(() => ChannelConfig.getChannelList(workspaceUserInfoId)),
   ])
 
@@ -62,11 +59,10 @@ const getChannelListDB = async ({ workspaceUserInfoId }) => {
 
 const getChannelHeaderInfoDB = async ({ channelId, workspaceUserInfoId }) => {
   verifyRequiredParams(channelId, workspaceUserInfoId)
-  const [[result]] = await Promise.all([
-    dbErrorHandler(() =>
-      ChannelConfig.getChannelHeaderInfo(channelId, workspaceUserInfoId),
-    ),
-  ])
+
+  const [result] = await dbErrorHandler(() =>
+    ChannelConfig.getChannelHeaderInfo(channelId, workspaceUserInfoId),
+  )
 
   return {
     code: statusCode.OK,
@@ -78,8 +74,8 @@ const getChannelHeaderInfoDB = async ({ channelId, workspaceUserInfoId }) => {
 const inviteUserDB = async ({ channelId, workspaceUserInfoId }) => {
   verifyRequiredParams(channelId, workspaceUserInfoId)
   await Promise.all([
-    dbErrorHandler(() =>
-      workspaceUserInfoId.forEach(el => {
+    workspaceUserInfoId.forEach(el => {
+      dbErrorHandler(() => {
         const channelConfig = ChannelConfig({
           workspaceUserInfoId: el,
           channelId,
@@ -88,8 +84,8 @@ const inviteUserDB = async ({ channelId, workspaceUserInfoId }) => {
           sectionId: null,
         })
         channelConfig.save()
-      }),
-    ),
+      })
+    }),
   ])
 
   return {
@@ -100,17 +96,15 @@ const inviteUserDB = async ({ channelId, workspaceUserInfoId }) => {
 
 const muteChannelDB = async ({ channelId, workspaceUserInfoId, isMute }) => {
   verifyRequiredParams(channelId, workspaceUserInfoId, isMute)
-  await Promise.all([
-    dbErrorHandler(() =>
-      ChannelConfig.updateOne(
-        {
-          workspaceUserInfoId,
-          channelId,
-        },
-        { isMute: isMute },
-      ),
+  await dbErrorHandler(() =>
+    ChannelConfig.updateOne(
+      {
+        workspaceUserInfoId,
+        channelId,
+      },
+      { isMute: isMute },
     ),
-  ])
+  )
 
   return {
     code: statusCode.OK,
@@ -124,17 +118,15 @@ const updateChannelSectionDB = async ({
   sectionName,
 }) => {
   verifyRequiredParams(channelId, workspaceUserInfoId)
-  await Promise.all([
-    dbErrorHandler(() =>
-      ChannelConfig.updateOne(
-        {
-          workspaceUserInfoId,
-          channelId,
-        },
-        { sectionName: sectionName },
-      ),
+  await dbErrorHandler(() =>
+    ChannelConfig.updateOne(
+      {
+        workspaceUserInfoId,
+        channelId,
+      },
+      { sectionName: sectionName },
     ),
-  ])
+  )
 
   return {
     code: statusCode.OK,

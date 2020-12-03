@@ -1,75 +1,54 @@
 import { asyncWrapper } from '../../util'
 import service from '../../service/channel'
-import resMessage from '../../util/resMessage'
-import statusCode from '../../util/statusCode'
-import { WorkspaceUserInfo } from '../../model/WorkspaceUserInfo'
-import { ChannelConfig } from '../../model/ChannelConfig'
 
-const getChannelList = async (req, res, next) => {
+const getChannelList = asyncWrapper(async (req, res) => {
   const workspaceUserInfoId = req.query.workspaceUserInfoId
   const { code, success, result } = await service.getChannelListDB({
     workspaceUserInfoId,
   })
   return res.status(code).json({ success, result })
-}
+})
 
-const getChannelHeaderInfo = async (req, res, next) => {
-  try {
-    const channelId = req.params.channelId
-    const workspaceUserInfoId = req.query.workspaceUserInfoId
-    const { code, success, result } = await service.getChannelHeaderInfoDB({
-      channelId,
-      workspaceUserInfoId,
-    })
-    return res.status(code).json({ success, result })
-  } catch (err) {
-    next(err)
-  }
-}
+const getChannelHeaderInfo = asyncWrapper(async (req, res) => {
+  const channelId = req.params.channelId
+  const workspaceUserInfoId = req.query.workspaceUserInfoId
+  const { code, success, result } = await service.getChannelHeaderInfoDB({
+    channelId,
+    workspaceUserInfoId,
+  })
+  return res.status(code).json({ success, result })
+})
 
-const inviteUser = async (req, res, next) => {
-  try {
-    const workspaceUserInfoId = req.body.workspaceUserInfoId
-    const channelId = req.body.channelId
-    const { code, success } = await service.inviteUserDB({
-      channelId,
-      workspaceUserInfoId,
-    })
-    return res.status(code).json({ success })
-  } catch (err) {
-    next(err)
-  }
-}
+const inviteUser = asyncWrapper(async (req, res) => {
+  const workspaceUserInfoId = req.body.workspaceUserInfoId
+  const channelId = req.body.channelId
+  const { code, success } = await service.inviteUserDB({
+    channelId,
+    workspaceUserInfoId,
+  })
+  return res.status(code).json({ success })
+})
 
-const muteChannel = async (req, res, next) => {
-  try {
-    const { isMute, channelId, workspaceUserInfoId } = req.body
-    const { code, success } = await service.muteChannelDB({
-      channelId,
-      workspaceUserInfoId,
-      isMute,
-    })
-    return res.status(code).json({ success })
-  } catch (err) {
-    next(err)
-  }
-}
+const muteChannel = asyncWrapper(async (req, res) => {
+  const { isMute, channelId, workspaceUserInfoId } = req.body
+  const { code, success } = await service.muteChannelDB({
+    channelId,
+    workspaceUserInfoId,
+    isMute,
+  })
+  return res.status(code).json({ success })
+})
 
-const updateChannelSection = async (req, res, next) => {
-  try {
-    const { sectionName, channelId, workspaceUserInfoId } = req.body
+const updateChannelSection = asyncWrapper(async (req, res) => {
+  const { sectionName, channelId, workspaceUserInfoId } = req.body
 
-    const { code, success } = await service.updateChannelSectionDB({
-      channelId,
-      workspaceUserInfoId,
-      sectionName,
-    })
-    return res.status(code).json({ success })
-  } catch (err) {
-    console.log(err)
-    next(err)
-  }
-}
+  const { code, success } = await service.updateChannelSectionDB({
+    channelId,
+    workspaceUserInfoId,
+    sectionName,
+  })
+  return res.status(code).json({ success })
+})
 
 const createChannel = asyncWrapper(async (req, res) => {
   const { code, success, data } = await service.createChannel({
