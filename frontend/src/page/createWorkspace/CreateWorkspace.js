@@ -34,6 +34,7 @@ const StyledMain = styled.main`
 const MainSection = styled.section`
   display: inline-block;
   width: 100%;
+  max-width: 600px;
 `
 
 export default CreateWorkspace
