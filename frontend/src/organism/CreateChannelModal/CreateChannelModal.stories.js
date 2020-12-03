@@ -1,6 +1,7 @@
 import React from 'react'
 import CreateChannelModal from './CreateChannelModal'
 import { storiesOf } from '@storybook/react'
+
 const portal = document.createElement('div')
 portal.setAttribute('id', 'portal')
 document.querySelector('body').appendChild(portal)
@@ -11,10 +12,10 @@ const TestComponent = () => {
     setVisible(!visible)
   }
   return (
-    <div>
+    <>
       <button onClick={handleClose}>Open Modal</button>
       {visible ? <CreateChannelModal handleClose={handleClose} /> : ''}
-    </div>
+    </>
   )
 }
 stories.add('CreateChannelModal', () => <TestComponent />)
