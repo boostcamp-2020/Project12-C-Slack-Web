@@ -12,6 +12,7 @@ import Auth from './hooks/Auth'
 import GithubOAuth from './hooks/GithubOAuth'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import CreateWorkspace from './page/createWorkspace/CreateWorkspace'
 
 const App = () => {
   return (
@@ -26,6 +27,11 @@ const App = () => {
           exact
           path="/select-workspace"
           component={Auth(SelectWorkspace, true)}
+        />
+        <Route
+          exact
+          path="/create-workspace"
+          component={Auth(CreateWorkspace, true)}
         />
         <Route
           path="/workspace/:channelId"
