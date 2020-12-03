@@ -44,6 +44,9 @@ const workspaceUserInfoSchema = mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: 'Workspace',
     },
+    sections: {
+      type: Schema.Types.Array,
+    },
   },
   { timestamps: true },
 )

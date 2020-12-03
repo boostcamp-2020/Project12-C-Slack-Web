@@ -10,29 +10,35 @@ import LoginPage from './page/login/Login'
 import SelectWorkspace from './page/selectWorkspace/SelectWorkspace'
 import Auth from './hooks/Auth'
 import GithubOAuth from './hooks/GithubOAuth'
+import { RecoilRoot } from 'recoil'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 const App = () => {
   return (
-    <React.StrictMode>
-      <ToastContainer />
-      <GlobalStyle />
-      <BrowserRouter>
-        <Route exact path="/" component={Channel} />
-        <Route exact path="/login" component={Auth(LoginPage, false)} />
-        <Route path="/github-oauth" component={GithubOAuth(LoginPage, false)} />
-        <Route
-          exact
-          path="/select-workspace"
-          component={Auth(SelectWorkspace, true)}
-        />
-        <Route
-          path="/workspace/:channelId"
-          component={Auth(WorkspacePage, false)}
-        />
-      </BrowserRouter>
-    </React.StrictMode>
+    <RecoilRoot>
+      <React.StrictMode>
+        <ToastContainer />
+        <GlobalStyle />
+        <BrowserRouter>
+          <Route exact path="/" component={Channel} />
+          <Route exact path="/login" component={Auth(LoginPage, false)} />
+          <Route
+            path="/github-oauth"
+            component={GithubOAuth(LoginPage, false)}
+          />
+          <Route
+            exact
+            path="/select-workspace"
+            component={Auth(SelectWorkspace, true)}
+          />
+          <Route
+            path="/workspace/:channelId"
+            component={Auth(WorkspacePage, false)}
+          />
+        </BrowserRouter>
+      </React.StrictMode>
+    </RecoilRoot>
   )
 }
 
