@@ -26,14 +26,10 @@ const useChannelList = () => {
   }
 
   useEffect(() => {
-    if (Object.keys(Channels).length === 0) {
-      ;(async () => {
-        await getList()
-      })()
-    }
+    if (Object.keys(Channels).length === 0) getList()
   }, [])
 
-  const updateChannelList = async () => await getList()
+  const updateChannelList = async () => getList()
 
   return [Channels, updateChannelList]
 }
