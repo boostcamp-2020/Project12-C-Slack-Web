@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 
 import { workspace } from '../../store'
 import Modal from '../../atom/Modal'
@@ -29,13 +29,13 @@ const DUPLICATED_NAME_ERROR =
 
 const CreateChannelModal = ({ handleClose }) => {
   const history = useHistory()
-  const { workspaceId, workspaceUseInfoId } = useRecoilValue(workspace)
+  const { workspaceId } = useParams()
+  const { workspaceUseInfoId } = useRecoilValue(workspace)
   const [isPrivate, setPrivateOption] = useState(false)
   const [channelName, setChannelName] = useState('')
   const [channelDescription, setChannelDescription] = useState('')
   const [nameError, setNameError] = useState('')
   const [descriptionError, setDescriptionError] = useState('')
-
   const checkDuplicateName = async title => {
     if (
       title &&
