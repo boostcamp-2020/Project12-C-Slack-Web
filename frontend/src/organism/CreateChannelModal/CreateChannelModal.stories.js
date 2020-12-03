@@ -1,7 +1,7 @@
 import React from 'react'
-import { RecoilRoot } from 'recoil'
 import CreateChannelModal from './CreateChannelModal'
 import { storiesOf } from '@storybook/react'
+
 const portal = document.createElement('div')
 portal.setAttribute('id', 'portal')
 document.querySelector('body').appendChild(portal)
@@ -12,10 +12,10 @@ const TestComponent = () => {
     setVisible(!visible)
   }
   return (
-    <RecoilRoot>
+    <>
       <button onClick={handleClose}>Open Modal</button>
       {visible ? <CreateChannelModal handleClose={handleClose} /> : ''}
-    </RecoilRoot>
+    </>
   )
 }
 stories.add('CreateChannelModal', () => <TestComponent />)
