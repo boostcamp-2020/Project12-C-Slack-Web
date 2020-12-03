@@ -1,13 +1,14 @@
 const express = require('express')
 const router = express.Router()
 const controller = require('./channel')
+const { Auth } = require('../../middleware/auth')
 
 /* GET /api/channle  get channel list  */
 router.get('/', controller.getChannelList)
 
 router.get('/check-duplicate-name', controller.checkDuplicate)
 
-router.post('/', controller.createChannel)
+router.post('/', Auth, controller.createChannel)
 
 /* GET /api/channle/{channelId}/info  get channel header info  */
 router.get('/:channelId/info', controller.getChannelHeaderInfo)

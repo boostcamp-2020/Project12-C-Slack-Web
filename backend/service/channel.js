@@ -1,5 +1,6 @@
 import { Channel } from '../model/Channel'
 import { WorkspaceUserInfo } from '../model/WorkspaceUserInfo'
+import { ChannelConfig } from '../model/ChannelConfig'
 import statusCode from '../util/statusCode'
 import resMessage from '../util/resMessage'
 import { verifyRequiredParams, dbErrorHandler } from '../util'
@@ -35,4 +36,110 @@ const checkDuplicate = async ({ title, workspaceId }) => {
   }
 }
 
-module.exports = { createChannel, checkDuplicate }
+const getChannelListDB = async ({ workspaceUserInfoId }) => {
+  verifyRequiredParams(workspaceUserInfoId)
+  const [userInfo, channelConfig] = await Promise.all([
+    dbErrorHandler(() =>
+      WorkspaceUserInfo.find(
+        {
+          _id: workspaceUserInfoId,
+        },
+        { _id: 1, displayName: 1, profileUrl: 1, isActive: 1, sections: 1 },
+      ).lean(),
+    ),
+    dbErrorHandler(() => ChannelConfig.getChannelList(workspaceUserInfoId)),
+  ])
+
+  return {
+    code: statusCode.OK,
+    result: { channelConfig, userInfo },
+    success: true,
+  }
+}
+
+const getChannelHeaderInfoDB = async ({ channelId, workspaceUserInfoId }) => {
+  verifyRequiredParams(channelId, workspaceUserInfoId)
+
+  const [result] = await dbErrorHandler(() =>
+    ChannelConfig.getChannelHeaderInfo(channelId, workspaceUserInfoId),
+  )
+
+  return {
+    code: statusCode.OK,
+    result,
+    success: true,
+  }
+}
+
+const inviteUserDB = async ({ channelId, workspaceUserInfoId }) => {
+  verifyRequiredParams(channelId, workspaceUserInfoId)
+  await Promise.all([
+    workspaceUserInfoId.forEach(el => {
+      dbErrorHandler(() => {
+        const channelConfig = ChannelConfig({
+          workspaceUserInfoId: el,
+          channelId,
+          isMute: false,
+          notification: 0,
+          sectionId: null,
+        })
+        channelConfig.save()
+      })
+    }),
+  ])
+
+  return {
+    code: statusCode.OK,
+    success: true,
+  }
+}
+
+const muteChannelDB = async ({ channelId, workspaceUserInfoId, isMute }) => {
+  verifyRequiredParams(channelId, workspaceUserInfoId, isMute)
+  await dbErrorHandler(() =>
+    ChannelConfig.updateOne(
+      {
+        workspaceUserInfoId,
+        channelId,
+      },
+      { isMute: isMute },
+    ),
+  )
+
+  return {
+    code: statusCode.OK,
+    success: true,
+  }
+}
+
+const updateChannelSectionDB = async ({
+  channelId,
+  workspaceUserInfoId,
+  sectionName,
+}) => {
+  verifyRequiredParams(channelId, workspaceUserInfoId)
+  await dbErrorHandler(() =>
+    ChannelConfig.updateOne(
+      {
+        workspaceUserInfoId,
+        channelId,
+      },
+      { sectionName: sectionName },
+    ),
+  )
+
+  return {
+    code: statusCode.OK,
+    success: true,
+  }
+}
+
+module.exports = {
+  createChannel,
+  checkDuplicate,
+  getChannelListDB,
+  getChannelHeaderInfoDB,
+  inviteUserDB,
+  muteChannelDB,
+  updateChannelSectionDB,
+}
