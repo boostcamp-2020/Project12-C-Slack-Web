@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const ObjectId = mongoose.Types.ObjectId
 const Schema = mongoose.Schema
+import { MAX_CHAT_MESSAGE } from '../util/constant'
 
 const chatSchema = mongoose.Schema(
   {
@@ -68,7 +69,7 @@ chatSchema.statics.getChatMessages = ({ channelId, filter = {} }) =>
         as: 'userInfo',
       },
     },
-    { $limit: 20 },
+    { $limit: MAX_CHAT_MESSAGE },
   ])
 
 const Chat = mongoose.model('Chat', chatSchema)
