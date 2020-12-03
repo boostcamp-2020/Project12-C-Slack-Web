@@ -13,6 +13,9 @@ const MyWorkspaceSection = () => {
   }, [])
 
   const createMyWorkspace = () => {
+    if (!workspaceData) {
+      return <div></div>
+    }
     return workspaceData.map((data, index) => {
       return (
         <MyWorkspace
