@@ -1,12 +1,12 @@
 import React from 'react'
-import WorkspaceSelect from './SelectWorkspace'
+import SelectWorkspace from './SelectWorkspace'
 
 export default {
-  title: 'Page/WorkspaceSelect',
-  component: WorkspaceSelect,
+  title: 'Page/SelectWorkspace',
+  component: SelectWorkspace,
 }
 
-const Template = args => <WorkspaceSelect {...args} />
+const Template = args => <SelectWorkspace {...args} />
 
-export const defaultWorkspaceSelect = Template.bind({})
-defaultWorkspaceSelect.args = {}
+export const defaultSelectWorkspace = Template.bind({})
+defaultSelectWorkspace.args = {}

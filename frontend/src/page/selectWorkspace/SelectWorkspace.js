@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import NewWorkspaceSection from '../../organism/NewWorkspaceSection'
 import MyWorkspaceSection from '../../organism/MyWorkspaceSection'
 
-const WorkspaceSelect = () => {
+const SelectWorkspace = () => {
   return (
     <>
       <StyledMain>
@@ -25,4 +25,4 @@ const MainSection = styled.section`
   display: inline-block;
 `
 
-export default WorkspaceSelect
+export default SelectWorkspace
