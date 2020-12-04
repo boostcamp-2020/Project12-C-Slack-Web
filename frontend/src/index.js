@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { createGlobalStyle } from 'styled-components'
 import './index.css'
-import Channel from './page/channel/Channel'
 import WorkspacePage from './page/WorkspacePage'
 import { BrowserRouter, Route } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
@@ -22,7 +21,7 @@ const App = () => {
         <ToastContainer />
         <GlobalStyle />
         <BrowserRouter>
-          <Route exact path="/" component={Channel} />
+          <Route exact path="/" component={Auth(SelectWorkspace, true)} />
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route
             path="/github-oauth"
@@ -30,18 +29,10 @@ const App = () => {
           />
           <Route
             exact
-            path="/select-workspace"
-            component={Auth(SelectWorkspace, true)}
-          />
-          <Route
-            exact
             path="/create-workspace"
             component={Auth(CreateWorkspace, true)}
           />
-          <Route
-            path="/workspace/:channelId"
-            component={Auth(WorkspacePage, false)}
-          />
+          <Route path="/workspace/:workspaceId" component={WorkspacePage} />
         </BrowserRouter>
       </RecoilRoot>
     </React.StrictMode>

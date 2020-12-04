@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import request from '../../util/request'
 import styled from 'styled-components'
 import { toast } from 'react-toastify'
@@ -10,18 +10,16 @@ import { STAR, COLOREDSTAR } from '../../constant/icon'
 import { atom, useRecoilState, useRecoilValue } from 'recoil'
 import useChannelList from '../../hooks/useChannelList'
 
-function ChannelStarBtn(props) {
-  const channel = props.channel
+function ChannelStarBtn({ channel }) {
   const section = channel.sectionName
-
+  const { channelId } = useParams()
   const [Channels, setChannels] = useChannelList()
   const [sectionInfo, setSectionInfo] = useState(section)
 
   const history = useHistory()
-  const channelIdParams = props.match.params.channelId
 
   useEffect(() => {
-    setSectionInfo(props.channel.sectionName)
+    setSectionInfo(channel.sectionName)
   }, [channel])
 
   const updateSection = async () => {
@@ -31,7 +29,7 @@ function ChannelStarBtn(props) {
 
       const { data } = await request.PATCH('/api/channel/section', {
         workspaceUserInfoId: '5fc4fe427b2d5f6ae44dc15e',
-        channelId: channelIdParams,
+        channelId,
         sectionName,
       })
       if (data.success) {

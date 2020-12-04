@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { toast } from 'react-toastify'
-import { useHistory } from 'react-router'
+import { useParams } from 'react-router-dom'
 import Icon from '../../atom/Icon'
 import { ADDUSER, INFOCIRCLE } from '../../constant/icon'
 import ChannelCard from '../../atom/ChannelCard'
@@ -14,8 +13,9 @@ import { useRecoilState } from 'recoil'
 import InviteUserToChannelModal from '../InviteUserToChannelModal'
 import useCurrentChannelInfo from '../../hooks/useCurrentChannelInfo'
 
-function ChannelHeader(props) {
-  const { channelId } = props.match.params
+function ChannelHeader() {
+  const { channelId } = useParams()
+  console.log(channelId)
   const [channelInfo, setChannelInfo] = useCurrentChannelInfo()
   const [modal, setModal] = useRecoilState(modalAtom)
 
@@ -32,7 +32,7 @@ function ChannelHeader(props) {
       <ChannelInfo>
         <MainInfo>
           <ChannelCard channel={channelInfo.channelId} color="black" />
-          <ChannelStarBtn channel={channelInfo} {...props} />
+          <ChannelStarBtn channel={channelInfo} />
         </MainInfo>
         <SubInfo>
           {channelInfo.pinnedCount !== 0 && (
