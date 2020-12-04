@@ -106,6 +106,8 @@ const ChannelListArea = styled.div`
   background: ${({ backgroundColor }) => backgroundColor};
   color: ${({ color }) => color};
   border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-y: auto;
+  overflow-x: hidden;
 `
 
 const ListLine = styled.div`
