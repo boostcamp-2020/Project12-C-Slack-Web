@@ -2,24 +2,30 @@ import React from 'react'
 import styled from 'styled-components'
 import UserActive from '../UserActive'
 
-function UserProfileImg(props) {
-  const { user, size, showActive } = props
-
+const UserProfileImg = ({ user, size, showActive, type = 'default' }) => {
   return (
     <>
-      <ProfileImg src={user.profileUrl} size={size} />
+      <ProfileImg src={user.profileUrl} size={size} type={type} />
       {showActive && <UserActive isActive={user.isActive} />}
     </>
   )
 }
 
 const ProfileImg = styled.img`
-  position: absolute;
-  display: flex;
-  left: 0;
-  top: 0;
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
+  ${({ type }) => {
+    if (type === 'chat') return 'display: inline-block;'
+    return `
+      position: absolute;
+      display: flex;
+      left: 0;
+      top: 0;
+    `
+  }}
+  &:hover {
+    cursor: pointer;
+  }
+  width: ${({ size }) => size}px;
+  height: ${({ size }) => size}px;
   border-radius: 3px;
 `
 

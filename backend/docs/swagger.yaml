@@ -8,6 +8,7 @@ info:
   version: 1.0.0-oas3
 servers:
   - url: 'http://101.101.218.104:5000'
+  - url: 'https://api.slack-clone.kro.kr'
 paths:
   /api/workspace:
     get:
@@ -35,13 +36,12 @@ paths:
                     items:
                       type: object
                       properties:
-                        workspaceID:
-                          type: integer
-                        workspaceName:
+                        _id:
                           type: string
-                        workspaceURL:
+                        name:
                           type: string
-                    description: invite url
+                        creator:
+                          type: string
           description: success
         '400':
           content:
@@ -68,9 +68,11 @@ paths:
                 properties:
                   success:
                     type: boolean
-                  url:
+                  inviteCode:
                     type: string
                     description: workspace url
+                  workspaceId:
+                    type: string
           description: success response
         '400':
           content:
@@ -118,7 +120,7 @@ paths:
       description: invite to workspace
       operationId: ''
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
@@ -126,9 +128,9 @@ paths:
                 properties:
                   success:
                     type: boolean
-                  url:
+                  inviteCode:
                     type: string
-                    description: invite url
+                    description: invite code
           description: success response
         '400':
           content:
@@ -155,6 +157,64 @@ paths:
           description: user id
           required: true
           style: form
+          explode: true
+          schema:
+            type: string
+  /api/workspace/invite/{code}:
+    summary: invited to workspace
+    description: invited to workspace
+    get:
+      tags:
+        - workspace
+      summary: invited to workspace
+      description: invited to workspace
+      operationId: ''
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  inviteCode:
+                    type: string
+                    description: invite code
+          description: success response
+        '304':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: not modified
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: unauthorized
+        default:
+          description: Default error sample response
+      parameters:
+        - name: userID
+          in: query
+          description: user id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: code
+          in: path
+          description: invite code
+          required: true
           explode: true
           schema:
             type: string
@@ -840,6 +900,116 @@ paths:
                           type: number
 
           description: get user mention and reaction
+  '/api/chat/{channelId}':
+    summary: get chat messages
+    description: get chat messages
+    get:
+      tags:
+        - chat
+      operationId: ''
+      parameters:
+        - name: channelId
+          in: path
+          description: channelId
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          description: 날짜 이후의 message get
+          schema:
+            type: string
+        - name: currentCursor
+          in: query
+          description: 마지막 chat의 createAt 날짜보다 이전 message get
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        pinned:
+                          type: string
+                        contents:
+                          type: string
+                        channel:
+                          type: string
+                        creator:
+                          type: string
+                        parentId:
+                          type: string
+                        isDelete:
+                          type: boolean
+                        createdAt:
+                          format: date-time
+                          type: string
+                        updatedAt:
+                          format: date-time
+                          type: string
+                        reply:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              _id:
+                                type: string
+                              creator:
+                                type: string
+                              createdAt:
+                                format: date-time
+                                type: string
+                              userInfo:
+                                type: object
+                                properties:
+                                  _id:
+                                    type: string
+                                  displayName:
+                                    type: string
+                                  profileUrl:
+                                    type: string
+                        userInfo:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                            displayName:
+                              type: string
+                            profileUrl:
+                              type: string
+          description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: not modified
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: unauthorized
+        default:
+          description: Default error sample response
 
 components:
   schemas:

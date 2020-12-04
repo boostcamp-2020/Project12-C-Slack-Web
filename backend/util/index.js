@@ -9,7 +9,7 @@ const asyncWrapper = callback => {
 
 const verifyRequiredParams = (...params) => {
   for (const param of params)
-    if (!param)
+    if (isEmpty(param))
       throw { status: statusCode.BAD_REQUEST, message: resMessage.OUT_OF_VALUE }
 }
 
@@ -25,4 +25,11 @@ const dbErrorHandler = callback => {
   }
 }
 
-module.exports = { asyncWrapper, verifyRequiredParams, dbErrorHandler }
+const isEmpty = value => {
+  if (value === null) return true
+  if (typeof value === 'undefined') return true
+  if (typeof value === 'string' && value === '') return true
+  if (typeof value === 'object' && !Object.keys(value).length) return true
+  return false
+}
+module.exports = { asyncWrapper, verifyRequiredParams, dbErrorHandler, isEmpty }

@@ -2,7 +2,7 @@ import React from 'react'
 import MessageEditor from '../../organism/messageEditor/MessageEditor'
 import io from 'socket.io-client'
 import { useState, useEffect } from 'react'
-
+import CreateChannelModal from '../../organism/CreateChannelModal'
 const baseURL =
   process.env.NODE_ENV === 'development'
     ? process.env.REACT_APP_DEV_CHAT_HOST
@@ -41,6 +41,7 @@ function Channel() {
     <div>
       {/* TODO messgae component channel header component 추가 필요 */}
       <MessageEditor channelTitle={'hello world'} sendMessage={sendMessage} />
+      <CreateChannelModal />
     </div>
   )
 }

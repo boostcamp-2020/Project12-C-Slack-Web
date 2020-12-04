@@ -1,5 +1,9 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
+import { useRecoilValue } from 'recoil'
+import { useHistory, useParams } from 'react-router-dom'
+
+import { workspace } from '../../store'
 import Modal from '../../atom/Modal'
 import Title from '../../atom/Title'
 import Icon from '../../atom/Icon'
@@ -9,26 +13,76 @@ import { CLOSE, HASHTAG, LOCK } from '../../constant/icon'
 import { debounce } from '../../util'
 import Request from '../../util/request'
 import { COLOR } from '../../constant/style'
+import ModalInputSection from '../ModalInputSection'
+import { checkDuplicateChannelName, createChannel } from '../../api/channel'
+import ToggleButton from '../../atom/Button/ToggleButton'
+
+const MAX_CHANNEL_NAME = 80
+const MAX_CHANNEL_DESCRIPTION = 250
+const TIME_TO_WAIT_DEBOUNCE = 700
+const MAXIMUM_NAME_LENGH_ERROR =
+  'Channel names can’t be longer than 80 characters.'
+const MAXIMUM_DESCRIPTION_LENGH_ERROR =
+  'This field can’t be more than 250 characters.'
+const DUPLICATED_NAME_ERROR =
+  'That name is already taken by a channel, username'
+
 const CreateChannelModal = ({ handleClose }) => {
+  const history = useHistory()
+  const { workspaceId } = useParams()
+  const { workspaceUseInfoId } = useRecoilValue(workspace)
   const [isPrivate, setPrivateOption] = useState(false)
   const [channelName, setChannelName] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const [channelDescription, setChannelDescription] = useState('')
+  const [nameError, setNameError] = useState('')
+  const [descriptionError, setDescriptionError] = useState('')
+  const checkDuplicateName = async title => {
+    if (
+      title &&
+      !(await checkDuplicateChannelName({
+        title,
+        workspaceId,
+      }))
+    )
+      setNameError(DUPLICATED_NAME_ERROR)
+    if (nameError === DUPLICATED_NAME_ERROR) setNameError('')
+  }
 
-  const checkDuplicateName = async () => {
-    if (await Request.GET('/api/channel/check-duplicate-name', channelName))
-      setErrorMessage('That name is already taken by a channel, username')
-    else setErrorMessage('')
-  }
   const submitChannelInfo = async () => {
-    const channelId = await Request.POST('/api/channle', {
+    const channelId = await createChannel({
       title: channelName,
-      channelType: isPrivate ? 1 : 0,
+      creator: workspaceUseInfoId,
+      channelType: isPrivate ? 0 : 1,
+      description: channelDescription,
+      workspaceId,
     })
+    history.push(`/${workspaceId}/${channelId}`)
+    handleClose()
   }
-  const handleDebounce = useRef(debounce(checkDuplicateName, 1000)).current
-  const handleChange = (setter, debounce) => e => {
-    setter(e.target.value)
-    if (debounce) debounce()
+
+  const handleDebounce = useRef(
+    debounce(checkDuplicateName, TIME_TO_WAIT_DEBOUNCE),
+  ).current
+
+  const handleName = e => {
+    setChannelName(e.target.value)
+    if (MAX_CHANNEL_NAME - e.target.value.length < 0)
+      setNameError(MAXIMUM_NAME_LENGH_ERROR)
+    else {
+      handleDebounce(e.target.value)
+      setNameError('')
+    }
+  }
+
+  const handleDescription = async e => {
+    // TODO emoji 추가할 수 있도록 변경해야 함.
+    setChannelDescription(e.target.value)
+    if (MAX_CHANNEL_DESCRIPTION - channelDescription.length < 0)
+      setDescriptionError(MAXIMUM_DESCRIPTION_LENGH_ERROR)
+    else setDescriptionError('')
+  }
+  const handlePrivateOption = () => {
+    setPrivateOption(!isPrivate)
   }
   return (
     <Modal handleClose={handleClose}>
@@ -43,20 +97,42 @@ const CreateChannelModal = ({ handleClose }) => {
           Channels are where your team communicates. They’re best when organized
           around a topic — #marketing, for example.
         </div>
-        <strong>Name</strong>
-        {errorMessage}
-        <div>
-          <Icon icon={isPrivate ? LOCK : HASHTAG} />
+        <ModalInputSection name="Name" errorMessage={nameError}>
           <Input
             placeholder="e.g. plan-budget"
-            handleChange={handleChange(setChannelName, handleDebounce)}
+            handleChange={handleName}
             value={channelName}
+            maxLength={MAX_CHANNEL_NAME}
+          >
+            <Icon icon={isPrivate ? LOCK : HASHTAG} padding="5px" />
+          </Input>
+        </ModalInputSection>
+        <ModalInputSection
+          name="Description"
+          errorMessage={descriptionError}
+          optionalText="(optional)"
+          description={'What’s this channel about?'}
+        >
+          <Input
+            handleChange={handleDescription}
+            value={channelDescription}
+            maxLength={MAX_CHANNEL_DESCRIPTION}
           />
-        </div>
+        </ModalInputSection>
+        <ModalInputSection
+          name="Make private"
+          optionalText={
+            isPrivate
+              ? 'This can’t be undone. A private channel cannot be made public later on.'
+              : 'When a channel is set to private, it can only be viewed or joined by invitation.'
+          }
+        >
+          <ToggleButton handleChange={handlePrivateOption} value={isPrivate} />
+        </ModalInputSection>
         <Button
           handleClick={submitChannelInfo}
           children="Create"
-          disabled={errorMessage || !channelName}
+          disabled={nameError || !channelName || descriptionError}
         />
       </StyledModalContent>
     </Modal>
