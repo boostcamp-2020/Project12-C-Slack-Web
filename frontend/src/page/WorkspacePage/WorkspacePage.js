@@ -1,16 +1,15 @@
-import React, { useState, Suspense, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { modalAtom } from '../store'
-import InviteUserToChannelModal from '../organism/InviteUserToChannelModal'
+import { Route, useLocation } from 'react-router-dom'
+import { useRecoilValue } from 'recoil'
+import { modalAtom } from '../../store'
 
-import ChannelList from '../organism/ChannelList'
-import ChannelHeader from '../organism/ChannelHeader'
+import ChannelList from '../../organism/ChannelList'
+import ChatRoom from '../../organism/ChatRoom'
 
 function WorkspacePage(props) {
   const [lineWidth, setLineWidth] = useState(30)
   const Modal = useRecoilValue(modalAtom)
-
   const moveLine = e => {
     if (e.pageX === 0) return false
     let mouse = e.pageX
@@ -30,16 +29,11 @@ function WorkspacePage(props) {
       <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
       <MainArea>
         <ChannelListArea width={lineWidth}>
-          <ChannelList {...props} />
+          <ChannelList />
         </ChannelListArea>
         <ListLine draggable="true" onDrag={moveLine} />
         <ContentsArea width={lineWidth}>
-          <ChatArea>
-            <ChatHeader>
-              <ChannelHeader {...props} />
-            </ChatHeader>
-            <ChatContents>채팅방 내역 / 메시지에디터 위치</ChatContents>
-          </ChatArea>
+          <Route path="/:channelId" component={ChatRoom} />
           <SideBarArea></SideBarArea>
         </ContentsArea>
       </MainArea>
@@ -91,27 +85,6 @@ const ContentsArea = styled.div`
   width: ${props => 100 - props.width}%;
   height: 100%;
   background: yellow;
-`
-
-const ChatArea = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 70%;
-  background: blue;
-`
-
-const ChatHeader = styled.div`
-  display: flex;
-  width: 100%;
-  height: 10%;
-  background: gray;
-`
-
-const ChatContents = styled.div`
-  display: flex;
-  width: 100%;
-  height: 90%;
 `
 
 const SideBarArea = styled.div`
