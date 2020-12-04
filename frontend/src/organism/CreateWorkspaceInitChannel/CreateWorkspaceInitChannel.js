@@ -23,7 +23,6 @@ const CreateWorkspaceInitChannel = ({ workspaceName }) => {
           name: workspaceName,
           channelName: channelName,
         })
-        console.log('data: ', data)
         history.push(`/workspace/${data.data.workspaceId}`)
       }
     } catch (err) {

@@ -7,8 +7,8 @@ const MyWorkspaceSection = () => {
   const [workspaceData, setWorkspaceData] = useState([])
   useEffect(() => {
     ;(async () => {
-      const workspaces = await request.GET('/api/workspace')
-      setWorkspaceData(workspaces.data.data)
+      const { data } = await request.GET('/api/workspace')
+      setWorkspaceData(data.data)
     })()
   }, [])
 
