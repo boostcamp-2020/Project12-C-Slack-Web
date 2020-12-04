@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId
 const Schema = mongoose.Schema
+import { MAX_CHAT_MESSAGE } from '../util/constant'
 
 const chatSchema = mongoose.Schema(
   {
@@ -23,11 +25,59 @@ const chatSchema = mongoose.Schema(
     },
     isDelete: {
       type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },
 )
+chatSchema.statics.getChatMessages = ({ channelId, filter = {} }) =>
+  Chat.aggregate([
+    { $sort: { createdAt: -1 } },
+    {
+      $match: {
+        ...filter,
+        channel: ObjectId(channelId),
+        parentId: null,
+      },
+    },
+    {
+      $lookup: {
+        from: 'chats',
+        let: { id: '$_id' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$parentId', '$$id'] } } },
+          {
+            $lookup: {
+              from: 'workspaceuserinfos',
+              let: { creator: '$creator' },
+              pipeline: [
+                { $match: { $expr: { $eq: ['$_id', '$$creator'] } } },
+                { $project: { profileUrl: 1, displayName: 1, _id: 1 } },
+              ],
+              as: 'userInfo',
+            },
+          },
+          { $project: { pinned: 0, contents: 0, channel: 0, parentId: 0 } },
+          { $unwind: '$userInfo' },
+        ],
+        as: 'reply',
+      },
+    },
+    {
+      $lookup: {
+        from: 'workspaceuserinfos',
+        let: { creator: '$creator' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$_id', '$$creator'] } } },
+          { $project: { profileUrl: 1, displayName: 1, _id: 1 } },
+        ],
+        as: 'userInfo',
+      },
+    },
+    { $unwind: '$userInfo' },
+
+    { $limit: MAX_CHAT_MESSAGE },
+  ])
 
 const Chat = mongoose.model('Chat', chatSchema)
-
 module.exports = { Chat }
