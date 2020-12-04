@@ -1,13 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense, useEffect } from 'react'
 import styled from 'styled-components'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { modalAtom } from '../store'
+import InviteUserToChannelModal from '../organism/InviteUserToChannelModal'
 
 import ChannelList from '../organism/ChannelList'
 import ChannelHeader from '../organism/ChannelHeader'
 
 function WorkspacePage(props) {
   const [lineWidth, setLineWidth] = useState(30)
+  const Modal = useRecoilValue(modalAtom)
+
   const moveLine = e => {
-    if (e.pageX == 0) return false
+    if (e.pageX === 0) return false
     let mouse = e.pageX
     let viewWidth = e.view.innerWidth
 
@@ -21,10 +26,11 @@ function WorkspacePage(props) {
 
   return (
     <PageStyle>
+      {Modal}
       <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
       <MainArea>
         <ChannelListArea width={lineWidth}>
-          <ChannelList />
+          <ChannelList {...props} />
         </ChannelListArea>
         <ListLine draggable="true" onDrag={moveLine} />
         <ContentsArea width={lineWidth}>
@@ -34,7 +40,7 @@ function WorkspacePage(props) {
             </ChatHeader>
             <ChatContents>채팅방 내역 / 메시지에디터 위치</ChatContents>
           </ChatArea>
-          <SideBarArea>사이드 바 위치</SideBarArea>
+          <SideBarArea></SideBarArea>
         </ContentsArea>
       </MainArea>
     </PageStyle>

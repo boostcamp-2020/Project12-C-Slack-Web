@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router'
-import request from '../../util/request'
 import styled from 'styled-components'
 import { toast } from 'react-toastify'
+import { useHistory } from 'react-router'
 import Icon from '../../atom/Icon'
 import { ADDUSER, INFOCIRCLE } from '../../constant/icon'
 import ChannelCard from '../../atom/ChannelCard'
@@ -10,43 +9,30 @@ import ChannelStarBtn from '../../atom/ChannelStarBtn'
 import ChannelPinBtn from '../../atom/ChannelPinBtn'
 import ChannelTopicBtn from '../../atom/ChannelTopicBtn'
 import ChannelMemberThumbnail from '../../atom/ChannelMemberThumbnail'
+import { modalAtom } from '../../store'
+import { useRecoilState } from 'recoil'
+import InviteUserToChannelModal from '../InviteUserToChannelModal'
+import useCurrentChannelInfo from '../../hooks/useCurrentChannelInfo'
 
-function ChannelHeader({ match }) {
-  const { channelId } = match.params
-  const [channelInfo, setChannelInfo] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const history = useHistory()
+function ChannelHeader(props) {
+  const { channelId } = props.match.params
+  const [channelInfo, setChannelInfo] = useCurrentChannelInfo()
+  const [modal, setModal] = useRecoilState(modalAtom)
+
   useEffect(() => {
-    ;(async () => {
-      try {
-        const data = await request.GET(
-          '/api/channel/' +
-            channelId +
-            '/info?workspaceUserInfoId=5fc4fe427b2d5f6ae44dc15e',
-        )
-        if (
-          data.data.success &&
-          data.data.result.channelId[0].title !== undefined
-        ) {
-          setChannelInfo(data.data.result)
-          setIsLoading(false)
-        } else throw '채널 정보 요청 오류'
-      } catch (err) {
-        toast.error('채널 정보를 가져오는데 오류가 발생했습니다.', {
-          onClose: () => history.goBack(),
-        })
-      }
-    })()
-  }, [])
+    setChannelInfo(channelId)
+  }, [channelId])
 
-  return isLoading ? (
-    <div>loading...</div>
-  ) : (
+  const openAddUserModal = () => {
+    setModal(<InviteUserToChannelModal handleClose={() => setModal(null)} />)
+  }
+
+  return Object.keys(channelInfo).length !== 0 ? (
     <ChannelHeaderStyle>
       <ChannelInfo>
         <MainInfo>
-          <ChannelCard channel={channelInfo.channelId[0]} color="black" />
-          <ChannelStarBtn section={channelInfo.sectionId[0]} />
+          <ChannelCard channel={channelInfo.channelId} color="black" />
+          <ChannelStarBtn channel={channelInfo} {...props} />
         </MainInfo>
         <SubInfo>
           {channelInfo.pinnedCount !== 0 && (
@@ -55,17 +41,17 @@ function ChannelHeader({ match }) {
               <div>&nbsp;&nbsp;|&nbsp;&nbsp;</div>
             </>
           )}
-          <ChannelTopicBtn topic={channelInfo.channelId[0].topic} />
+          <ChannelTopicBtn topic={channelInfo.channelId.topic} />
         </SubInfo>
       </ChannelInfo>
       <ChannelMemberInfo>
         <ChannelMemberThumbnail
           member={channelInfo.member}
-          memberNum={channelInfo.memberNum}
+          memberNum={channelInfo.member.length}
         />
       </ChannelMemberInfo>
       <ChannelOption>
-        <IconBtn>
+        <IconBtn onClick={openAddUserModal}>
           <Icon icon={ADDUSER} />
         </IconBtn>
         <IconBtn>
@@ -73,6 +59,8 @@ function ChannelHeader({ match }) {
         </IconBtn>
       </ChannelOption>
     </ChannelHeaderStyle>
+  ) : (
+    <div>loading</div>
   )
 }
 

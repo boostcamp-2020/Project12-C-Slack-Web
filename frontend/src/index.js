@@ -7,18 +7,18 @@ import WorkspacePage from './page/WorkspacePage'
 import { BrowserRouter, Route } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
 import LoginPage from './page/login/Login'
+import CreateWorkspace from './page/createWorkspace/CreateWorkspace'
 import SelectWorkspace from './page/selectWorkspace/SelectWorkspace'
 import Auth from './hooks/Auth'
 import GithubOAuth from './hooks/GithubOAuth'
 import { RecoilRoot } from 'recoil'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import CreateWorkspace from './page/createWorkspace/CreateWorkspace'
 
 const App = () => {
   return (
-    <RecoilRoot>
-      <React.StrictMode>
+    <React.StrictMode>
+      <RecoilRoot>
         <ToastContainer />
         <GlobalStyle />
         <BrowserRouter>
@@ -43,8 +43,8 @@ const App = () => {
             component={Auth(WorkspacePage, false)}
           />
         </BrowserRouter>
-      </React.StrictMode>
-    </RecoilRoot>
+      </RecoilRoot>
+    </React.StrictMode>
   )
 }
 

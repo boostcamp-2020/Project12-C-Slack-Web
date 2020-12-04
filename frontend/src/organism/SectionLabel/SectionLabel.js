@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled, { keyframes, css } from 'styled-components'
-
+import { Link } from 'react-router-dom'
 import ChannelCard from '../../atom/ChannelCard'
 import DirectMessageCard from '../../atom/DirectMessageCard'
 
@@ -13,19 +13,23 @@ function SectionLabel(props) {
   }
 
   const renderChannelCards =
-    lists !== undefined ? (
+    lists.length !== 0 ? (
       lists.map((list, idx) => {
-        if (list.channelType === 2) {
+        if (list.channelId.channelType === 2) {
           return (
-            <ChannelLabel key={idx}>
-              <DirectMessageCard key={idx} directMessage={list} />
-            </ChannelLabel>
+            <Link key={idx} to={'/workspace/' + list.channelId._id}>
+              <ChannelLabel>
+                <DirectMessageCard directMessage={list.channelId} />
+              </ChannelLabel>
+            </Link>
           )
         }
         return (
-          <ChannelLabel key={idx}>
-            <ChannelCard key={idx} channel={list} color="white"></ChannelCard>
-          </ChannelLabel>
+          <Link key={idx} to={'/workspace/' + list.channelId._id}>
+            <ChannelLabel>
+              <ChannelCard channel={list.channelId} color="white"></ChannelCard>
+            </ChannelLabel>
+          </Link>
         )
       })
     ) : (
