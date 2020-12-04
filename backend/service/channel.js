@@ -3,7 +3,10 @@ import { WorkspaceUserInfo } from '../model/WorkspaceUserInfo'
 import { ChannelConfig } from '../model/ChannelConfig'
 import statusCode from '../util/statusCode'
 import resMessage from '../util/resMessage'
+import mongoose from 'mongoose'
 import { verifyRequiredParams, dbErrorHandler } from '../util'
+
+const ObjectId = mongoose.Types.ObjectId
 
 const createChannel = async params => {
   verifyRequiredParams(params.creator, params.title, params.channelType)
@@ -39,20 +42,59 @@ const checkDuplicate = async ({ title, workspaceId }) => {
 const getChannelListDB = async ({ workspaceUserInfoId }) => {
   verifyRequiredParams(workspaceUserInfoId)
   const [userInfo, channelConfig] = await Promise.all([
-    dbErrorHandler(() =>
-      WorkspaceUserInfo.find(
-        {
-          _id: workspaceUserInfoId,
-        },
-        {
-          _id: 1,
-          displayName: 1,
-          profileUrl: 1,
-          isActive: 1,
-          sections: 1,
-          workspaceId: 1,
-        },
-      ).lean(),
+    dbErrorHandler(
+      () =>
+        WorkspaceUserInfo.aggregate([
+          {
+            $match: {
+              $expr: {
+                $and: [{ $eq: ['$_id', ObjectId(workspaceUserInfoId)] }],
+              },
+            },
+          },
+
+          {
+            $lookup: {
+              from: 'workspaces',
+              let: {
+                workspaceId: '$workspaceId',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [{ $eq: ['$_id', '$$workspaceId'] }],
+                    },
+                  },
+                },
+              ],
+              as: 'workspaceId',
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              displayName: 1,
+              profileUrl: 1,
+              isActive: 1,
+              sections: 1,
+              workspaceId: 1,
+            },
+          },
+        ]),
+      // WorkspaceUserInfo.find(
+      //   {
+      //     _id: workspaceUserInfoId,
+      //   },
+      //   {
+      //     _id: 1,
+      //     displayName: 1,
+      //     profileUrl: 1,
+      //     isActive: 1,
+      //     sections: 1,
+      //     workspaceId: 1,
+      //   },
+      // ).lean(),
     ),
     dbErrorHandler(() => ChannelConfig.getChannelList(workspaceUserInfoId)),
   ])
