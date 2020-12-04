@@ -8,8 +8,9 @@ import {
   faAddressBook,
   faEllipsisV,
   faPlus,
+  faChevronDown,
 } from '@fortawesome/free-solid-svg-icons'
-import { faStar } from '@fortawesome/free-regular-svg-icons'
+import { faStar, faEdit } from '@fortawesome/free-regular-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 export const HASHTAG = faHashtag
@@ -23,3 +24,5 @@ export const STAR = faStar
 export const ADDRESSBOOK = faAddressBook
 export const ELLIPSISV = faEllipsisV
 export const PLUS = faPlus
+export const EDIT = faEdit
+export const CHEVRONDOWN = faChevronDown

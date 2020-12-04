@@ -71,6 +71,7 @@ const getChannelListDB = async ({ workspaceUserInfoId }) => {
               as: 'workspaceId',
             },
           },
+          { $unwind: '$workspaceId' },
           {
             $project: {
               _id: 1,
