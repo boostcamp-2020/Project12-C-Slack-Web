@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import channelInfoAtom from '../recoil/channelInfoAtom'
+import { channelInfoAtom } from '../store'
 import { useRecoilState } from 'recoil'
 
 import request from '../util/request'

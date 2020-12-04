@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import SectionLabel from '../SectionLabel'
 import { useRecoilState } from 'recoil'
 
-import workspaceUserInfoAtom from '../../recoil/workspaceUserInfoAtom'
+import { workspaceUserInfoAtom } from '../../store'
 import useChannelList from '../../hooks/useChannelList'
 
 function ChannelList(props) {

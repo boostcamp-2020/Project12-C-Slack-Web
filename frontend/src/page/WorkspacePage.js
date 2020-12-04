@@ -1,7 +1,7 @@
 import React, { useState, Suspense, useEffect } from 'react'
 import styled from 'styled-components'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import modalAtom from '../recoil/modalAtom'
+import { modalAtom } from '../store'
 import InviteUserToChannelModal from '../organism/InviteUserToChannelModal'
 
 import ChannelList from '../organism/ChannelList'
@@ -30,17 +30,13 @@ function WorkspacePage(props) {
       <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
       <MainArea>
         <ChannelListArea width={lineWidth}>
-          <Suspense fallback={<div>loading...</div>}>
-            <ChannelList {...props} />
-          </Suspense>
+          <ChannelList {...props} />
         </ChannelListArea>
         <ListLine draggable="true" onDrag={moveLine} />
         <ContentsArea width={lineWidth}>
           <ChatArea>
             <ChatHeader>
-              {/* <Suspense fallback={<div>Loading...</div>}> */}
               <ChannelHeader {...props} />
-              {/* </Suspense> */}
             </ChatHeader>
             <ChatContents>채팅방 내역 / 메시지에디터 위치</ChatContents>
           </ChatArea>
