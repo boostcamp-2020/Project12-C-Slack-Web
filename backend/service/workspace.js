@@ -4,6 +4,7 @@ import statusCode from '../util/statusCode'
 import resMessage from '../util/resMessage'
 import { verifyRequiredParams, dbErrorHandler } from '../util/'
 import { encrypt, decrypt } from '../util/encryption'
+import { Channel } from '../model/Channel'
 
 const createWorkspace = async params => {
   verifyRequiredParams(params.creator, params.name, params.channelName)
@@ -17,10 +18,17 @@ const createWorkspace = async params => {
     }
   }
   const workspaceData = await dbErrorHandler(() => Workspace.create(params))
-  await dbErrorHandler(() =>
+  const workspaceUserInfoData = await dbErrorHandler(() =>
     WorkspaceUserInfo.create({
       userId: params.creator,
       workspaceId: workspaceData._id,
+    }),
+  )
+  const channelData = await dbErrorHandler(() =>
+    Channel.create({
+      creator: workspaceUserInfoData._id,
+      title: params.channelName,
+      channelType: 1,
     }),
   )
   return {
@@ -28,6 +36,7 @@ const createWorkspace = async params => {
     data: {
       inviteCode: invite({ workspaceId: workspaceData._id }),
       workspaceId: workspaceData._id,
+      channelId: channelData._id,
     },
     success: true,
   }

@@ -23,7 +23,9 @@ const CreateWorkspaceInitChannel = ({ workspaceName }) => {
           name: workspaceName,
           channelName: channelName,
         })
-        history.push(`/workspace/${data.data.workspaceId}`)
+        history.push(
+          `/workspace/${data.data.workspaceId}/${data.data.channelId}`,
+        )
       }
     } catch (err) {
       toast.error('워크스페이스 생성에 실패하였습니다.', {
