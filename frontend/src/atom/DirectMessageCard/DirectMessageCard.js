@@ -61,8 +61,8 @@ const PeopleNum = styled.div`
   display: flex;
   align-items: baseline;
   justify-content: center;
-  right: 0;
-  bottom: 0;
+  left: 5px;
+  bottom: 0px;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
   font-size: 6px;

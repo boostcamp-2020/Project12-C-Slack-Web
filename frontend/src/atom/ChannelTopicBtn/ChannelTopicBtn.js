@@ -1,11 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
+import { COLOR } from '../../constant/style'
 
 function ChannelTopicBtn({ topic }) {
   return topic ? (
     <TopicArea>
       <Topic>{topic}</Topic>
-      <EditBtn>Edit</EditBtn>
+      <EditBtn color={COLOR.STARBLUE}>Edit</EditBtn>
     </TopicArea>
   ) : (
     <AddTopicBtn>Add a Topic</AddTopicBtn>
@@ -29,7 +30,7 @@ const Topic = styled.div`
 
 const EditBtn = styled.div`
   display: none;
-  color: blue;
+  color: ${props => props.color};
   margin-left: 5px;
   border: 1px solid transparent;
   cursor: pointer;

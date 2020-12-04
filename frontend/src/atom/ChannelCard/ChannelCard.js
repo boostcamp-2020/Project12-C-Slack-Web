@@ -11,9 +11,9 @@ function ChannelCard(props) {
     <ChannelCardLabel>
       <IconImgArea>
         {channelType === 0 ? (
-          <Icon icon={LOCK} color={color} />
+          <Icon icon={LOCK} color={color} size="13px" />
         ) : (
-          <Icon icon={HASHTAG} color={color} />
+          <Icon icon={HASHTAG} color={color} size="13px" />
         )}
       </IconImgArea>
       <TitleLabel color={color}>{title}</TitleLabel>
@@ -27,6 +27,7 @@ const ChannelCardLabel = styled.div`
   justify-content: start;
   align-items: baseline;
   padding: 4px 0;
+  margin-right: 5px;
 `
 const IconImgArea = styled.div`
   min-width: 12px;

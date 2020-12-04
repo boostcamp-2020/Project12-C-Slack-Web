@@ -110,11 +110,12 @@ function SectionLabel(props) {
 
 const ChannelLabel = styled.div`
   width: auto;
+  padding: 3px 0;
   padding-left: 20px;
   cursor: pointer;
   &:hover {
     background-color: ${props => {
-      if (!props.curr) return 'rgba(255, 255, 0, 0.2)'
+      if (!props.curr) return 'rgba(255, 255, 255, 0.1)'
       return null
     }};
   }
@@ -143,7 +144,7 @@ const SectionLabelStyle = styled.div`
   flex-direction: column;
   justify-content: start;
   align-items: baseline;
-  padding: 4px 0;
+  padding: 6px 0;
 `
 
 const LinkStyle = styled(Link)`

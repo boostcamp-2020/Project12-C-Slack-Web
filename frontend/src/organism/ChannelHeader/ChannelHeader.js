@@ -68,7 +68,7 @@ function ChannelHeader(props) {
 }
 
 const ChannelHeaderStyle = styled.div`
-  margin: auto 10px;
+  margin: auto 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

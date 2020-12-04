@@ -55,9 +55,10 @@ function WorkspacePage(props) {
               채팅방 내역 / 메시지에디터 위치
             </ChatContents>
           </ChatArea>
-          <SideBarArea
-            backgroundColor={BACKGROUND_CONTENTS_COLOR}
-          ></SideBarArea>
+          <SideBarArea backgroundColor={BACKGROUND_CONTENTS_COLOR}>
+            <SideBarHeader></SideBarHeader>
+            <SideBarContents></SideBarContents>
+          </SideBarArea>
         </ContentsArea>
       </MainArea>
     </PageStyle>
@@ -158,6 +159,21 @@ const SideBarArea = styled.div`
   width: 30%;
   background: ${({ backgroundColor }) => backgroundColor};
   border: 1px solid rgba(255, 255, 255, 0.1);
+`
+
+const SideBarHeader = styled.div`
+  display: flex;
+  width: 100%;
+  height: 60px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 0;
+`
+
+const SideBarContents = styled.div`
+  width: 100%;
+  height: calc(100% - 60px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 0;
 `
 
 export default WorkspacePage
