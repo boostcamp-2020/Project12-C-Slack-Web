@@ -1,9 +1,8 @@
-import React, { useState, Suspense, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
 import styled from 'styled-components'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import { modalAtom } from '../store'
-import InviteUserToChannelModal from '../organism/InviteUserToChannelModal'
-
+import { throttle } from '../util'
 import ChannelList from '../organism/ChannelList'
 import ChannelHeader from '../organism/ChannelHeader'
 
@@ -17,7 +16,8 @@ function WorkspacePage(props) {
     let viewWidth = e.view.innerWidth
 
     let width = (mouse / viewWidth) * 100
-    if (width < 5) {
+
+    if (width < 20) {
       setLineWidth(20)
     } else {
       setLineWidth(width)
@@ -32,7 +32,7 @@ function WorkspacePage(props) {
         <ChannelListArea width={lineWidth}>
           <ChannelList {...props} />
         </ChannelListArea>
-        <ListLine draggable="true" onDrag={moveLine} />
+        <ListLine draggable="true" onDrag={e => throttle(moveLine(e), 100)} />
         <ContentsArea width={lineWidth}>
           <ChatArea>
             <ChatHeader>
@@ -74,12 +74,14 @@ const ChannelListArea = styled.div`
 `
 
 const ListLine = styled.div`
+  opacity: 0;
   width: 6px;
   height: 100%;
-  background: white;
-  cursor: pointer;
+  background-color: black;
+  cursor: col-resize;
   margin: 0 -2px;
   &:hover {
+    background: black;
     width: 6px;
     margin: 0;
   }
