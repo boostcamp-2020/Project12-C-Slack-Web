@@ -22,7 +22,8 @@ const ChatMessage = ({
         createdAt={createdAt}
         contents={contents}
       />
-      {/* reaction bar */}
+      {/* TODO reaction bar 구현 */}
+      {/* TODO view thread reply 구현  */}
     </StyledMessageContainer>
   )
 }
