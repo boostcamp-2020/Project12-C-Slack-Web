@@ -2,10 +2,10 @@ import { Chat } from '../model/Chat'
 import statusCode from '../util/statusCode'
 import { verifyRequiredParams, dbErrorHandler } from '../util'
 
-const getChatMessages = async ({ channelId, page, fromDate }) => {
+const getChatMessages = async ({ channelId, currentCursor, fromDate }) => {
   verifyRequiredParams(channelId)
   const filter = {}
-  if (page) filter.createdAt = { $lt: new Date(page) }
+  if (currentCursor) filter.createdAt = { $lt: new Date(currentCursor) }
   if (fromDate) filter.createdAt = { $gt: new Date(fromDate) }
   const result = await dbErrorHandler(() =>
     Chat.getChatMessages({ channelId, filter }),

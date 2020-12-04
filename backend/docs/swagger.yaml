@@ -918,7 +918,7 @@ paths:
           description: 날짜 이후의 message get
           schema:
             type: string
-        - name: page
+        - name: currentCursor
           in: query
           description: 마지막 chat의 createAt 날짜보다 이전 message get
           schema:
