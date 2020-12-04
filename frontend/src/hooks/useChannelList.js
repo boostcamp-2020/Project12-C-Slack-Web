@@ -13,7 +13,7 @@ const useChannelList = () => {
 
   const getList = async () => {
     try {
-      const [data] = await request.GET(
+      const { data } = await request.GET(
         '/api/channel?workspaceUserInfoId=5fc4fe427b2d5f6ae44dc15e',
       )
       if (data.success) {

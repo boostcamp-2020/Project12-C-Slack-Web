@@ -8,7 +8,7 @@ const useCurrentChannelInfo = () => {
   const [channelInfo, setChannelInfo] = useRecoilState(channelInfoAtom)
 
   const updateChannelInfo = async channelId => {
-    const [data] = await request.GET(
+    const { data } = await request.GET(
       '/api/channel/' +
         channelId +
         '/info?workspaceUserInfoId=5fc4fe427b2d5f6ae44dc15e',
