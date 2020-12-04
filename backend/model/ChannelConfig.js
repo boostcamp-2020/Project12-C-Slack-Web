@@ -187,6 +187,7 @@ channelConfigSchema.statics.getChannelList = async function (
                   { $unwind: '$displayName' },
                   { $unwind: '$profileUrl' },
                   { $unwind: '$isActive' },
+                  { $sort: { channelType: -1 } },
                 ],
                 as: 'member',
               },
@@ -196,6 +197,7 @@ channelConfigSchema.statics.getChannelList = async function (
         },
       },
       { $unwind: '$channelId' },
+      { $sort: { sectionName: -1, 'channelId.channelType': 1 } },
     ])
 
     return result

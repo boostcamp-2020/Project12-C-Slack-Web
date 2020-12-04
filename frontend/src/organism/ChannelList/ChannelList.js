@@ -41,6 +41,7 @@ function ChannelList(props) {
           checkHasKeyAndSetKeyInMap(sectionMap, channel.sectionName, channel)
         }
       })
+      checkHasDefaultChannel(sectionMap)
       setList([...sectionMap])
     } catch (err) {
       toast.error('채널 목록 설정 오류가 발생했습니다.', {
@@ -70,6 +71,15 @@ const checkHasKeyAndSetKeyInMap = (map, key, data) => {
     map.set(key, value)
   } else {
     map.set(key, [data])
+  }
+}
+
+const checkHasDefaultChannel = map => {
+  if (!map.has('Channels')) {
+    map.set('Channels', [])
+  }
+  if (!map.has('Direct messages')) {
+    map.set('Direct messages', [])
   }
 }
 
