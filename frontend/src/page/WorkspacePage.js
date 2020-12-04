@@ -12,7 +12,7 @@ function WorkspacePage(props) {
   const Modal = useRecoilValue(modalAtom)
 
   const moveLine = e => {
-    if (e.pageX == 0) return false
+    if (e.pageX === 0) return false
     let mouse = e.pageX
     let viewWidth = e.view.innerWidth
 
