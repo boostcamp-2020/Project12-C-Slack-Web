@@ -36,7 +36,7 @@ const IconImgArea = styled.div`
 
 const TitleLabel = styled.div`
   width: auto;
-  color: ${props => props.color || '#f0f0f0'};
+  color: ${props => props.color};
   display: inline-block;
   white-space: nowrap;
   text-overflow: ellipsis;

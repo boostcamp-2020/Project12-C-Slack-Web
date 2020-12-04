@@ -73,8 +73,6 @@ const PeopleNum = styled.div`
 
 const TitleLabel = styled.div`
   width: auto;
-
-  color: #f0f0f0;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

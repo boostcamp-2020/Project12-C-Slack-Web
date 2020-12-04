@@ -14,6 +14,9 @@ import { useRecoilState } from 'recoil'
 import InviteUserToChannelModal from '../InviteUserToChannelModal'
 import useCurrentChannelInfo from '../../hooks/useCurrentChannelInfo'
 
+const TEXT_COLOR = '#D1D2D3'
+const SUB_TEXT_COLOR = '#e8e8e8b3'
+
 function ChannelHeader(props) {
   const { channelId } = props.match.params
   const [channelInfo, setChannelInfo] = useCurrentChannelInfo()
@@ -31,7 +34,7 @@ function ChannelHeader(props) {
     <ChannelHeaderStyle>
       <ChannelInfo>
         <MainInfo>
-          <ChannelCard channel={channelInfo.channelId} color="black" />
+          <ChannelCard channel={channelInfo.channelId} color={TEXT_COLOR} />
           <ChannelStarBtn channel={channelInfo} {...props} />
         </MainInfo>
         <SubInfo>
@@ -44,7 +47,7 @@ function ChannelHeader(props) {
           <ChannelTopicBtn topic={channelInfo.channelId.topic} />
         </SubInfo>
       </ChannelInfo>
-      <ChannelMemberInfo>
+      <ChannelMemberInfo color={SUB_TEXT_COLOR}>
         <ChannelMemberThumbnail
           member={channelInfo.member}
           memberNum={channelInfo.member.length}
@@ -52,10 +55,10 @@ function ChannelHeader(props) {
       </ChannelMemberInfo>
       <ChannelOption>
         <IconBtn onClick={openAddUserModal}>
-          <Icon icon={ADDUSER} />
+          <Icon icon={ADDUSER} color={SUB_TEXT_COLOR} />
         </IconBtn>
         <IconBtn>
-          <Icon icon={INFOCIRCLE} />
+          <Icon icon={INFOCIRCLE} color={SUB_TEXT_COLOR} />
         </IconBtn>
       </ChannelOption>
     </ChannelHeaderStyle>
@@ -65,7 +68,7 @@ function ChannelHeader(props) {
 }
 
 const ChannelHeaderStyle = styled.div`
-  margin: 10px 10px;
+  margin: auto 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -84,6 +87,7 @@ const ChannelInfo = styled.div`
 const MainInfo = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: baseline;
   align-items: center;
   font-weight: 800;
   font-size: 17px;
@@ -105,6 +109,7 @@ const ChannelMemberInfo = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  color: ${({ color }) => color};
   cursor: pointer;
 `
 

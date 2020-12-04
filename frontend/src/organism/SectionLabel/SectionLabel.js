@@ -9,6 +9,7 @@ import DirectMessageCard from '../../atom/DirectMessageCard'
 import { faBorderNone } from '@fortawesome/free-solid-svg-icons'
 
 const ICON_SIZE = 13
+const LABEL_DEFAULT_COLOR = '#a3a3a6'
 
 function SectionLabel(props) {
   const [isOpen, setIsOpen] = useState(true)
@@ -33,7 +34,10 @@ function SectionLabel(props) {
                 curr={list.channelId._id === channelId}
                 isOpen={isOpen}
               >
-                <DirectMessageCard directMessage={list.channelId} />
+                <DirectMessageCard
+                  directMessage={list.channelId}
+                  color={LABEL_DEFAULT_COLOR}
+                />
               </ChannelLabel>
             </LinkStyle>
           )
@@ -44,7 +48,14 @@ function SectionLabel(props) {
               curr={list.channelId._id === channelId}
               isOpen={isOpen}
             >
-              <ChannelCard channel={list.channelId} color="white"></ChannelCard>
+              <ChannelCard
+                channel={list.channelId}
+                color={
+                  list.channelId._id === channelId
+                    ? 'white'
+                    : LABEL_DEFAULT_COLOR
+                }
+              ></ChannelCard>
             </ChannelLabel>
           </LinkStyle>
         )
@@ -64,16 +75,28 @@ function SectionLabel(props) {
           <ButtonRelativeArea>
             <ButtonAbsoluteArea>
               <ChannelSectionBtn onClick={openChannelsMenu}>
-                <Icon icon={ELLIPSISV} color="white" size={ICON_SIZE + 'px'} />
+                <Icon
+                  icon={ELLIPSISV}
+                  color={LABEL_DEFAULT_COLOR}
+                  size={ICON_SIZE + 'px'}
+                />
               </ChannelSectionBtn>
               {sectionName === 'Channels' && (
                 <ChannelSectionBtn onClick={openChannelsMenu}>
-                  <Icon icon={PLUS} color="white" size={ICON_SIZE + 'px'} />
+                  <Icon
+                    icon={PLUS}
+                    color={LABEL_DEFAULT_COLOR}
+                    size={ICON_SIZE + 'px'}
+                  />
                 </ChannelSectionBtn>
               )}
               {sectionName === 'Direct messages' && (
                 <ChannelSectionBtn onClick={openChannelsMenu}>
-                  <Icon icon={PLUS} color="white" size={ICON_SIZE + 'px'} />
+                  <Icon
+                    icon={PLUS}
+                    color={LABEL_DEFAULT_COLOR}
+                    size={ICON_SIZE + 'px'}
+                  />
                 </ChannelSectionBtn>
               )}
             </ButtonAbsoluteArea>
@@ -105,6 +128,13 @@ const ChannelLabel = styled.div`
       return '#1363A2'
     }
   }};
+  color: ${props => {
+    if (props.curr) {
+      return 'white'
+    } else {
+      return '#a3a3a6'
+    }
+  }};
 `
 
 const SectionLabelStyle = styled.div`
@@ -125,8 +155,6 @@ const IconArea = styled.div`
   height: 18px;
   text-align: center;
   padding: 4px;
-
-  color: #f0f0f0;
 `
 const TriangleIcon = styled.div`
   width: 18px;
@@ -157,7 +185,7 @@ const SectionTitle = styled.div`
 
 const SectionName = styled.div`
   padding-left: 10px;
-  color: #f0f0f0;
+  color: #a3a3a6;
   word-break: break-all;
   display: inline-block;
 `
@@ -169,7 +197,7 @@ const ChannelSectionBtn = styled.div`
   height: 18px;
   display: block;
   text-align: center;
-  color: #f0f0f0;
+  color: #a3a3a6;
   padding: 4px;
   border-radius: 3px;
   &:hover {

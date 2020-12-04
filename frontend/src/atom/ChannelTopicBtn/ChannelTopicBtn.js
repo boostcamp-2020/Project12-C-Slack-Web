@@ -21,6 +21,7 @@ const AddTopicBtn = styled.div`
 const Topic = styled.div`
   display: flex;
   flex-direction: row;
+  color: #d1d2d3;
   padding: 0 3px;
   border-radius: 4px;
   border: 1px solid transparent;
