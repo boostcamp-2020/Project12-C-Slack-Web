@@ -44,7 +44,14 @@ const getChannelListDB = async ({ workspaceUserInfoId }) => {
         {
           _id: workspaceUserInfoId,
         },
-        { _id: 1, displayName: 1, profileUrl: 1, isActive: 1, sections: 1 },
+        {
+          _id: 1,
+          displayName: 1,
+          profileUrl: 1,
+          isActive: 1,
+          sections: 1,
+          workspaceId: 1,
+        },
       ).lean(),
     ),
     dbErrorHandler(() => ChannelConfig.getChannelList(workspaceUserInfoId)),

@@ -57,7 +57,6 @@ channelConfigSchema.statics.getChannelHeaderInfo = async function (
                 },
               },
             },
-            { $project: { _id: 0 } },
           ],
           as: 'channelId',
         },
