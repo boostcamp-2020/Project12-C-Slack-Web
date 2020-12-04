@@ -11,4 +11,7 @@ const COLOR = {
   STARBLUE: '#1363A2',
 }
 
-export { COLOR }
+const SIZE = {
+  CHAT_PROFILE: 36,
+}
+export { COLOR, SIZE }
