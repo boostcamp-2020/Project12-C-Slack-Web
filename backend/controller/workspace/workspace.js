@@ -31,3 +31,11 @@ exports.invited = asyncWrapper(async (req, res, next) => {
   })
   return res.status(code).json({ success, data })
 })
+
+exports.checkDuplicateName = asyncWrapper(async (req, res, next) => {
+  const { code, success, data } = await service.checkDuplicateName({
+    ...req.query,
+    userId: req.user.id,
+  })
+  return res.status(code).json({ success, data })
+})
