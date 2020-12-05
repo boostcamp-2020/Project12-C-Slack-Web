@@ -9,6 +9,7 @@ const COLOR = {
   HOVER_GREEN: '#148567',
   WHITE: '#fff',
   STARBLUE: '#1363A2',
+  RED: '#DC143C',
 }
 
 const SIZE = {
