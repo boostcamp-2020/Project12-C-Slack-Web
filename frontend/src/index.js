@@ -39,8 +39,8 @@ const App = () => {
             component={Auth(CreateWorkspace, true)}
           />
           <Route
-            path="/workspace/:channelId"
-            component={Auth(WorkspacePage, false)}
+            path="/workspace/:workspaceId/:channelId"
+            component={Auth(WorkspacePage, true)}
           />
         </BrowserRouter>
       </RecoilRoot>
