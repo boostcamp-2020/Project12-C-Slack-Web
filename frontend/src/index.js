@@ -22,17 +22,13 @@ const App = () => {
         <ToastContainer />
         <GlobalStyle />
         <BrowserRouter>
-          <Route exact path="/" component={Channel} />
+          {/* <Route exact path="/" component={Channel} /> */}
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route
             path="/github-oauth"
             component={GithubOAuth(LoginPage, false)}
           />
-          <Route
-            exact
-            path="/select-workspace"
-            component={Auth(SelectWorkspace, true)}
-          />
+          <Route exact path="/" component={Auth(SelectWorkspace, true)} />
           <Route
             exact
             path="/create-workspace"
