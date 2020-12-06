@@ -9,8 +9,15 @@ import {
   faEllipsisV,
   faPlus,
   faChevronDown,
+  faAt,
 } from '@fortawesome/free-solid-svg-icons'
-import { faStar, faEdit } from '@fortawesome/free-regular-svg-icons'
+import {
+  faStar,
+  faEdit,
+  faCommentDots,
+  faComments,
+  faBookmark,
+} from '@fortawesome/free-regular-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 export const HASHTAG = faHashtag
@@ -26,3 +33,7 @@ export const ELLIPSISV = faEllipsisV
 export const PLUS = faPlus
 export const EDIT = faEdit
 export const CHEVRONDOWN = faChevronDown
+export const COMMENTDOTS = faCommentDots
+export const COMMENTS = faComments
+export const AT = faAt
+export const BOOKMARK = faBookmark
