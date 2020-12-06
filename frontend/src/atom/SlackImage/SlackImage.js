@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-function SlackIcon({ onClick }) {
+function SlackImage({ onClick }) {
   return (
     <>
       <ImgDiv>
@@ -21,4 +21,4 @@ const ImgDiv = styled.div`
   cursor: pointer;
 `
 
-export default SlackIcon
+export default SlackImage
