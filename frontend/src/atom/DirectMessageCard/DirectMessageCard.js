@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import dmTitleGeneragtor from '../../util/dmTitleGeneragtor'
+import dmTitleGenerator from '../../util/dmTitleGenerator'
 import UserProfileImg from '../UserProfileImg'
 
 function DirectMessageCard(props) {
@@ -27,7 +27,7 @@ function DirectMessageCard(props) {
           </UserProfileImgAndCount>
         )}
       </ImgArea>
-      <TitleLabel>{dmTitleGeneragtor(directMessage.member)}</TitleLabel>
+      <TitleLabel>{dmTitleGenerator(directMessage.member)}</TitleLabel>
     </DirectMessageCardLabel>
   )
 }
