@@ -3,6 +3,7 @@ import { useHistory } from 'react-router'
 import styled from 'styled-components'
 import { toast } from 'react-toastify'
 import SectionLabel from '../SectionLabel'
+import SideMenuList from '../SideMenuList'
 import { useRecoilState } from 'recoil'
 
 import { workspaceUserInfoAtom } from '../../store'
@@ -61,7 +62,12 @@ function ChannelList(props) {
     )
   })
 
-  return <ChannelListStyle>{renderChannelSectionList}</ChannelListStyle>
+  return (
+    <ChannelListStyle>
+      <SideMenuList />
+      {renderChannelSectionList}
+    </ChannelListStyle>
+  )
 }
 
 const checkHasKeyAndSetKeyInMap = (map, key, data) => {
