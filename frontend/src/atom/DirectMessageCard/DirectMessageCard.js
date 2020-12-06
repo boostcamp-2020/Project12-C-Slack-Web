@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import dmTitleGeneragtor from '../../util/dmTitleGeneragtor'
 import UserProfileImg from '../UserProfileImg'
 
 function DirectMessageCard(props) {
@@ -26,23 +27,18 @@ function DirectMessageCard(props) {
           </UserProfileImgAndCount>
         )}
       </ImgArea>
-      <TitleLabel>
-        {directMessage.member.reduce(function (acc, curr, idx) {
-          if (idx === 0) return curr.displayName
-          return acc + ', ' + curr.displayName
-        }, '')}
-      </TitleLabel>
+      <TitleLabel>{dmTitleGeneragtor(directMessage.member)}</TitleLabel>
     </DirectMessageCardLabel>
   )
 }
 
 const DirectMessageCardLabel = styled.div`
   width: 100%;
+  padding: 4px 0;
   display: flex;
   flex-direction: row;
   justify-content: start;
   align-items: center;
-  padding: 4px 0;
 `
 const ImgArea = styled.div`
   position: relative;
@@ -59,16 +55,16 @@ const UserProfileImgAndCount = styled.div`
 
 const PeopleNum = styled.div`
   position: absolute;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  right: 2px;
-  bottom: 0px;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
+  right: 2px;
+  bottom: 0px;
   font-size: 7px;
   line-height: ${props => props.size}px;
   color: white;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
   background: black;
   border-radius: 5px;
 `
@@ -77,8 +73,8 @@ const TitleLabel = styled.div`
   width: auto;
   white-space: nowrap;
   text-overflow: ellipsis;
-  overflow: hidden;
   display: inline-block;
+  overflow: hidden;
 `
 
 export default DirectMessageCard

@@ -4,12 +4,9 @@ import styled, { keyframes, css } from 'styled-components'
 import Icon from '../../atom/Icon'
 import { ELLIPSISV, PLUS } from '../../constant/icon'
 import { Link } from 'react-router-dom'
+import { COLOR, SIZE } from '../../constant/style'
 import ChannelCard from '../../atom/ChannelCard'
 import DirectMessageCard from '../../atom/DirectMessageCard'
-import { faBorderNone } from '@fortawesome/free-solid-svg-icons'
-
-const ICON_SIZE = 13
-const LABEL_DEFAULT_COLOR = '#a3a3a6'
 
 function SectionLabel(props) {
   const [isOpen, setIsOpen] = useState(true)
@@ -27,35 +24,24 @@ function SectionLabel(props) {
   const renderChannelCards =
     lists.length !== 0 ? (
       lists.map((list, idx) => {
-        if (list.channelId.channelType === 2) {
-          return (
-            <LinkStyle key={idx} to={'/workspace/' + list.channelId._id}>
-              <ChannelLabel
-                curr={list.channelId._id === channelId}
-                isOpen={isOpen}
-              >
-                <DirectMessageCard
-                  directMessage={list.channelId}
-                  color={LABEL_DEFAULT_COLOR}
-                />
-              </ChannelLabel>
-            </LinkStyle>
-          )
-        }
         return (
           <LinkStyle key={idx} to={'/workspace/' + list.channelId._id}>
             <ChannelLabel
               curr={list.channelId._id === channelId}
               isOpen={isOpen}
             >
-              <ChannelCard
-                channel={list.channelId}
-                color={
-                  list.channelId._id === channelId
-                    ? 'white'
-                    : LABEL_DEFAULT_COLOR
-                }
-              ></ChannelCard>
+              {list.channelId.channelType === 2 ? (
+                <DirectMessageCard directMessage={list.channelId} />
+              ) : (
+                <ChannelCard
+                  channel={list.channelId}
+                  color={
+                    list.channelId._id === channelId
+                      ? 'white'
+                      : COLOR.LABEL_DEFAULT_TEXT
+                  }
+                />
+              )}
             </ChannelLabel>
           </LinkStyle>
         )
@@ -72,35 +58,33 @@ function SectionLabel(props) {
         </IconArea>
         <SectionTitle>
           <SectionName>{sectionName}</SectionName>
-          <ButtonRelativeArea>
-            <ButtonAbsoluteArea>
+          <ButtonArea>
+            <ChannelSectionBtn onClick={openChannelsMenu}>
+              <Icon
+                icon={ELLIPSISV}
+                color={COLOR.LABEL_DEFAULT_TEXT}
+                size={SIZE.ICON_SIZE + 'px'}
+              />
+            </ChannelSectionBtn>
+            {sectionName === 'Channels' && (
               <ChannelSectionBtn onClick={openChannelsMenu}>
                 <Icon
-                  icon={ELLIPSISV}
-                  color={LABEL_DEFAULT_COLOR}
-                  size={ICON_SIZE + 'px'}
+                  icon={PLUS}
+                  color={COLOR.LABEL_DEFAULT_TEXT}
+                  size={SIZE.ICON_SIZE + 'px'}
                 />
               </ChannelSectionBtn>
-              {sectionName === 'Channels' && (
-                <ChannelSectionBtn onClick={openChannelsMenu}>
-                  <Icon
-                    icon={PLUS}
-                    color={LABEL_DEFAULT_COLOR}
-                    size={ICON_SIZE + 'px'}
-                  />
-                </ChannelSectionBtn>
-              )}
-              {sectionName === 'Direct messages' && (
-                <ChannelSectionBtn onClick={openChannelsMenu}>
-                  <Icon
-                    icon={PLUS}
-                    color={LABEL_DEFAULT_COLOR}
-                    size={ICON_SIZE + 'px'}
-                  />
-                </ChannelSectionBtn>
-              )}
-            </ButtonAbsoluteArea>
-          </ButtonRelativeArea>
+            )}
+            {sectionName === 'Direct messages' && (
+              <ChannelSectionBtn onClick={openChannelsMenu}>
+                <Icon
+                  icon={PLUS}
+                  color={COLOR.LABEL_DEFAULT_TEXT}
+                  size={SIZE.ICON_SIZE + 'px'}
+                />
+              </ChannelSectionBtn>
+            )}
+          </ButtonArea>
         </SectionTitle>
       </TitleArea>
       <ListArea isOpen={isOpen}>{renderChannelCards}</ListArea>
@@ -110,13 +94,12 @@ function SectionLabel(props) {
 
 const ChannelLabel = styled.div`
   width: auto;
-  padding: 3px 10px;
-  padding-left: 30px;
+  padding: 3px 10px 3px 30px;
 
   cursor: pointer;
   &:hover {
     background-color: ${props => {
-      if (!props.curr) return 'rgba(255, 255, 255, 0.1)'
+      if (!props.curr) return COLOR.LABEL_HOVER_BACKGROUND_COLOR
       return null
     }};
   }
@@ -127,25 +110,25 @@ const ChannelLabel = styled.div`
   }};
   background: ${props => {
     if (props.curr) {
-      return '#1363A2'
+      return COLOR.LABEL_SELECT_BACKGROUND
     }
   }};
   color: ${props => {
     if (props.curr) {
-      return 'white'
+      return COLOR.LABEL_SELECT_TEXT
     } else {
-      return '#a3a3a6'
+      return COLOR.LABEL_DEFAULT_TEXT
     }
   }};
 `
 
 const SectionLabelStyle = styled.div`
-  width: 100%;
+  width: auto;
+  padding: 6px 0;
+  color: ${COLOR.LABEL_DEFAULT_TEXT};
   display: flex;
   flex-direction: column;
-  justify-content: start;
-  align-items: baseline;
-  padding: 6px 0;
+  justify-content: flex-start;
 `
 
 const LinkStyle = styled(Link)`
@@ -155,7 +138,6 @@ const LinkStyle = styled(Link)`
 const IconArea = styled.div`
   width: 18px;
   height: 18px;
-  text-align: center;
   padding: 4px;
 `
 const TriangleIcon = styled.div`
@@ -177,17 +159,16 @@ const TriangleIcon = styled.div`
         `}
 `
 const SectionTitle = styled.div`
-  width: calc(100% - 40px);
+  width: calc(100% - 25px);
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  position: relative;
 `
 
 const SectionName = styled.div`
   padding-left: 10px;
-  color: #a3a3a6;
   word-break: break-all;
   display: inline-block;
   white-space: nowrap;
@@ -200,10 +181,9 @@ const ChannelSectionBtn = styled.div`
   width: auto;
   min-width: 18px;
   height: 18px;
-  display: block;
   text-align: center;
-  color: #a3a3a6;
   padding: 4px;
+  display: block;
   border-radius: 3px;
   &:hover {
     background-color: rgba(255, 255, 255, 0.2);
@@ -221,13 +201,18 @@ const showButton = keyframes`
     opacity:100;
   }`
 
-const TitleArea = styled.div`
-  width: 100%;
-  padding: 2px 10px;
-  display: flex;
+const ButtonArea = styled.div`
+  display: none;
   flex-direction: row;
-  align-items: baseline;
+`
+
+const TitleArea = styled.div`
+  width: auto;
+  padding: 2px 10px;
   user-select: none;
+  display: flex;
+  align-items: baseline;
+  flex-direction: row;
 
   cursor: pointer;
   &:hover {
@@ -236,25 +221,15 @@ const TitleArea = styled.div`
       animation-direction: alternate;
       animation-fill-mode: forwards;
     }
+    ${ButtonArea} {
+      display: flex;
+    }
   }
 `
 
-const ButtonRelativeArea = styled.div`
-  position: relative;
-  height: 26px;
-`
-
-const ButtonAbsoluteArea = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: flex;
-  flex-direction: row;
-`
-
 const ListArea = styled.div`
-  display: flex;
   width: 100%;
+  display: flex;
   flex-direction: column;
 `
 

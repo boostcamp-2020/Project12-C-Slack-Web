@@ -10,11 +10,11 @@ function ChannelCard(props) {
   return (
     <ChannelCardLabel>
       <IconImgArea>
-        {channelType === 0 ? (
-          <Icon icon={LOCK} color={color} size="13px" />
-        ) : (
-          <Icon icon={HASHTAG} color={color} size="13px" />
-        )}
+        <Icon
+          icon={channelType === 0 ? LOCK : HASHTAG}
+          color={color}
+          size="13px"
+        />
       </IconImgArea>
       <TitleLabel color={color}>{title}</TitleLabel>
     </ChannelCardLabel>
@@ -22,12 +22,12 @@ function ChannelCard(props) {
 }
 const ChannelCardLabel = styled.div`
   width: auto;
+  padding: 4px 0;
+
   display: flex;
   flex-direction: row;
   justify-content: start;
   align-items: baseline;
-  padding: 4px 0;
-  margin-right: 5px;
 `
 const IconImgArea = styled.div`
   min-width: 12px;
