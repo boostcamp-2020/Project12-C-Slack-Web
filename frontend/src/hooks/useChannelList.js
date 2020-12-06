@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import { channelAtom, workspaceUserInfoAtom } from '../store'
 import { useRecoilState } from 'recoil'
+import { useHistory } from 'react-router'
+import { toast } from 'react-toastify'
 
 import request from '../util/request'
 
@@ -10,6 +12,7 @@ const useChannelList = () => {
     workspaceUserInfoAtom,
   )
 
+  const history = useHistory()
   const getList = async () => {
     try {
       const { data } = await request.GET(
@@ -20,7 +23,9 @@ const useChannelList = () => {
         setChannels(data.result.channelConfig)
       } else throw '채널 목록 요청 오류'
     } catch (err) {
-      console.error(err)
+      toast.error('채널 목록 요청에 오류가 발생했습니다.', {
+        onClose: () => history.goBack(),
+      })
     }
   }
 
