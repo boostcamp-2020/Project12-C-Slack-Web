@@ -84,17 +84,57 @@ channelConfigSchema.statics.getChannelHeaderInfo = async function (
       },
       {
         $lookup: {
-          from: 'workspaceuserinfos',
+          from: 'channelconfigs',
           pipeline: [
             {
               $match: {
                 $expr: {
-                  $and: [{ $eq: ['$_id', ObjectId(workspaceUserInfoId)] }],
+                  $and: [{ $eq: ['$channelId', ObjectId(channelId)] }],
                 },
               },
             },
+            {
+              $lookup: {
+                from: 'workspaceuserinfos',
+                let: {
+                  workspaceUserInfoId: '$workspaceUserInfoId',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [{ $eq: ['$_id', '$$workspaceUserInfoId'] }],
+                      },
+                    },
+                  },
+                  {
+                    $project: {
+                      fullName: 1,
+                      displayName: 1,
+                      profileUrl: 1,
+                      isActive: 1,
+                      userId: 1,
+                    },
+                  },
+                ],
+                as: '_id',
+              },
+            },
+            { $unwind: '$_id' },
           ],
           as: 'member',
+        },
+      },
+      {
+        $project: {
+          channelId: 1,
+          readChatId: 1,
+          isMute: 1,
+          notification: 1,
+          workspaceUserInfoId: 1,
+          sectionName: 1,
+          pinnedCount: 1,
+          member: '$member._id',
         },
       },
     ])
