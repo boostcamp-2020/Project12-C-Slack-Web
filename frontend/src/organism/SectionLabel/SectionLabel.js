@@ -110,8 +110,9 @@ function SectionLabel(props) {
 
 const ChannelLabel = styled.div`
   width: auto;
-  padding: 3px 0;
-  padding-left: 20px;
+  padding: 3px 10px;
+  padding-left: 30px;
+
   cursor: pointer;
   &:hover {
     background-color: ${props => {
@@ -189,6 +190,9 @@ const SectionName = styled.div`
   color: #a3a3a6;
   word-break: break-all;
   display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `
 
 const ChannelSectionBtn = styled.div`
@@ -219,7 +223,7 @@ const showButton = keyframes`
 
 const TitleArea = styled.div`
   width: 100%;
-  padding: 2px;
+  padding: 2px 10px;
   display: flex;
   flex-direction: row;
   align-items: baseline;

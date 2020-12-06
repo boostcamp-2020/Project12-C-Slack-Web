@@ -45,21 +45,28 @@ const ChannelHeader = styled.div`
 
 const WorkspaceName = styled.div`
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 800;
   color: #d1d2d3;
   margin-right: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `
 
 const NameArea = styled.div`
   margin-right: 15px;
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `
 
 const IconButton = styled.div`
-  min-width: 30px;
-  height: 30px;
+  min-width: 35px;
+  height: 35px;
   background-color: #d1d2d3;
   border-radius: 20px;
   display: flex;

@@ -108,19 +108,34 @@ const ChannelListArea = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.1);
   overflow-y: auto;
   overflow-x: hidden;
+  font-size: 15px;
 `
 
 const ListLine = styled.div`
   opacity: 0;
-  width: 6px;
+  width: 4px;
   height: 100%;
-  background-color: black;
   cursor: col-resize;
   margin: 0 -2px;
   &:hover {
     background: black;
-    width: 6px;
-    margin: 0;
+    opacity: 100;
+    position: relative;
+    /* margin: 0; */
+    ::after {
+      content: ' ';
+      position: absolute;
+      display: block;
+      width: 4px;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background-color: white;
+    }
+  }
+
+  &:active {
+    opacity: 0;
   }
 `
 

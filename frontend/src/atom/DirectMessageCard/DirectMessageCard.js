@@ -19,10 +19,10 @@ function DirectMessageCard(props) {
           <UserProfileImgAndCount size="18">
             <UserProfileImg
               user={directMessage.member[0]}
-              size="13"
+              size="14"
               showActive={false}
             />
-            <PeopleNum size="13">{directMessage.member.length}</PeopleNum>
+            <PeopleNum size="14">{directMessage.member.length}</PeopleNum>
           </UserProfileImgAndCount>
         )}
       </ImgArea>
@@ -52,6 +52,7 @@ const ImgArea = styled.div`
   border-radius: 3px;
 `
 const UserProfileImgAndCount = styled.div`
+  min-width: 25px;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
 `
@@ -61,11 +62,12 @@ const PeopleNum = styled.div`
   display: flex;
   align-items: baseline;
   justify-content: center;
-  left: 5px;
+  right: 2px;
   bottom: 0px;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
-  font-size: 6px;
+  font-size: 7px;
+  line-height: ${props => props.size}px;
   color: white;
   background: black;
   border-radius: 5px;
