@@ -99,7 +99,7 @@ const ChannelLabel = styled.div`
   cursor: pointer;
   &:hover {
     background-color: ${props => {
-      if (!props.curr) return COLOR.LABEL_HOVER_BACKGROUND_COLOR
+      if (!props.curr) return COLOR.LABEL_HOVER_BACKGROUND
       return null
     }};
   }

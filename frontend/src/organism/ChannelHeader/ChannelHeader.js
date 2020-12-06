@@ -13,9 +13,7 @@ import { modalAtom } from '../../store'
 import { useRecoilState } from 'recoil'
 import InviteUserToChannelModal from '../InviteUserToChannelModal'
 import useCurrentChannelInfo from '../../hooks/useCurrentChannelInfo'
-
-const TEXT_COLOR = '#D1D2D3'
-const SUB_TEXT_COLOR = '#e8e8e8b3'
+import { COLOR } from '../../constant/style'
 
 function ChannelHeader(props) {
   const { channelId } = props.match.params
@@ -23,6 +21,7 @@ function ChannelHeader(props) {
   const [modal, setModal] = useRecoilState(modalAtom)
 
   useEffect(() => {
+    console.log(channelInfo)
     setChannelInfo(channelId)
   }, [channelId])
 
@@ -34,78 +33,101 @@ function ChannelHeader(props) {
     <ChannelHeaderStyle>
       <ChannelInfo>
         <MainInfo>
-          <ChannelCard channel={channelInfo.channelId} color={TEXT_COLOR} />
+          <ChannelCard
+            channel={channelInfo.channelId}
+            color={COLOR.LABEL_SELECT_TEXT}
+            member={channelInfo.member}
+          />
           <ChannelStarBtn channel={channelInfo} {...props} />
         </MainInfo>
         <SubInfo>
-          {channelInfo.pinnedCount !== 0 && (
+          {channelInfo.pinnedCount !== 2 && (
             <>
               <ChannelPinBtn count={channelInfo.pinnedCount} />
-              <div>&nbsp;&nbsp;|&nbsp;&nbsp;</div>
+              <Divider>|</Divider>
             </>
           )}
           <ChannelTopicBtn topic={channelInfo.channelId.topic} />
         </SubInfo>
       </ChannelInfo>
-      <ChannelMemberInfo color={SUB_TEXT_COLOR}>
-        <ChannelMemberThumbnail
-          member={channelInfo.member}
-          memberNum={channelInfo.member.length}
-        />
-      </ChannelMemberInfo>
-      <ChannelOption>
-        <IconBtn onClick={openAddUserModal}>
-          <Icon icon={ADDUSER} color={SUB_TEXT_COLOR} />
-        </IconBtn>
-        <IconBtn>
-          <Icon icon={INFOCIRCLE} color={SUB_TEXT_COLOR} />
-        </IconBtn>
-      </ChannelOption>
+      <ChannelButtonArea>
+        <ChannelMemberInfo color={COLOR.LABEL_SELECT_SUB_TEXT}>
+          <ChannelMemberThumbnail
+            member={channelInfo.member}
+            memberNum={channelInfo.member.length}
+          />
+        </ChannelMemberInfo>
+        <ChannelOption>
+          <IconBtn onClick={openAddUserModal}>
+            <Icon icon={ADDUSER} color={COLOR.LABEL_SELECT_SUB_TEXT} />
+          </IconBtn>
+          <IconBtn>
+            <Icon icon={INFOCIRCLE} color={COLOR.LABEL_SELECT_SUB_TEXT} />
+          </IconBtn>
+        </ChannelOption>
+      </ChannelButtonArea>
     </ChannelHeaderStyle>
   ) : (
-    <div>loading</div>
+    <div></div>
   )
 }
 
 const ChannelHeaderStyle = styled.div`
+  width: 100%;
+  height: auto;
   margin: auto 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  height: auto;
+  overflow: hidden;
 `
 
 const ChannelInfo = styled.div`
-  flex-grow: 2;
+  height: 100%;
+  margin-right: 5px;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `
 
 const MainInfo = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: baseline;
-  align-items: center;
+  width: 100%;
   font-weight: 800;
   font-size: 17px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
   cursor: pointer;
 `
 
 const SubInfo = styled.div`
   width: 100%;
   height: 100%;
+  color: ${COLOR.LABEL_SELECT_SUB_TEXT};
+  font-size: 13px;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  font-size: 13px;
+
   cursor: pointer;
 `
 
+const Divider = styled.div`
+  margin: 0 10px;
+`
+
+const ChannelButtonArea = styled.div`
+  width: 155px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`
+
 const ChannelMemberInfo = styled.div`
-  flex-grow: 1;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -122,8 +144,8 @@ const IconBtn = styled.div`
   width: 30px;
   height: 30px;
   margin: 0 5px;
-  flex-grow: 1;
   display: flex;
+  flex-grow: 1;
   flex-direction: row;
   align-items: center;
   justify-content: center;

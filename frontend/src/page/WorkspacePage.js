@@ -6,10 +6,7 @@ import { throttle } from '../util'
 import ChannelList from '../organism/ChannelList'
 import ChannelHeader from '../organism/ChannelHeader'
 import ChannelListHeader from '../atom/ChannelListHeader'
-
-const BACKGROUND_LIST_COLOR = '#19181E'
-const BACKGROUND_CONTENTS_COLOR = '#1A1E21'
-const LABEL_DEFAULT_COLOR = '#a3a3a6'
+import { COLOR } from '../constant/style'
 
 function WorkspacePage(props) {
   const [lineWidth, setLineWidth] = useState(30)
@@ -34,28 +31,23 @@ function WorkspacePage(props) {
       {Modal}
       <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
       <MainArea>
-        <ChannelListSection width={lineWidth} color={LABEL_DEFAULT_COLOR}>
-          <ChannelListHeaderArea
-            backgroundColor={BACKGROUND_LIST_COLOR}
-            color={LABEL_DEFAULT_COLOR}
-          >
+        <ChannelListSection width={lineWidth}>
+          <ChannelListHeaderArea>
             <ChannelListHeader />
           </ChannelListHeaderArea>
-          <ChannelListArea backgroundColor={BACKGROUND_LIST_COLOR}>
+          <ChannelListArea>
             <ChannelList {...props} />
           </ChannelListArea>
         </ChannelListSection>
         <ListLine draggable="true" onDrag={e => throttle(moveLine(e), 100)} />
         <ContentsArea width={lineWidth}>
           <ChatArea>
-            <ChatHeader backgroundColor={BACKGROUND_CONTENTS_COLOR}>
+            <ChatHeader>
               <ChannelHeader {...props} />
             </ChatHeader>
-            <ChatContents backgroundColor={BACKGROUND_CONTENTS_COLOR}>
-              채팅방 내역 / 메시지에디터 위치
-            </ChatContents>
+            <ChatContents>채팅방 내역 / 메시지에디터 위치</ChatContents>
           </ChatArea>
-          <SideBarArea backgroundColor={BACKGROUND_CONTENTS_COLOR}>
+          <SideBarArea>
             <SideBarHeader></SideBarHeader>
             <SideBarContents></SideBarContents>
           </SideBarArea>
@@ -75,7 +67,7 @@ const GlobalHeader = styled.div`
   display: flex;
   width: 100%;
   height: 40px;
-  background: #141118;
+  background: ${COLOR.GLOBAL_HEADER_BACKGROUND};
 `
 const MainArea = styled.div`
   display: flex;
@@ -88,23 +80,23 @@ const ChannelListSection = styled.div`
   display: flex;
   flex-direction: column;
   width: ${props => props.width}%;
-  color: ${({ color }) => color};
+  color: ${COLOR.LABEL_DEFAULT_TEXT};
   height: 100%;
 `
 
 const ChannelListHeaderArea = styled.div`
   width: 100%;
   height: 60px;
-  background: ${({ backgroundColor }) => backgroundColor};
-  color: ${({ color }) => color};
+  background: ${COLOR.BACKGROUND_CHANNEL_LIST};
+  color: ${COLOR.LABEL_DEFAULT_TEXT};
   border: 1px solid rgba(255, 255, 255, 0.1);
 `
 
 const ChannelListArea = styled.div`
   width: 100%;
   height: calc(100% - 60px);
-  background: ${({ backgroundColor }) => backgroundColor};
-  color: ${({ color }) => color};
+  background: ${COLOR.BACKGROUND_CHANNEL_LIST};
+  color: ${COLOR.LABEL_DEFAULT_TEXT};
   border: 1px solid rgba(255, 255, 255, 0.1);
   overflow-y: auto;
   overflow-x: hidden;
@@ -121,7 +113,6 @@ const ListLine = styled.div`
     background: black;
     opacity: 100;
     position: relative;
-    /* margin: 0; */
     ::after {
       content: ' ';
       position: absolute;
@@ -158,7 +149,7 @@ const ChatHeader = styled.div`
   display: flex;
   width: 100%;
   height: 60px;
-  background: ${({ backgroundColor }) => backgroundColor};
+  background: ${COLOR.BACKGROUND_CONTENTS};
   border: 1px solid rgba(255, 255, 255, 0.1);
 `
 
@@ -166,7 +157,7 @@ const ChatContents = styled.div`
   display: flex;
   width: 100%;
   height: calc(100% - 60px);
-  background: ${({ backgroundColor }) => backgroundColor};
+  background: ${COLOR.BACKGROUND_CONTENTS};
   border: 1px solid rgba(255, 255, 255, 0.1);
 `
 
@@ -174,7 +165,7 @@ const SideBarArea = styled.div`
   display: flex;
   flex-direction: column;
   width: 30%;
-  background: ${({ backgroundColor }) => backgroundColor};
+  background: ${COLOR.BACKGROUND_CONTENTS};
   border: 1px solid rgba(255, 255, 255, 0.1);
 `
 

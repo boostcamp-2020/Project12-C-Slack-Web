@@ -3,10 +3,12 @@ import styled from 'styled-components'
 
 import Icon from '../Icon'
 import { LOCK, HASHTAG } from '../../constant/icon'
+import dmTitleGenerator from '../../util/dmTitleGenerator'
 
 function ChannelCard(props) {
   const { title, channelType } = props.channel
   const { color } = props
+
   return (
     <ChannelCardLabel>
       <IconImgArea>
@@ -16,7 +18,11 @@ function ChannelCard(props) {
           size="13px"
         />
       </IconImgArea>
-      <TitleLabel color={color}>{title}</TitleLabel>
+      <TitleLabel color={color}>
+        {props.channel.channelType == 2
+          ? dmTitleGenerator(props.member)
+          : title}
+      </TitleLabel>
     </ChannelCardLabel>
   )
 }
@@ -28,6 +34,9 @@ const ChannelCardLabel = styled.div`
   flex-direction: row;
   justify-content: start;
   align-items: baseline;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `
 const IconImgArea = styled.div`
   min-width: 12px;

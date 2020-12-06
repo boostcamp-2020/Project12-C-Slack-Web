@@ -10,6 +10,7 @@ import {
   faPlus,
   faChevronDown,
   faAt,
+  faThumbtack,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faStar,
@@ -37,3 +38,4 @@ export const COMMENTDOTS = faCommentDots
 export const COMMENTS = faComments
 export const AT = faAt
 export const BOOKMARK = faBookmark
+export const THUMBTACK = faThumbtack
