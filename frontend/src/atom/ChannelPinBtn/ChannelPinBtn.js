@@ -28,6 +28,7 @@ const ChannelPinBtnArea = styled.div`
 
 const IconStyle = styled.div`
   transform: rotate(-30deg);
+  padding-left: 2px;
   margin-right: 10px;
 `
 
