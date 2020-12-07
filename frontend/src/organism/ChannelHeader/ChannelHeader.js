@@ -8,21 +8,22 @@ import ChannelStarBtn from '../../atom/ChannelStarBtn'
 import ChannelPinBtn from '../../atom/ChannelPinBtn'
 import ChannelTopicBtn from '../../atom/ChannelTopicBtn'
 import ChannelMemberThumbnail from '../../atom/ChannelMemberThumbnail'
-import { modalAtom } from '../../store'
-import { useRecoilState } from 'recoil'
+import {
+  modalAtom,
+  currentChannelId,
+  currentChannelInfoQuery,
+} from '../../store'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import InviteUserToChannelModal from '../InviteUserToChannelModal'
-import useCurrentChannelInfo from '../../hooks/useCurrentChannelInfo'
 
 function ChannelHeader() {
   const { channelId } = useParams()
-  console.log(channelId)
-  const [channelInfo, setChannelInfo] = useCurrentChannelInfo()
+  const setCurrentChannel = useSetRecoilState(currentChannelId)
   const [modal, setModal] = useRecoilState(modalAtom)
-
+  const channelInfo = useRecoilValue(currentChannelInfoQuery)
   useEffect(() => {
-    setChannelInfo(channelId)
+    setCurrentChannel(channelId)
   }, [channelId])
-
   const openAddUserModal = () => {
     setModal(<InviteUserToChannelModal handleClose={() => setModal(null)} />)
   }
