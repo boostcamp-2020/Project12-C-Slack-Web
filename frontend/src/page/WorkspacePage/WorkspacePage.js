@@ -1,64 +1,88 @@
-import React, { useState, Suspense } from 'react'
+import React, { useState, Suspense, useEffect } from 'react'
 import styled from 'styled-components'
-import { useRecoilValue } from 'recoil'
-import { modalAtom } from '../store'
-import { throttle } from '../util'
-import ChannelList from '../organism/ChannelList'
-import ChannelHeader from '../organism/ChannelHeader'
-import ChannelListHeader from '../atom/ChannelListHeader'
-import { COLOR } from '../constant/style'
+import { Route, useParams, useRouteMatch } from 'react-router-dom'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { modalAtom, workspace } from '../../store'
+import { getWorkspaceUserInfo } from '../../api/workspace'
+import { throttle } from '../../util'
+import usePromise from '../../hooks/usePromise'
+import ChannelList from '../../organism/ChannelList'
+import ChannelListHeader from '../../atom/ChannelListHeader'
+import ChatRoom from '../../organism/ChatRoom'
+import { COLOR } from '../../constant/style'
 
 function WorkspacePage(props) {
-  const [lineWidth, setLineWidth] = useState(30)
+  const { path } = useRouteMatch()
+  const { workspaceId, channelId } = useParams()
+  const [lineWidth, setLineWidth] = useState(20)
   const Modal = useRecoilValue(modalAtom)
-
+  const setWorkspaceUserInfo = useSetRecoilState(workspace)
+  const [loading, resolved, error] = usePromise(
+    () => getWorkspaceUserInfo({ workspaceId }),
+    [],
+  )
+  if (loading) return <div>loading...</div>
+  if (error) return <div>{error.toString()}</div>
+  if (!resolved) return null
+  setWorkspaceUserInfo(resolved)
   const moveLine = e => {
     if (e.pageX === 0) return false
     let mouse = e.pageX
     let viewWidth = e.view.innerWidth
 
     let width = (mouse / viewWidth) * 100
-
     if (width < 20) {
       setLineWidth(20)
     } else {
       setLineWidth(width)
     }
   }
-
+  const switching = () => {
+    switch (channelId) {
+      case 'threads':
+        return <div>준비 중 ^-^</div>
+      case 'all-dms':
+        return <div>준비 중 ^-^</div>
+      case 'saved-page':
+        return <div>준비 중 ^-^</div>
+      case 'activity-page':
+        return <div>준비 중 ^-^</div>
+      case 'more':
+        return <div>준비 중 ^-^</div>
+      default:
+        return <ChatRoom />
+    }
+  }
   return (
-    <PageStyle>
-      {Modal}
-      <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
-      <MainArea>
-        <ChannelListSection width={lineWidth}>
-          <ChannelListHeaderArea>
-            <ChannelListHeader />
-          </ChannelListHeaderArea>
-          <ChannelListArea>
-            <ChannelList {...props} />
-          </ChannelListArea>
-        </ChannelListSection>
-        <ListLine draggable="true" onDrag={e => throttle(moveLine(e), 100)} />
-        <ContentsArea width={lineWidth}>
-          <ChatArea>
-            <ChatHeader>
-              <ChannelHeader {...props} />
-            </ChatHeader>
-            <ChatContents>채팅방 내역 / 메시지에디터 위치</ChatContents>
-          </ChatArea>
-          <SideBarArea>
-            <SideBarHeader></SideBarHeader>
-            <SideBarContents></SideBarContents>
-          </SideBarArea>
-        </ContentsArea>
-      </MainArea>
-    </PageStyle>
+    <Suspense fallback={<div>loading...</div>}>
+      <PageStyle>
+        {Modal}
+        <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
+        <MainArea>
+          <ChannelListSection width={lineWidth}>
+            <ChannelListHeaderArea>
+              <ChannelListHeader />
+            </ChannelListHeaderArea>
+            <ChannelListArea>
+              <ChannelList />
+            </ChannelListArea>
+          </ChannelListSection>
+          <ListLine draggable="true" onDrag={e => throttle(moveLine(e), 100)} />
+          <ContentsArea width={lineWidth}>
+            {switching()}
+            <SideBarArea>
+              <SideBarHeader></SideBarHeader>
+              <SideBarContents></SideBarContents>
+            </SideBarArea>
+          </ContentsArea>
+        </MainArea>
+      </PageStyle>
+    </Suspense>
   )
 }
 
 const PageStyle = styled.div`
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -135,30 +159,6 @@ const ContentsArea = styled.div`
   flex-direction: row;
   width: ${props => 100 - props.width}%;
   height: 100%;
-`
-
-const ChatArea = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 70%;
-  background: blue;
-`
-
-const ChatHeader = styled.div`
-  display: flex;
-  width: 100%;
-  height: 60px;
-  background: ${COLOR.BACKGROUND_CONTENTS};
-  border: 1px solid rgba(255, 255, 255, 0.1);
-`
-
-const ChatContents = styled.div`
-  display: flex;
-  width: 100%;
-  height: calc(100% - 60px);
-  background: ${COLOR.BACKGROUND_CONTENTS};
-  border: 1px solid rgba(255, 255, 255, 0.1);
 `
 
 const SideBarArea = styled.div`

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { toast } from 'react-toastify'
-import { useHistory } from 'react-router'
+import { useParams } from 'react-router-dom'
 import Icon from '../../atom/Icon'
 import { ADDUSER, INFOCIRCLE } from '../../constant/icon'
 import ChannelCard from '../../atom/ChannelCard'
@@ -9,25 +8,23 @@ import ChannelStarBtn from '../../atom/ChannelStarBtn'
 import ChannelPinBtn from '../../atom/ChannelPinBtn'
 import ChannelTopicBtn from '../../atom/ChannelTopicBtn'
 import ChannelMemberThumbnail from '../../atom/ChannelMemberThumbnail'
-import { modalAtom } from '../../store'
-import { useRecoilState } from 'recoil'
+import { modalAtom, currentChannelId, currentChannelInfo } from '../../store'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import InviteUserToChannelModal from '../InviteUserToChannelModal'
-import useCurrentChannelInfo from '../../hooks/useCurrentChannelInfo'
 import { COLOR } from '../../constant/style'
 
-function ChannelHeader(props) {
-  const { channelId } = props.match.params
-  const [channelInfo, setChannelInfo] = useCurrentChannelInfo()
+function ChannelHeader() {
+  const { channelId } = useParams()
+  const setCurrentChannel = useSetRecoilState(currentChannelId)
   const [modal, setModal] = useRecoilState(modalAtom)
-
+  const channelInfo = useRecoilValue(currentChannelInfo)
   useEffect(() => {
-    setChannelInfo(channelId)
+    setCurrentChannel(channelId)
   }, [channelId])
-
   const openAddUserModal = () => {
     setModal(<InviteUserToChannelModal handleClose={() => setModal(null)} />)
   }
-
+  console.log(channelInfo)
   return Object.keys(channelInfo).length !== 0 ? (
     <ChannelHeaderStyle>
       <ChannelInfo>
@@ -37,10 +34,10 @@ function ChannelHeader(props) {
             color={COLOR.LABEL_SELECT_TEXT}
             member={channelInfo.member}
           />
-          <ChannelStarBtn channel={channelInfo} {...props} />
+          <ChannelStarBtn channel={channelInfo} />
         </MainInfo>
         <SubInfo>
-          {channelInfo.pinnedCount !== 2 && (
+          {channelInfo.pinnedCount !== 0 && (
             <>
               <ChannelPinBtn count={channelInfo.pinnedCount} />
               <Divider>|</Divider>

@@ -57,7 +57,6 @@ function ChannelList(props) {
         key={index}
         sectionName={section[0]}
         lists={section[1]}
-        {...props}
       ></SectionLabel>
     )
   })
