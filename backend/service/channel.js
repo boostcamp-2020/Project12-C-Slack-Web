@@ -3,10 +3,7 @@ import { WorkspaceUserInfo } from '../model/WorkspaceUserInfo'
 import { ChannelConfig } from '../model/ChannelConfig'
 import statusCode from '../util/statusCode'
 import resMessage from '../util/resMessage'
-import mongoose from 'mongoose'
 import { verifyRequiredParams, dbErrorHandler } from '../util'
-
-const ObjectId = mongoose.Types.ObjectId
 
 const createChannel = async params => {
   verifyRequiredParams(params.creator, params.title, params.channelType)
