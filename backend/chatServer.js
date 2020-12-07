@@ -2,6 +2,7 @@ import { config as dotenv } from 'dotenv'
 import express from 'express'
 import { createServer } from 'http'
 import createChatServer from 'socket.io'
+import { createChatMessage } from './service/chat'
 dotenv()
 
 const server = createServer(express())
@@ -16,11 +17,22 @@ namespace.use((socket, next) => {
 })
 
 namespace.on('connection', socket => {
-  socket.on('new message', data => {
+  socket.on('new message', async data => {
     // TODO 특정 채널로 전송하도록 변경, db에 저장 필요 (현재는 자신 제외 전체 전송)
-    socket.broadcast.emit('new message', {
-      message: data,
+    const { channelId, creator } = socket.handshake.query
+    const { contents } = data
+    const { data: result } = await createChatMessage({
+      creator,
+      channelId,
+      contents,
     })
+    socket.broadcast.to(channelId).emit('new message', {
+      message: { ...data, _id: result._id, createdAt: result.createdAt },
+    })
+  })
+  socket.on('join-room', roomId => {
+    socket.join(roomId)
+    console.log('joined', roomId)
   })
 })
 
