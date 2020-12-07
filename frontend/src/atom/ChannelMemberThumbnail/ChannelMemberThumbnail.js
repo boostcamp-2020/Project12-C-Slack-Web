@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { COLOR } from '../../constant/style'
 
 function ChannelMemberThumbnail(props) {
   const { member, memberNum } = props
@@ -19,6 +20,8 @@ function ChannelMemberThumbnail(props) {
 
 const MemberInfoArea = styled.div`
   width: auto;
+  height: 25px;
+  margin-right: 10px;
   display: flex;
   flex-direction: row;
   border-radius: 4px;
@@ -35,7 +38,7 @@ const ImagesArea = styled.div`
 const Thumbnail = styled.img`
   width: 25px;
   height: 25px;
-  border: 1px solid white;
+  border: 1px solid ${COLOR.BACKGROUND_CONTENTS};
   border-radius: 4px;
   margin-right: -5px;
   z-index: ${({ index }) => index};

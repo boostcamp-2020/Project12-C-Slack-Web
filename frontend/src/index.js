@@ -4,7 +4,7 @@ import { createGlobalStyle } from 'styled-components'
 import './index.css'
 import Channel from './page/channel/Channel'
 import WorkspacePage from './page/WorkspacePage'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
 import LoginPage from './page/login/Login'
 import CreateWorkspace from './page/createWorkspace/CreateWorkspace'
@@ -38,10 +38,13 @@ const App = () => {
             path="/create-workspace"
             component={Auth(CreateWorkspace, true)}
           />
-          <Route
-            path="/workspace/:channelId"
-            component={Auth(WorkspacePage, false)}
-          />
+          <Switch>
+            <Route
+              path="/workspace/:workspaceId/:channelId"
+              component={Auth(WorkspacePage, false)}
+            />
+            <Route path="/workspace/:channelId" component={WorkspacePage} />
+          </Switch>
         </BrowserRouter>
       </RecoilRoot>
     </React.StrictMode>

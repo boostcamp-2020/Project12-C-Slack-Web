@@ -3,7 +3,10 @@ import { WorkspaceUserInfo } from '../model/WorkspaceUserInfo'
 import { ChannelConfig } from '../model/ChannelConfig'
 import statusCode from '../util/statusCode'
 import resMessage from '../util/resMessage'
+import mongoose from 'mongoose'
 import { verifyRequiredParams, dbErrorHandler } from '../util'
+
+const ObjectId = mongoose.Types.ObjectId
 
 const createChannel = async params => {
   verifyRequiredParams(params.creator, params.title, params.channelType)
@@ -40,19 +43,7 @@ const getChannelListDB = async ({ workspaceUserInfoId }) => {
   verifyRequiredParams(workspaceUserInfoId)
   const [userInfo, channelConfig] = await Promise.all([
     dbErrorHandler(() =>
-      WorkspaceUserInfo.find(
-        {
-          _id: workspaceUserInfoId,
-        },
-        {
-          _id: 1,
-          displayName: 1,
-          profileUrl: 1,
-          isActive: 1,
-          sections: 1,
-          workspaceId: 1,
-        },
-      ).lean(),
+      WorkspaceUserInfo.getWorkspaceUserInfo(workspaceUserInfoId),
     ),
     dbErrorHandler(() => ChannelConfig.getChannelList(workspaceUserInfoId)),
   ])
