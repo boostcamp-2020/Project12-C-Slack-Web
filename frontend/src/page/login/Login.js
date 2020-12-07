@@ -4,7 +4,7 @@ import LoginButton from '../../atom/LoginButton/LoginButton'
 import { GITHUB } from '../../constant/icon'
 import Icon from '../../atom/Icon'
 import styled from 'styled-components'
-import SlackIcon from '../../atom/SlackIcon'
+import SlackIcon from '../../atom/SlackImage'
 
 const baseURL =
   process.env.NODE_ENV === 'development'
