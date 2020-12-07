@@ -1,15 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense, useEffect } from 'react'
 import styled from 'styled-components'
-import { Route, useLocation } from 'react-router-dom'
-import { useRecoilValue } from 'recoil'
-import { modalAtom } from '../../store'
-
+import { Route, useParams, useRouteMatch } from 'react-router-dom'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { modalAtom, workspace } from '../../store'
+import { getWorkspaceUserInfo } from '../../api/workspace'
+import usePromise from '../../hooks/usePromise'
 import ChannelList from '../../organism/ChannelList'
 import ChatRoom from '../../organism/ChatRoom'
 
 function WorkspacePage(props) {
+  const { path } = useRouteMatch()
+  const { workspaceId } = useParams()
   const [lineWidth, setLineWidth] = useState(30)
   const Modal = useRecoilValue(modalAtom)
+  const setWorkspaceUserInfo = useSetRecoilState(workspace)
+  const [loading, resolved, error] = usePromise(
+    () => getWorkspaceUserInfo({ workspaceId }),
+    [],
+  )
+  if (loading) return <div>loading...</div>
+  if (error) return <div>{error.toString()}</div>
+  if (!resolved) return null
+  setWorkspaceUserInfo(resolved)
   const moveLine = e => {
     if (e.pageX === 0) return false
     let mouse = e.pageX
@@ -22,22 +34,23 @@ function WorkspacePage(props) {
       setLineWidth(width)
     }
   }
-
   return (
-    <PageStyle>
-      {Modal}
-      <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
-      <MainArea>
-        <ChannelListArea width={lineWidth}>
-          <ChannelList />
-        </ChannelListArea>
-        <ListLine draggable="true" onDrag={moveLine} />
-        <ContentsArea width={lineWidth}>
-          <Route path="/:channelId" component={ChatRoom} />
-          <SideBarArea></SideBarArea>
-        </ContentsArea>
-      </MainArea>
-    </PageStyle>
+    <Suspense fallback={<div>loading...</div>}>
+      <PageStyle>
+        {Modal}
+        <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
+        <MainArea>
+          <ChannelListArea width={lineWidth}>
+            <ChannelList />
+          </ChannelListArea>
+          <ListLine draggable="true" onDrag={moveLine} />
+          <ContentsArea width={lineWidth}>
+            <Route path={`${path}/:channelId`} component={ChatRoom} />
+            <SideBarArea></SideBarArea>
+          </ContentsArea>
+        </MainArea>
+      </PageStyle>
+    </Suspense>
   )
 }
 
