@@ -14,6 +14,12 @@ const createChannel = async params => {
       message: resMessage.DUPLICATE_VALUE_ERROR,
     }
   const result = await dbErrorHandler(() => Channel.create(params))
+  await dbErrorHandler(() =>
+    ChannelConfig.create({
+      channelId: result._id,
+      workspaceUserInfoId: result.creator,
+    }),
+  )
   return {
     code: statusCode.CREATED,
     data: result,
@@ -66,11 +72,9 @@ const getChannelListDB = async ({ workspaceUserInfoId }) => {
 
 const getChannelHeaderInfoDB = async ({ channelId, workspaceUserInfoId }) => {
   verifyRequiredParams(channelId, workspaceUserInfoId)
-
   const [result] = await dbErrorHandler(() =>
     ChannelConfig.getChannelHeaderInfo(channelId, workspaceUserInfoId),
   )
-
   return {
     code: statusCode.OK,
     result,
