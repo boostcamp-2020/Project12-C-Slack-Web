@@ -140,6 +140,16 @@ const invited = async ({ userId, code }) => {
   }
 }
 
+const checkDuplicateName = async ({ name }) => {
+  verifyRequiredParams(name)
+  const result = await dbErrorHandler(() => Workspace.findOne({ name: name }))
+  return {
+    code: statusCode.OK,
+    data: result ? true : false,
+    success: true,
+  }
+}
+
 const getWorkspaceUserInfo = async ({ userId, workspaceId }) => {
   verifyRequiredParams(userId, workspaceId)
   const result = await dbErrorHandler(() =>
@@ -160,5 +170,6 @@ module.exports = {
   getWorkspaces,
   invite,
   invited,
+  checkDuplicateName,
   getWorkspaceUserInfo,
 }

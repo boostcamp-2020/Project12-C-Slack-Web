@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import Description from '../../atom/Description/Description'
 import MainDescription from '../../atom/MainDescription'
@@ -6,12 +6,19 @@ import Button from '../../atom/Button'
 import request from '../../util/request'
 import { useHistory } from 'react-router'
 import { toast } from 'react-toastify'
+import Input from '../../atom/Input'
+import { COLOR } from '../../constant/style'
+
+const MAX_CHANNEL_NAME = 80
+const MAXIMUM_NAME_LENGH_ERROR =
+  'channel names can’t be longer than 80 characters.'
 
 const CreateWorkspaceInitChannel = ({ workspaceName }) => {
   const history = useHistory()
+  const [nameError, setNameError] = useState('')
   const [channelName, setChannelName] = useState('')
   const checkChannelName = channelName => {
-    if (channelName.length > 0 && channelName.length < 80) {
+    if (channelName.length >= 0 && channelName.length <= MAX_CHANNEL_NAME) {
       return true
     }
     return false
@@ -33,8 +40,14 @@ const CreateWorkspaceInitChannel = ({ workspaceName }) => {
       })
     }
   }
+
   const handleName = e => {
     setChannelName(e.target.value)
+    if (MAX_CHANNEL_NAME < e.target.value.length)
+      setNameError(MAXIMUM_NAME_LENGH_ERROR)
+    else {
+      setNameError('')
+    }
   }
   return (
     <>
@@ -45,7 +58,12 @@ const CreateWorkspaceInitChannel = ({ workspaceName }) => {
         프로젝트, 캠페인, 이벤트 또는 성사하려는 거래 등 무엇이든 될 수
         있습니다.
       </Description>
-      <StyledInput onChange={handleName}></StyledInput>
+      <Input
+        handleChange={handleName}
+        value={channelName}
+        maxLength={MAX_CHANNEL_NAME}
+      ></Input>
+      <StyledErrorMessage>{nameError}</StyledErrorMessage>
       <StyledDiv>
         <Button handleClick={() => createWorkspace(channelName)}>생성</Button>
       </StyledDiv>
@@ -60,6 +78,13 @@ const StyledInput = styled.input`
 
 const StyledDiv = styled.div`
   margin-top: 30px;
+`
+
+const StyledErrorMessage = styled.span`
+  display: inline-block;
+  font-weight: 700;
+  color: ${COLOR.RED};
+  word-break: break-all;
 `
 
 export default CreateWorkspaceInitChannel
