@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId
 const Schema = mongoose.Schema
 
 const workspaceUserInfoSchema = mongoose.Schema(
@@ -50,6 +51,57 @@ const workspaceUserInfoSchema = mongoose.Schema(
   },
   { timestamps: true },
 )
+
+workspaceUserInfoSchema.statics.getWorkspaceUserInfo = async function (
+  workspaceUserInfoId,
+) {
+  try {
+    const WorkspaceUserInfo = this
+    const result = await WorkspaceUserInfo.aggregate([
+      {
+        $match: {
+          $expr: {
+            $and: [{ $eq: ['$_id', ObjectId(workspaceUserInfoId)] }],
+          },
+        },
+      },
+
+      {
+        $lookup: {
+          from: 'workspaces',
+          let: {
+            workspaceId: '$workspaceId',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [{ $eq: ['$_id', '$$workspaceId'] }],
+                },
+              },
+            },
+          ],
+          as: 'workspaceId',
+        },
+      },
+      { $unwind: '$workspaceId' },
+      {
+        $project: {
+          _id: 1,
+          displayName: 1,
+          profileUrl: 1,
+          isActive: 1,
+          sections: 1,
+          workspaceId: 1,
+        },
+      },
+    ])
+
+    return result
+  } catch (err) {
+    return err
+  }
+}
 
 const WorkspaceUserInfo = mongoose.model(
   'WorkspaceUserInfo',

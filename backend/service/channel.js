@@ -42,60 +42,8 @@ const checkDuplicate = async ({ title, workspaceId }) => {
 const getChannelListDB = async ({ workspaceUserInfoId }) => {
   verifyRequiredParams(workspaceUserInfoId)
   const [userInfo, channelConfig] = await Promise.all([
-    dbErrorHandler(
-      () =>
-        WorkspaceUserInfo.aggregate([
-          {
-            $match: {
-              $expr: {
-                $and: [{ $eq: ['$_id', ObjectId(workspaceUserInfoId)] }],
-              },
-            },
-          },
-
-          {
-            $lookup: {
-              from: 'workspaces',
-              let: {
-                workspaceId: '$workspaceId',
-              },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $and: [{ $eq: ['$_id', '$$workspaceId'] }],
-                    },
-                  },
-                },
-              ],
-              as: 'workspaceId',
-            },
-          },
-          { $unwind: '$workspaceId' },
-          {
-            $project: {
-              _id: 1,
-              displayName: 1,
-              profileUrl: 1,
-              isActive: 1,
-              sections: 1,
-              workspaceId: 1,
-            },
-          },
-        ]),
-      // WorkspaceUserInfo.find(
-      //   {
-      //     _id: workspaceUserInfoId,
-      //   },
-      //   {
-      //     _id: 1,
-      //     displayName: 1,
-      //     profileUrl: 1,
-      //     isActive: 1,
-      //     sections: 1,
-      //     workspaceId: 1,
-      //   },
-      // ).lean(),
+    dbErrorHandler(() =>
+      WorkspaceUserInfo.getWorkspaceUserInfo(workspaceUserInfoId),
     ),
     dbErrorHandler(() => ChannelConfig.getChannelList(workspaceUserInfoId)),
   ])

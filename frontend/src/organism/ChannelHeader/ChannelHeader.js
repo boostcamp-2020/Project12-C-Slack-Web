@@ -21,7 +21,6 @@ function ChannelHeader(props) {
   const [modal, setModal] = useRecoilState(modalAtom)
 
   useEffect(() => {
-    console.log(channelInfo)
     setChannelInfo(channelId)
   }, [channelId])
 
