@@ -12,7 +12,7 @@ const MyWorkspaceSection = () => {
     })()
   }, [])
 
-  const createMyWorkspace = () => {
+  const getMyWorkspace = () => {
     if (!workspaceData) {
       return <div></div>
     }
@@ -21,7 +21,7 @@ const MyWorkspaceSection = () => {
         <MyWorkspace
           key={'MyWorkspace' + index}
           workspaceName={data.name}
-          path={'/workspace/' + data._id}
+          path={`/workspace/${data._id}/${data.default_channel}`}
         />
       )
     })
@@ -31,7 +31,7 @@ const MyWorkspaceSection = () => {
     <>
       <section>
         <MainDescription>내 워크스페이스</MainDescription>
-        {createMyWorkspace()}
+        {getMyWorkspace()}
       </section>
     </>
   )
