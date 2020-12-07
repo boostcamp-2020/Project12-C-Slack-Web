@@ -1,4 +1,4 @@
-import { atom, selector, selectorFamily } from 'recoil'
+import { atom, selector } from 'recoil'
 import { getChannelHeaderInfo } from './api/channel'
 
 export const workspace = atom({
@@ -11,9 +11,10 @@ export const currentChannelId = atom({
   default: '',
 })
 
-export const currentChannelInfo = selectorFamily({
+export const currentChannelInfo = selector({
   key: 'currentChannel',
-  get: channelId => async ({ get }) => {
+  get: async ({ get }) => {
+    const channelId = get(currentChannelId)
     const workspaceUserInfoId = get(workspace)._id
     if (channelId && workspaceUserInfoId) {
       const { result } = await getChannelHeaderInfo({
@@ -24,11 +25,6 @@ export const currentChannelInfo = selectorFamily({
     }
     return {}
   },
-})
-
-export const currentChannelInfoQuery = selector({
-  key: 'currentChannelInfoQuery',
-  get: async ({ get }) => get(currentChannelInfo(get(currentChannelId))),
 })
 
 export const channelAtom = atom({
