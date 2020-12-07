@@ -5,6 +5,7 @@ import resMessage from '../util/resMessage'
 import { verifyRequiredParams, dbErrorHandler } from '../util/'
 import { encrypt, decrypt } from '../util/encryption'
 import { Channel } from '../model/Channel'
+import { ChannelConfig } from '../model/ChannelConfig'
 const mongoose = require('mongoose')
 const ObjectId = mongoose.Types.ObjectId
 
@@ -31,6 +32,12 @@ const createWorkspace = async params => {
       creator: workspaceUserInfoData._id,
       title: params.channelName,
       channelType: 1,
+    }),
+  )
+  await dbErrorHandler(() =>
+    ChannelConfig.create({
+      channelId: ObjectId(channelData._id),
+      workspaceUserInfoId: ObjectId(channelData.creator),
     }),
   )
   await dbErrorHandler(() =>
