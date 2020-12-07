@@ -22,7 +22,6 @@ function InviteUserToChannelModal({ handleClose }) {
       channelId: channelInfo.channelId._id,
       workspaceId: workspaceUserInfo.workspaceId,
     })
-    console.log(data.result)
   }
 
   const handleDebounce = useRef(debounce(SearchUser, 1000)).current
@@ -31,7 +30,7 @@ function InviteUserToChannelModal({ handleClose }) {
     if (debounce) debounce()
   }
 
-  return Object.keys(channelInfo).length !== 0 ? (
+  return (
     <Modal handleClose={handleClose}>
       <ModalForm>
         <Header>
@@ -63,8 +62,6 @@ function InviteUserToChannelModal({ handleClose }) {
         </ContentsArea>
       </ModalForm>
     </Modal>
-  ) : (
-    <div>asd</div>
   )
 }
 
