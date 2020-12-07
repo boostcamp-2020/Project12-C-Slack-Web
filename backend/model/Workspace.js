@@ -13,6 +13,10 @@ const workspaceSchema = mongoose.Schema(
     profileUrl: {
       type: String,
     },
+    default_channel: {
+      type: Schema.Types.ObjectId,
+      ref: 'Channel',
+    },
   },
   { timestamps: true },
 )

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
-import { channelInfoAtom, workspaceUserInfoAtom } from '../../store'
+import { currentChannelInfo, workspaceUserInfoAtom } from '../../store'
 
 import Button from '../../atom/Button'
 import Icon from '../../atom/Icon'
@@ -11,15 +11,10 @@ import request from '../../util/request'
 import Modal from '../../atom/Modal'
 
 function InviteUserToChannelModal({ handleClose }) {
-  const channelInfo = useRecoilValue(channelInfoAtom)
+  const channelInfo = useRecoilValue(currentChannelInfo)
   const workspaceUserInfo = useRecoilValue(workspaceUserInfoAtom)
   const [keyword, setKeyword] = useState('')
   const [inviteUserList, setInviteUserList] = useState([])
-
-  useEffect(() => {
-    console.log(channelInfo)
-    console.log(workspaceUserInfo)
-  }, [])
 
   const SearchUser = async () => {
     const { data } = await request.POST('/api/search/user', {
@@ -27,7 +22,6 @@ function InviteUserToChannelModal({ handleClose }) {
       channelId: channelInfo.channelId._id,
       workspaceId: workspaceUserInfo.workspaceId,
     })
-    console.log(data.result)
   }
 
   const handleDebounce = useRef(debounce(SearchUser, 1000)).current

@@ -1,15 +1,22 @@
 import { Workspace } from '../model/Workspace'
+import { User } from '../model/User'
 import { WorkspaceUserInfo } from '../model/WorkspaceUserInfo'
 import statusCode from '../util/statusCode'
 import resMessage from '../util/resMessage'
 import { verifyRequiredParams, dbErrorHandler } from '../util/'
 import { encrypt, decrypt } from '../util/encryption'
 import { Channel } from '../model/Channel'
+import { ChannelConfig } from '../model/ChannelConfig'
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId
 
 const createWorkspace = async params => {
   verifyRequiredParams(params.creator, params.name, params.channelName)
   const findedWorkspaceData = await dbErrorHandler(() =>
     Workspace.findOne({ name: params.name }),
+  )
+  const findedUser = await dbErrorHandler(() =>
+    User.findOne({ _id: params.creator }),
   )
   if (findedWorkspaceData) {
     throw {
@@ -22,6 +29,10 @@ const createWorkspace = async params => {
     WorkspaceUserInfo.create({
       userId: params.creator,
       workspaceId: workspaceData._id,
+      title: findedUser.fullName,
+      fullName: findedUser.fullName,
+      displayName: findedUser.fullName,
+      profileUrl: findedUser.profileUrl,
     }),
   )
   const channelData = await dbErrorHandler(() =>
@@ -30,6 +41,19 @@ const createWorkspace = async params => {
       title: params.channelName,
       channelType: 1,
     }),
+  )
+  await dbErrorHandler(() =>
+    ChannelConfig.create({
+      channelId: ObjectId(channelData._id),
+      workspaceUserInfoId: ObjectId(channelData.creator),
+      sectionName: null,
+    }),
+  )
+  await dbErrorHandler(() =>
+    Workspace.updateOne(
+      { _id: ObjectId(workspaceData._id) },
+      { default_channel: ObjectId(channelData._id) },
+    ),
   )
   return {
     code: statusCode.CREATED,
@@ -82,15 +106,23 @@ const invited = async ({ userId, code }) => {
   const deltaMinute = deltaTime / 1000 / 60
 
   if (deltaMinute < 60) {
-    const workspaceUserData = await dbErrorHandler(() =>
-      WorkspaceUserInfo.findOne({
-        workspaceId,
-        userId,
-      }),
-    )
+    const { data: workspaceUserData } = await getWorkspaceUserInfo({
+      workspaceId,
+      userId,
+    })
+
+    const findedUser = await dbErrorHandler(() => User.findOne({ _id: userId }))
+
     if (!workspaceUserData) {
       const createdWorkspaceUserData = await dbErrorHandler(() =>
-        WorkspaceUserInfo.create({ userId, workspaceId }),
+        WorkspaceUserInfo.create({
+          userId,
+          workspaceId,
+          title: findedUser.fullName,
+          fullName: findedUser.fullName,
+          displayName: findedUser.fullName,
+          profileUrl: findedUser.profileUrl,
+        }),
       )
       return {
         code: statusCode.CREATED,
@@ -118,10 +150,26 @@ const checkDuplicateName = async ({ name }) => {
   }
 }
 
+const getWorkspaceUserInfo = async ({ userId, workspaceId }) => {
+  verifyRequiredParams(userId, workspaceId)
+  const result = await dbErrorHandler(() =>
+    WorkspaceUserInfo.findOne({
+      workspaceId,
+      userId,
+    }),
+  )
+  return {
+    code: statusCode.OK,
+    data: result,
+    success: true,
+  }
+}
+
 module.exports = {
   createWorkspace,
   getWorkspaces,
   invite,
   invited,
   checkDuplicateName,
+  getWorkspaceUserInfo,
 }

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { toast } from 'react-toastify'
-import { useHistory } from 'react-router'
+import { useParams } from 'react-router-dom'
 import Icon from '../../atom/Icon'
 import { ADDUSER, INFOCIRCLE } from '../../constant/icon'
 import ChannelCard from '../../atom/ChannelCard'
@@ -9,102 +8,126 @@ import ChannelStarBtn from '../../atom/ChannelStarBtn'
 import ChannelPinBtn from '../../atom/ChannelPinBtn'
 import ChannelTopicBtn from '../../atom/ChannelTopicBtn'
 import ChannelMemberThumbnail from '../../atom/ChannelMemberThumbnail'
-import { modalAtom } from '../../store'
-import { useRecoilState } from 'recoil'
+import { modalAtom, currentChannelId, currentChannelInfo } from '../../store'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import InviteUserToChannelModal from '../InviteUserToChannelModal'
-import useCurrentChannelInfo from '../../hooks/useCurrentChannelInfo'
+import { COLOR } from '../../constant/style'
 
-function ChannelHeader(props) {
-  const { channelId } = props.match.params
-  const [channelInfo, setChannelInfo] = useCurrentChannelInfo()
+function ChannelHeader() {
+  const { channelId } = useParams()
+  const setCurrentChannel = useSetRecoilState(currentChannelId)
   const [modal, setModal] = useRecoilState(modalAtom)
-
+  const channelInfo = useRecoilValue(currentChannelInfo)
   useEffect(() => {
-    setChannelInfo(channelId)
+    setCurrentChannel(channelId)
   }, [channelId])
-
   const openAddUserModal = () => {
     setModal(<InviteUserToChannelModal handleClose={() => setModal(null)} />)
   }
-
+  console.log(channelInfo)
   return Object.keys(channelInfo).length !== 0 ? (
     <ChannelHeaderStyle>
       <ChannelInfo>
         <MainInfo>
-          <ChannelCard channel={channelInfo.channelId} color="black" />
-          <ChannelStarBtn channel={channelInfo} {...props} />
+          <ChannelCard
+            channel={channelInfo.channelId}
+            color={COLOR.LABEL_SELECT_TEXT}
+            member={channelInfo.member}
+          />
+          <ChannelStarBtn channel={channelInfo} />
         </MainInfo>
         <SubInfo>
           {channelInfo.pinnedCount !== 0 && (
             <>
               <ChannelPinBtn count={channelInfo.pinnedCount} />
-              <div>&nbsp;&nbsp;|&nbsp;&nbsp;</div>
+              <Divider>|</Divider>
             </>
           )}
           <ChannelTopicBtn topic={channelInfo.channelId.topic} />
         </SubInfo>
       </ChannelInfo>
-      <ChannelMemberInfo>
-        <ChannelMemberThumbnail
-          member={channelInfo.member}
-          memberNum={channelInfo.member.length}
-        />
-      </ChannelMemberInfo>
-      <ChannelOption>
-        <IconBtn onClick={openAddUserModal}>
-          <Icon icon={ADDUSER} />
-        </IconBtn>
-        <IconBtn>
-          <Icon icon={INFOCIRCLE} />
-        </IconBtn>
-      </ChannelOption>
+      <ChannelButtonArea>
+        <ChannelMemberInfo color={COLOR.LABEL_SELECT_SUB_TEXT}>
+          <ChannelMemberThumbnail
+            member={channelInfo.member}
+            memberNum={channelInfo.member.length}
+          />
+        </ChannelMemberInfo>
+        <ChannelOption>
+          <IconBtn onClick={openAddUserModal}>
+            <Icon icon={ADDUSER} color={COLOR.LABEL_SELECT_SUB_TEXT} />
+          </IconBtn>
+          <IconBtn>
+            <Icon icon={INFOCIRCLE} color={COLOR.LABEL_SELECT_SUB_TEXT} />
+          </IconBtn>
+        </ChannelOption>
+      </ChannelButtonArea>
     </ChannelHeaderStyle>
   ) : (
-    <div>loading</div>
+    <div></div>
   )
 }
 
 const ChannelHeaderStyle = styled.div`
-  margin: 10px 10px;
+  width: 100%;
+  height: auto;
+  margin: auto 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  height: auto;
+  overflow: hidden;
 `
 
 const ChannelInfo = styled.div`
-  flex-grow: 2;
+  height: 100%;
+  margin-right: 5px;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `
 
 const MainInfo = styled.div`
+  width: 100%;
+  font-weight: 800;
+  font-size: 17px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-weight: 800;
-  font-size: 17px;
+
   cursor: pointer;
 `
 
 const SubInfo = styled.div`
   width: 100%;
   height: 100%;
+  color: ${COLOR.LABEL_SELECT_SUB_TEXT};
+  font-size: 13px;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  font-size: 13px;
+
   cursor: pointer;
 `
 
-const ChannelMemberInfo = styled.div`
-  flex-grow: 1;
+const Divider = styled.div`
+  margin: 0 10px;
+`
+
+const ChannelButtonArea = styled.div`
+  width: 155px;
   display: flex;
   flex-direction: row;
   justify-content: center;
+  align-items: center;
+`
+
+const ChannelMemberInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  color: ${({ color }) => color};
   cursor: pointer;
 `
 
@@ -117,8 +140,8 @@ const IconBtn = styled.div`
   width: 30px;
   height: 30px;
   margin: 0 5px;
-  flex-grow: 1;
   display: flex;
+  flex-grow: 1;
   flex-direction: row;
   align-items: center;
   justify-content: center;

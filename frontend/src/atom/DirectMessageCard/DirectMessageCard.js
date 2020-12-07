@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import dmTitleGenerator from '../../util/dmTitleGenerator'
 import UserProfileImg from '../UserProfileImg'
 
 function DirectMessageCard(props) {
@@ -19,30 +20,25 @@ function DirectMessageCard(props) {
           <UserProfileImgAndCount size="18">
             <UserProfileImg
               user={directMessage.member[0]}
-              size="13"
+              size="14"
               showActive={false}
             />
-            <PeopleNum size="13">{directMessage.member.length}</PeopleNum>
+            <PeopleNum size="14">{directMessage.member.length}</PeopleNum>
           </UserProfileImgAndCount>
         )}
       </ImgArea>
-      <TitleLabel>
-        {directMessage.member.reduce(function (acc, curr, idx) {
-          if (idx === 0) return curr.displayName
-          return acc + ', ' + curr.displayName
-        }, '')}
-      </TitleLabel>
+      <TitleLabel>{dmTitleGenerator(directMessage.member)}</TitleLabel>
     </DirectMessageCardLabel>
   )
 }
 
 const DirectMessageCardLabel = styled.div`
   width: 100%;
+  padding: 4px 0;
   display: flex;
   flex-direction: row;
   justify-content: start;
   align-items: center;
-  padding: 4px 0;
 `
 const ImgArea = styled.div`
   position: relative;
@@ -52,33 +48,33 @@ const ImgArea = styled.div`
   border-radius: 3px;
 `
 const UserProfileImgAndCount = styled.div`
+  min-width: 25px;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
 `
 
 const PeopleNum = styled.div`
   position: absolute;
+  width: ${props => props.size}px;
+  height: ${props => props.size}px;
+  right: 2px;
+  bottom: 0px;
+  font-size: 7px;
+  line-height: ${props => props.size}px;
+  color: white;
   display: flex;
   align-items: baseline;
   justify-content: center;
-  right: 0;
-  bottom: 0;
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
-  font-size: 6px;
-  color: white;
   background: black;
   border-radius: 5px;
 `
 
 const TitleLabel = styled.div`
   width: auto;
-
-  color: #f0f0f0;
   white-space: nowrap;
   text-overflow: ellipsis;
-  overflow: hidden;
   display: inline-block;
+  overflow: hidden;
 `
 
 export default DirectMessageCard

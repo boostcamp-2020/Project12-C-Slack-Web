@@ -4,12 +4,16 @@ import UserActive from '../UserActive'
 
 const UserProfileImg = ({ user, size, showActive, type = 'default' }) => {
   return (
-    <>
+    <UserProfileImgStyle size={size}>
       <ProfileImg src={user.profileUrl} size={size} type={type} />
       {showActive && <UserActive isActive={user.isActive} />}
-    </>
+    </UserProfileImgStyle>
   )
 }
+
+const UserProfileImgStyle = styled.div`
+  min-width: 25px;
+`
 
 const ProfileImg = styled.img`
   ${({ type }) => {

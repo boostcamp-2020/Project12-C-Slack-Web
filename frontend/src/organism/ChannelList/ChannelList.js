@@ -3,6 +3,7 @@ import { useHistory } from 'react-router'
 import styled from 'styled-components'
 import { toast } from 'react-toastify'
 import SectionLabel from '../SectionLabel'
+import SideMenuList from '../SideMenuList'
 import { useRecoilState } from 'recoil'
 
 import { workspaceUserInfoAtom } from '../../store'
@@ -41,6 +42,7 @@ function ChannelList(props) {
           checkHasKeyAndSetKeyInMap(sectionMap, channel.sectionName, channel)
         }
       })
+      checkHasDefaultChannel(sectionMap)
       setList([...sectionMap])
     } catch (err) {
       toast.error('채널 목록 설정 오류가 발생했습니다.', {
@@ -55,12 +57,16 @@ function ChannelList(props) {
         key={index}
         sectionName={section[0]}
         lists={section[1]}
-        {...props}
       ></SectionLabel>
     )
   })
 
-  return <ChannelListStyle>{renderChannelSectionList}</ChannelListStyle>
+  return (
+    <ChannelListStyle>
+      <SideMenuList />
+      {renderChannelSectionList}
+    </ChannelListStyle>
+  )
 }
 
 const checkHasKeyAndSetKeyInMap = (map, key, data) => {
@@ -73,11 +79,18 @@ const checkHasKeyAndSetKeyInMap = (map, key, data) => {
   }
 }
 
+const checkHasDefaultChannel = map => {
+  if (!map.has('Channels')) {
+    map.set('Channels', [])
+  }
+  if (!map.has('Direct messages')) {
+    map.set('Direct messages', [])
+  }
+}
+
 const ChannelListStyle = styled.div`
   width: 100%;
   height: 100%;
-
-  background: black;
 `
 
 export default ChannelList

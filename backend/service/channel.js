@@ -3,7 +3,10 @@ import { WorkspaceUserInfo } from '../model/WorkspaceUserInfo'
 import { ChannelConfig } from '../model/ChannelConfig'
 import statusCode from '../util/statusCode'
 import resMessage from '../util/resMessage'
+import mongoose from 'mongoose'
 import { verifyRequiredParams, dbErrorHandler } from '../util'
+
+const ObjectId = mongoose.Types.ObjectId
 
 const createChannel = async params => {
   verifyRequiredParams(params.creator, params.title, params.channelType)
@@ -14,6 +17,12 @@ const createChannel = async params => {
       message: resMessage.DUPLICATE_VALUE_ERROR,
     }
   const result = await dbErrorHandler(() => Channel.create(params))
+  await dbErrorHandler(() =>
+    ChannelConfig.create({
+      channelId: result._id,
+      workspaceUserInfoId: result.creator,
+    }),
+  )
   return {
     code: statusCode.CREATED,
     data: result,
@@ -40,19 +49,7 @@ const getChannelListDB = async ({ workspaceUserInfoId }) => {
   verifyRequiredParams(workspaceUserInfoId)
   const [userInfo, channelConfig] = await Promise.all([
     dbErrorHandler(() =>
-      WorkspaceUserInfo.find(
-        {
-          _id: workspaceUserInfoId,
-        },
-        {
-          _id: 1,
-          displayName: 1,
-          profileUrl: 1,
-          isActive: 1,
-          sections: 1,
-          workspaceId: 1,
-        },
-      ).lean(),
+      WorkspaceUserInfo.getWorkspaceUserInfo(workspaceUserInfoId),
     ),
     dbErrorHandler(() => ChannelConfig.getChannelList(workspaceUserInfoId)),
   ])
@@ -66,11 +63,9 @@ const getChannelListDB = async ({ workspaceUserInfoId }) => {
 
 const getChannelHeaderInfoDB = async ({ channelId, workspaceUserInfoId }) => {
   verifyRequiredParams(channelId, workspaceUserInfoId)
-
   const [result] = await dbErrorHandler(() =>
     ChannelConfig.getChannelHeaderInfo(channelId, workspaceUserInfoId),
   )
-
   return {
     code: statusCode.OK,
     result,

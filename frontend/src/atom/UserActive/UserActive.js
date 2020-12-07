@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { COLOR } from '../../constant/style'
 
 function UserActive(props) {
   const isActive = props.isActive
@@ -8,11 +9,11 @@ function UserActive(props) {
 
 const UserActiveCircle = styled.div`
   position: absolute;
-  right: -2px;
-  bottom: -2px;
   width: 8px;
   height: 8px;
-  background: ${props => (props.isActive ? '#2AAD75' : 'white')};
+  right: 2px;
+  bottom: -3px;
+  background: ${props => (props.isActive ? COLOR.USER_ACTIVE : 'white')};
   border: 1px solid black;
   border-radius: 5px;
 `
