@@ -10,6 +10,8 @@ import ChannelList from '../../organism/ChannelList'
 import ChannelListHeader from '../../atom/ChannelListHeader'
 import ChatRoom from '../../organism/ChatRoom'
 import { COLOR } from '../../constant/style'
+import Icon from '../../atom/Icon'
+import { TOOLS } from '../../constant/icon'
 
 function WorkspacePage(props) {
   const { path } = useRouteMatch()
@@ -37,18 +39,19 @@ function WorkspacePage(props) {
       setLineWidth(width)
     }
   }
+
   const switching = () => {
     switch (channelId) {
       case 'threads':
-        return <div>준비 중 ^-^</div>
+        return ConstructionPage()
       case 'all-dms':
-        return <div>준비 중 ^-^</div>
+        return ConstructionPage()
       case 'saved-page':
-        return <div>준비 중 ^-^</div>
+        return ConstructionPage()
       case 'activity-page':
-        return <div>준비 중 ^-^</div>
+        return ConstructionPage()
       case 'more':
-        return <div>준비 중 ^-^</div>
+        return ConstructionPage()
       default:
         return <ChatRoom />
     }
@@ -78,6 +81,17 @@ function WorkspacePage(props) {
         </MainArea>
       </PageStyle>
     </Suspense>
+  )
+}
+
+const ConstructionPage = () => {
+  return (
+    <SwitchContentsArea>
+      <p>
+        <Icon icon={TOOLS} size="100px" color={COLOR.LABEL_SELECT_TEXT} />
+      </p>
+      <p>준비 중인 페이지입니다.</p>
+    </SwitchContentsArea>
   )
 }
 
@@ -159,6 +173,18 @@ const ContentsArea = styled.div`
   flex-direction: row;
   width: ${props => 100 - props.width}%;
   height: 100%;
+`
+const SwitchContentsArea = styled.div`
+  height: 100%;
+  width: 70%;
+  font-size: 20px;
+  color: ${COLOR.LABEL_DEFAULT_TEXT};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background: ${COLOR.BACKGROUND_CONTENTS};
 `
 
 const SideBarArea = styled.div`

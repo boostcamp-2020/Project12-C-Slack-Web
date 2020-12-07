@@ -20,7 +20,6 @@ const useChannelList = () => {
         const { data } = await request.GET('/api/channel', {
           workspaceUserInfoId,
         })
-        console.log(data)
         if (data.success) {
           setWorkspaceUserInfo(data.result.userInfo[0])
           setChannels(data.result.channelConfig)
@@ -35,7 +34,7 @@ const useChannelList = () => {
 
   useEffect(() => {
     if (Object.keys(Channels).length === 0) getList()
-  }, [])
+  }, [workspaceUserInfoId])
 
   const updateChannelList = async () => getList()
 

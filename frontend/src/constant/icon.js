@@ -11,6 +11,7 @@ import {
   faChevronDown,
   faAt,
   faThumbtack,
+  faTools,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faStar,
@@ -39,3 +40,4 @@ export const COMMENTS = faComments
 export const AT = faAt
 export const BOOKMARK = faBookmark
 export const THUMBTACK = faThumbtack
+export const TOOLS = faTools

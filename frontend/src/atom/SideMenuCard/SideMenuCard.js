@@ -6,55 +6,64 @@ import Icon from '../Icon'
 
 function SideMenuCard({ icon, color, children, linkUrl }) {
   const parameters = useParams()
-  const [currChannel, setCurrChannel] = useState(null)
+  const [currentChannel, setCurrentChannel] = useState(false)
+
   useEffect(() => {
     if (parameters.channelId === linkUrl) {
-      setCurrChannel(true)
+      setCurrentChannel(true)
+    } else {
+      setCurrentChannel(false)
     }
-  }, [])
+  }, [parameters])
 
   return (
-    <SideMenuCardStyle
-      to={'/workspace/' + parameters.workspaceId + '/' + linkUrl}
-      currChannel={currChannel}
-    >
-      <IconArea>
-        <Icon icon={icon} color={currChannel ? 'white' : '#a3a3a6'} />
-      </IconArea>
-      <SectionTitle curr={currChannel}>
-        <SectionName>{children}</SectionName>
-      </SectionTitle>
+    <SideMenuCardStyle currentChannel={currentChannel}>
+      <LinkStyle to={'/workspace/' + parameters.workspaceId + '/' + linkUrl}>
+        <IconArea>
+          <Icon icon={icon} color={currentChannel ? 'white' : '#a3a3a6'} />
+        </IconArea>
+        <SectionTitle curr={currentChannel}>
+          <SectionName>{children}</SectionName>
+        </SectionTitle>
+      </LinkStyle>
     </SideMenuCardStyle>
   )
 }
 
-const SideMenuCardStyle = styled(Link)`
+const SideMenuCardStyle = styled.div`
   width: auto;
-  padding: 4px 10px;
   display: flex;
   flex-direction: row;
   align-items: baseline;
   user-select: none;
-  text-decoration: none;
+
   cursor: pointer;
   &:hover {
     background-color: ${props => {
-      if (!props.currChannel) return 'rgba(255, 255, 255, 0.1)'
+      if (!props.currentChannel) return 'rgba(255, 255, 255, 0.1)'
       return null
     }};
   }
   background: ${props => {
-    if (props.currChannel) {
+    if (props.currentChannel) {
       return '#1363A2'
     }
   }};
   color: ${props => {
-    if (props.currChannel) {
+    if (props.currentChannel) {
       return 'white'
     } else {
       return '#a3a3a6'
     }
   }};
+`
+
+const LinkStyle = styled(Link)`
+  width: 100%;
+  padding: 4px 10px;
+  color: inherit;
+  display: inherit;
+  text-decoration: none;
 `
 
 const IconArea = styled.div`
