@@ -24,7 +24,7 @@ function ChannelHeader() {
   const openAddUserModal = () => {
     setModal(<InviteUserToChannelModal handleClose={() => setModal(null)} />)
   }
-  console.log(channelInfo)
+
   return Object.keys(channelInfo).length !== 0 ? (
     <ChannelHeaderStyle>
       <ChannelInfo>
