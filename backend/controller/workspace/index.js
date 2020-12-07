@@ -7,5 +7,6 @@ router.get('/', Auth, controller.getWorkspaces)
 router.post('/', Auth, controller.createWorkspace)
 router.post('/invite', Auth, controller.invite)
 router.get('/invite/:code', Auth, controller.invited)
+router.get('/info/:workspaceId', Auth, controller.getWorkspaceUserInfo)
 
 module.exports = router
