@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { useRecoilValue } from 'recoil'
-import { currentChannelInfo, workspaceUserInfoAtom } from '../../store'
+import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil'
+import {
+  modalAtom,
+  forceUpdate,
+  currentChannelInfo,
+  workspaceUserInfoAtom,
+} from '../../store'
 
 import Button from '../../atom/Button'
 import Icon from '../../atom/Icon'
@@ -9,25 +14,48 @@ import { LOCK, HASHTAG, CLOSE } from '../../constant/icon'
 import { debounce } from '../../util'
 import request from '../../util/request'
 import Modal from '../../atom/Modal'
+import SearchUserList from '../SearchUserList'
+import SelectedUserList from '../SelectedUserList'
 
 function InviteUserToChannelModal({ handleClose }) {
   const channelInfo = useRecoilValue(currentChannelInfo)
   const workspaceUserInfo = useRecoilValue(workspaceUserInfoAtom)
-  const [keyword, setKeyword] = useState('')
+  const setModal = useSetRecoilState(modalAtom)
+  const setForceUpdate = useSetRecoilState(forceUpdate)
+  const forceUpdateFunc = () => setForceUpdate(n => n + 1)
+  const [searchResult, setSearchResult] = useState(null)
   const [inviteUserList, setInviteUserList] = useState([])
 
-  const SearchUser = async () => {
+  const SearchUser = async search => {
+    if (search.length === 0) return setSearchResult(null)
     const { data } = await request.POST('/api/search/user', {
-      keyword: keyword,
+      keyword: search,
       channelId: channelInfo.channelId._id,
-      workspaceId: workspaceUserInfo.workspaceId,
+      workspaceId: workspaceUserInfo.workspaceId._id,
     })
+    setSearchResult(data.result)
+  }
+
+  const inviteUser = async () => {
+    const workspaceUserInfoIdArr = inviteUserList.map(user => {
+      return user._id
+    })
+
+    const { data } = await request.POST('/api/channel/invite', {
+      channelId: channelInfo.channelId._id,
+      workspaceUserInfoId: workspaceUserInfoIdArr,
+    })
+
+    if (data.success) {
+      forceUpdateFunc()
+      setModal(null)
+    }
   }
 
   const handleDebounce = useRef(debounce(SearchUser, 1000)).current
-  const handleChange = (setter, debounce) => e => {
-    setter(e.target.value)
-    if (debounce) debounce()
+
+  const handleChange = e => {
+    handleDebounce(e.target.value)
   }
 
   return (
@@ -50,13 +78,28 @@ function InviteUserToChannelModal({ handleClose }) {
           </CloseIcon>
         </Header>
         <ContentsArea>
-          <SearchArea>
-            <SearchUserInput
-              onChange={handleChange(setKeyword, handleDebounce)}
-              placeholder="Search by name, email, or user group"
+          <InviteUserListArea>
+            <SelectedUserList
+              inviteUserList={inviteUserList}
+              setInviteUserList={setInviteUserList}
             />
-          </SearchArea>
-          <ButtonArea>
+          </InviteUserListArea>
+          <SearchResultArea>
+            <SearchArea>
+              <SearchUserInput
+                onChange={e => handleChange(e)}
+                placeholder="Search by name, email, or user group"
+              />
+            </SearchArea>
+            {searchResult !== null && (
+              <SearchUserList
+                searchResult={searchResult}
+                state={inviteUserList}
+                setState={setInviteUserList}
+              />
+            )}
+          </SearchResultArea>
+          <ButtonArea onClick={inviteUser}>
             <Button children="Done" disabled={inviteUserList.length === 0} />
           </ButtonArea>
         </ContentsArea>
@@ -67,7 +110,8 @@ function InviteUserToChannelModal({ handleClose }) {
 
 const ModalForm = styled.div`
   width: auto;
-  height: 200px;
+  min-height: 200px;
+  border-radius: 8px;
   padding: 20px 30px;
   background-color: white;
   display: flex;
@@ -107,10 +151,21 @@ const ContentsArea = styled.div`
   align-items: center;
 `
 
-const SearchArea = styled.div`
+const InviteUserListArea = styled.div`
+  width: 100%;
+`
+
+const SearchResultArea = styled.div`
+  position: relative;
   width: 100%;
   min-height: 30px;
   margin: 30px 0;
+  font-size: 15px;
+`
+
+const SearchArea = styled.div`
+  width: 100%;
+  min-height: 30px;
   font-size: 15px;
   border: 1px solid black;
   border-radius: 3px;
