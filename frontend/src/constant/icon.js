@@ -12,6 +12,7 @@ import {
   faAt,
   faThumbtack,
   faTools,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faStar,
@@ -41,3 +42,4 @@ export const AT = faAt
 export const BOOKMARK = faBookmark
 export const THUMBTACK = faThumbtack
 export const TOOLS = faTools
+export const CHECK = faCheck
