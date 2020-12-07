@@ -44,5 +44,5 @@ export const modalAtom = atom({
 
 export const workspaceUserInfoAtom = atom({
   key: 'WorkspaceUserInfo',
-  default: {},
+  default: null,
 })

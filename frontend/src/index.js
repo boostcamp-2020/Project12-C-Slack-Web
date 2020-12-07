@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { createGlobalStyle } from 'styled-components'
 import './index.css'
 import WorkspacePage from './page/WorkspacePage'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
 import LoginPage from './page/login/Login'
 import CreateWorkspace from './page/createWorkspace/CreateWorkspace'
@@ -32,10 +32,12 @@ const App = () => {
             path="/create-workspace"
             component={Auth(CreateWorkspace, true)}
           />
-          <Route
-            path="/workspace/:workspaceId"
-            component={Auth(WorkspacePage, true)}
-          />
+          <Switch>
+            <Route
+              path="/workspace/:workspaceId/:channelId"
+              component={Auth(WorkspacePage, true)}
+            />
+          </Switch>
         </BrowserRouter>
       </RecoilRoot>
     </React.StrictMode>

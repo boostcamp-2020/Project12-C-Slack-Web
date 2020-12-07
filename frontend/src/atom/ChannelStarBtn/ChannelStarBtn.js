@@ -49,15 +49,21 @@ function ChannelStarBtn({ channel }) {
   return (
     <StarIconStyle onClick={updateSection}>
       {sectionInfo !== null ? (
-        <Icon icon={COLOREDSTAR} color={COLOR.STARBLUE} />
+        <Icon icon={COLOREDSTAR} color={COLOR.STARBLUE} size="12px" />
       ) : (
-        <Icon icon={STAR} color={COLOR.STARBLUE} />
+        <Icon icon={STAR} color={COLOR.STARBLUE} size="12px" />
       )}
     </StarIconStyle>
   )
 }
 
 const StarIconStyle = styled.div`
+  height: 12px;
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   margin-left: 5px;
   cursor: pointer;
 `
