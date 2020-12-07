@@ -85,58 +85,66 @@ const CreateChannelModal = ({ handleClose }) => {
   }
   return (
     <Modal handleClose={handleClose}>
-      <StyledModalHeader>
-        <Title isBold={true}>Create a {isPrivate && 'private'} channel</Title>
-        <Button type="icon" handleClick={handleClose}>
-          <Icon icon={CLOSE} color={COLOR.GRAY} />
-        </Button>
-      </StyledModalHeader>
-      <StyledModalContent>
-        <div>
-          Channels are where your team communicates. They’re best when organized
-          around a topic — #marketing, for example.
-        </div>
-        <ModalInputSection name="Name" errorMessage={nameError}>
-          <Input
-            placeholder="e.g. plan-budget"
-            handleChange={handleName}
-            value={channelName}
-            maxLength={MAX_CHANNEL_NAME}
+      <ModalForm>
+        <StyledModalHeader>
+          <Title isBold={true}>Create a {isPrivate && 'private'} channel</Title>
+          <Button type="icon" handleClick={handleClose}>
+            <Icon icon={CLOSE} color={COLOR.GRAY} />
+          </Button>
+        </StyledModalHeader>
+        <StyledModalContent>
+          <div>
+            Channels are where your team communicates. They’re best when
+            organized around a topic — #marketing, for example.
+          </div>
+          <ModalInputSection name="Name" errorMessage={nameError}>
+            <Input
+              placeholder="e.g. plan-budget"
+              handleChange={handleName}
+              value={channelName}
+              maxLength={MAX_CHANNEL_NAME}
+            >
+              <Icon icon={isPrivate ? LOCK : HASHTAG} padding="5px" />
+            </Input>
+          </ModalInputSection>
+          <ModalInputSection
+            name="Description"
+            errorMessage={descriptionError}
+            optionalText="(optional)"
+            description={'What’s this channel about?'}
           >
-            <Icon icon={isPrivate ? LOCK : HASHTAG} padding="5px" />
-          </Input>
-        </ModalInputSection>
-        <ModalInputSection
-          name="Description"
-          errorMessage={descriptionError}
-          optionalText="(optional)"
-          description={'What’s this channel about?'}
-        >
-          <Input
-            handleChange={handleDescription}
-            value={channelDescription}
-            maxLength={MAX_CHANNEL_DESCRIPTION}
+            <Input
+              handleChange={handleDescription}
+              value={channelDescription}
+              maxLength={MAX_CHANNEL_DESCRIPTION}
+            />
+          </ModalInputSection>
+          <ModalInputSection
+            name="Make private"
+            optionalText={
+              isPrivate
+                ? 'This can’t be undone. A private channel cannot be made public later on.'
+                : 'When a channel is set to private, it can only be viewed or joined by invitation.'
+            }
+          >
+            <ToggleButton
+              handleChange={handlePrivateOption}
+              value={isPrivate}
+            />
+          </ModalInputSection>
+          <Button
+            handleClick={submitChannelInfo}
+            children="Create"
+            disabled={nameError || !channelName || descriptionError}
           />
-        </ModalInputSection>
-        <ModalInputSection
-          name="Make private"
-          optionalText={
-            isPrivate
-              ? 'This can’t be undone. A private channel cannot be made public later on.'
-              : 'When a channel is set to private, it can only be viewed or joined by invitation.'
-          }
-        >
-          <ToggleButton handleChange={handlePrivateOption} value={isPrivate} />
-        </ModalInputSection>
-        <Button
-          handleClick={submitChannelInfo}
-          children="Create"
-          disabled={nameError || !channelName || descriptionError}
-        />
-      </StyledModalContent>
+        </StyledModalContent>
+      </ModalForm>
     </Modal>
   )
 }
+const ModalForm = styled.div`
+  border-radius: 8px;
+`
 const StyledModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
