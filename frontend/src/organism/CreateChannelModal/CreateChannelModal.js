@@ -29,7 +29,7 @@ const DUPLICATED_NAME_ERROR =
 const CreateChannelModal = ({ handleClose }) => {
   const history = useHistory()
   const { workspaceId } = useParams()
-  const { workspaceUseInfoId } = useRecoilValue(workspace)
+  const { _id: workspaceUserInfoId } = useRecoilValue(workspace)
   const [isPrivate, setPrivateOption] = useState(false)
   const [channelName, setChannelName] = useState('')
   const [channelDescription, setChannelDescription] = useState('')
@@ -50,7 +50,7 @@ const CreateChannelModal = ({ handleClose }) => {
   const submitChannelInfo = async () => {
     const channelId = await createChannel({
       title: channelName,
-      creator: workspaceUseInfoId,
+      creator: workspaceUserInfoId,
       channelType: isPrivate ? 0 : 1,
       description: channelDescription,
       workspaceId,

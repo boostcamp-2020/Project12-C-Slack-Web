@@ -97,12 +97,11 @@ const invited = async ({ userId, code }) => {
   const deltaMinute = deltaTime / 1000 / 60
 
   if (deltaMinute < 60) {
-    const workspaceUserData = await dbErrorHandler(() =>
-      WorkspaceUserInfo.findOne({
-        workspaceId,
-        userId,
-      }),
-    )
+    const { data: workspaceUserData } = await getWorkspaceUserInfo({
+      workspaceId,
+      userId,
+    })
+
     if (!workspaceUserData) {
       const createdWorkspaceUserData = await dbErrorHandler(() =>
         WorkspaceUserInfo.create({ userId, workspaceId }),
@@ -123,4 +122,25 @@ const invited = async ({ userId, code }) => {
   }
 }
 
-module.exports = { createWorkspace, getWorkspaces, invite, invited }
+const getWorkspaceUserInfo = async ({ userId, workspaceId }) => {
+  verifyRequiredParams(userId, workspaceId)
+  const result = await dbErrorHandler(() =>
+    WorkspaceUserInfo.findOne({
+      workspaceId,
+      userId,
+    }),
+  )
+  return {
+    code: statusCode.OK,
+    data: result,
+    success: true,
+  }
+}
+
+module.exports = {
+  createWorkspace,
+  getWorkspaces,
+  invite,
+  invited,
+  getWorkspaceUserInfo,
+}
