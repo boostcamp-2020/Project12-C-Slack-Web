@@ -3,21 +3,17 @@ import styled from 'styled-components'
 
 function SlackImage({ onClick }) {
   return (
-    <>
-      <ImgDiv>
-        <img
-          alt="Slack"
-          src="https://a.slack-edge.com/bv1-8/slack_logo-ebd02d1.svg"
-          height="34"
-          title="Slack"
-          onClick={onClick}
-        ></img>
-      </ImgDiv>
-    </>
+    <StyledImg
+      alt="Slack"
+      src="https://a.slack-edge.com/bv1-8/slack_logo-ebd02d1.svg"
+      height="34"
+      title="Slack"
+      onClick={onClick}
+    />
   )
 }
 
-const ImgDiv = styled.div`
+const StyledImg = styled.img`
   cursor: pointer;
 `
 
