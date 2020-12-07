@@ -1,4 +1,5 @@
 import { Workspace } from '../model/Workspace'
+import { User } from '../model/User'
 import { WorkspaceUserInfo } from '../model/WorkspaceUserInfo'
 import statusCode from '../util/statusCode'
 import resMessage from '../util/resMessage'
@@ -14,6 +15,9 @@ const createWorkspace = async params => {
   const findedWorkspaceData = await dbErrorHandler(() =>
     Workspace.findOne({ name: params.name }),
   )
+  const findedUser = await dbErrorHandler(() =>
+    User.findOne({ _id: params.creator }),
+  )
   if (findedWorkspaceData) {
     throw {
       status: statusCode.BAD_REQUEST,
@@ -25,6 +29,10 @@ const createWorkspace = async params => {
     WorkspaceUserInfo.create({
       userId: params.creator,
       workspaceId: workspaceData._id,
+      title: findedUser.fullName,
+      fullName: findedUser.fullName,
+      displayName: findedUser.fullName,
+      profileUrl: findedUser.profileUrl,
     }),
   )
   const channelData = await dbErrorHandler(() =>
@@ -38,6 +46,7 @@ const createWorkspace = async params => {
     ChannelConfig.create({
       channelId: ObjectId(channelData._id),
       workspaceUserInfoId: ObjectId(channelData.creator),
+      sectionName: null,
     }),
   )
   await dbErrorHandler(() =>
@@ -102,9 +111,18 @@ const invited = async ({ userId, code }) => {
       userId,
     })
 
+    const findedUser = await dbErrorHandler(() => User.findOne({ _id: userId }))
+
     if (!workspaceUserData) {
       const createdWorkspaceUserData = await dbErrorHandler(() =>
-        WorkspaceUserInfo.create({ userId, workspaceId }),
+        WorkspaceUserInfo.create({
+          userId,
+          workspaceId,
+          title: findedUser.fullName,
+          fullName: findedUser.fullName,
+          displayName: findedUser.fullName,
+          profileUrl: findedUser.profileUrl,
+        }),
       )
       return {
         code: statusCode.CREATED,
