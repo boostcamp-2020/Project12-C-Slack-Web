@@ -24,7 +24,7 @@ const CreateWorkspaceName = ({
   const checkName = workspaceName => {
     if (
       workspaceName.length >= 0 &&
-      workspaceName.length < MAX_WORKSPACE_NAME
+      workspaceName.length <= MAX_WORKSPACE_NAME
     ) {
       return true
     }
