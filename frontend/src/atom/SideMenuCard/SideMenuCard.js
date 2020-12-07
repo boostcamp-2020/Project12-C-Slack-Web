@@ -7,7 +7,6 @@ import Icon from '../Icon'
 function SideMenuCard({ icon, color, children, linkUrl }) {
   const parameters = useParams()
   const [currChannel, setCurrChannel] = useState(null)
-
   useEffect(() => {
     if (parameters.channelId === linkUrl) {
       setCurrChannel(true)

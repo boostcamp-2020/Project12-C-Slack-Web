@@ -11,7 +11,7 @@ import DirectMessageCard from '../../atom/DirectMessageCard'
 function SectionLabel(props) {
   const [isOpen, setIsOpen] = useState(true)
   const { sectionName, lists } = props
-  const { channelId } = useParams()
+  const { channelId, workspaceId } = useParams()
 
   const openSection = () => {
     setIsOpen(!isOpen)
@@ -25,7 +25,10 @@ function SectionLabel(props) {
     lists.length !== 0 ? (
       lists.map((list, idx) => {
         return (
-          <LinkStyle key={idx} to={'/workspace/' + list.channelId._id}>
+          <LinkStyle
+            key={idx}
+            to={`/workspace/${workspaceId}/${list.channelId._id}`}
+          >
             <ChannelLabel
               curr={list.channelId._id === channelId}
               isOpen={isOpen}

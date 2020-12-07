@@ -4,14 +4,17 @@ import { Route, useParams, useRouteMatch } from 'react-router-dom'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { modalAtom, workspace } from '../../store'
 import { getWorkspaceUserInfo } from '../../api/workspace'
+import { throttle } from '../../util'
 import usePromise from '../../hooks/usePromise'
 import ChannelList from '../../organism/ChannelList'
+import ChannelListHeader from '../../atom/ChannelListHeader'
 import ChatRoom from '../../organism/ChatRoom'
+import { COLOR } from '../../constant/style'
 
 function WorkspacePage(props) {
   const { path } = useRouteMatch()
-  const { workspaceId } = useParams()
-  const [lineWidth, setLineWidth] = useState(30)
+  const { workspaceId, channelId } = useParams()
+  const [lineWidth, setLineWidth] = useState(20)
   const Modal = useRecoilValue(modalAtom)
   const setWorkspaceUserInfo = useSetRecoilState(workspace)
   const [loading, resolved, error] = usePromise(
@@ -28,10 +31,26 @@ function WorkspacePage(props) {
     let viewWidth = e.view.innerWidth
 
     let width = (mouse / viewWidth) * 100
-    if (width < 5) {
+    if (width < 20) {
       setLineWidth(20)
     } else {
       setLineWidth(width)
+    }
+  }
+  const switching = () => {
+    switch (channelId) {
+      case 'threads':
+        return <div>준비 중 ^-^</div>
+      case 'all-dms':
+        return <div>준비 중 ^-^</div>
+      case 'saved-page':
+        return <div>준비 중 ^-^</div>
+      case 'activity-page':
+        return <div>준비 중 ^-^</div>
+      case 'more':
+        return <div>준비 중 ^-^</div>
+      default:
+        return <ChatRoom />
     }
   }
   return (
@@ -40,13 +59,21 @@ function WorkspacePage(props) {
         {Modal}
         <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
         <MainArea>
-          <ChannelListArea width={lineWidth}>
-            <ChannelList />
-          </ChannelListArea>
-          <ListLine draggable="true" onDrag={moveLine} />
+          <ChannelListSection width={lineWidth}>
+            <ChannelListHeaderArea>
+              <ChannelListHeader />
+            </ChannelListHeaderArea>
+            <ChannelListArea>
+              <ChannelList />
+            </ChannelListArea>
+          </ChannelListSection>
+          <ListLine draggable="true" onDrag={e => throttle(moveLine(e), 100)} />
           <ContentsArea width={lineWidth}>
-            <Route path={`${path}/:channelId`} component={ChatRoom} />
-            <SideBarArea></SideBarArea>
+            {switching()}
+            <SideBarArea>
+              <SideBarHeader></SideBarHeader>
+              <SideBarContents></SideBarContents>
+            </SideBarArea>
           </ContentsArea>
         </MainArea>
       </PageStyle>
@@ -63,32 +90,67 @@ const PageStyle = styled.div`
 const GlobalHeader = styled.div`
   display: flex;
   width: 100%;
-  height: 30px;
-  background: red;
+  height: 40px;
+  background: ${COLOR.GLOBAL_HEADER_BACKGROUND};
 `
 const MainArea = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 40px);
 `
 
-const ChannelListArea = styled.div`
+const ChannelListSection = styled.div`
   display: flex;
   flex-direction: column;
   width: ${props => props.width}%;
+  color: ${COLOR.LABEL_DEFAULT_TEXT};
   height: 100%;
 `
 
+const ChannelListHeaderArea = styled.div`
+  width: 100%;
+  height: 60px;
+  background: ${COLOR.BACKGROUND_CHANNEL_LIST};
+  color: ${COLOR.LABEL_DEFAULT_TEXT};
+  border: 1px solid rgba(255, 255, 255, 0.1);
+`
+
+const ChannelListArea = styled.div`
+  width: 100%;
+  height: calc(100% - 60px);
+  background: ${COLOR.BACKGROUND_CHANNEL_LIST};
+  color: ${COLOR.LABEL_DEFAULT_TEXT};
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-size: 15px;
+`
+
 const ListLine = styled.div`
-  width: 6px;
+  opacity: 0;
+  width: 4px;
   height: 100%;
-  background: white;
-  cursor: pointer;
+  cursor: col-resize;
   margin: 0 -2px;
   &:hover {
-    width: 6px;
-    margin: 0;
+    background: black;
+    opacity: 100;
+    position: relative;
+    ::after {
+      content: ' ';
+      position: absolute;
+      display: block;
+      width: 4px;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background-color: white;
+    }
+  }
+
+  &:active {
+    opacity: 0;
   }
 `
 
@@ -97,14 +159,29 @@ const ContentsArea = styled.div`
   flex-direction: row;
   width: ${props => 100 - props.width}%;
   height: 100%;
-  background: yellow;
 `
 
 const SideBarArea = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
   width: 30%;
+  background: ${COLOR.BACKGROUND_CONTENTS};
+  border: 1px solid rgba(255, 255, 255, 0.1);
+`
+
+const SideBarHeader = styled.div`
+  display: flex;
+  width: 100%;
+  height: 60px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 0;
+`
+
+const SideBarContents = styled.div`
+  width: 100%;
+  height: calc(100% - 60px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 0;
 `
 
 export default WorkspacePage
