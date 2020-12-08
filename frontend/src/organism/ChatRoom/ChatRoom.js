@@ -42,6 +42,7 @@ const ChatRoom = () => {
   }
 
   useEffect(() => {
+    if (workspaceUserInfo === null) return false
     setSocket(
       io(baseURL, { query: { channelId, creator: workspaceUserInfo._id } }),
     )
@@ -70,6 +71,7 @@ const ChatRoom = () => {
   }, [socket])
 
   useEffect(() => {
+    if (workspaceUserInfo === null) return false
     if (resolved) setMessages(resolved)
   }, [resolved])
 
