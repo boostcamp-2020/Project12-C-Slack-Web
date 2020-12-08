@@ -1,13 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil'
-import {
-  modalRecoil,
-  forceUpdate,
-  currentChannelInfoRecoil,
-  workspaceRecoil,
-} from '../../store'
-
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { modalRecoil, forceUpdate, currentChannelInfoRecoil } from '../../store'
+import { useParams } from 'react-router-dom'
 import Button from '../../atom/Button'
 import Icon from '../../atom/Icon'
 import { LOCK, HASHTAG, CLOSE } from '../../constant/icon'
@@ -19,19 +14,19 @@ import SelectedUserList from '../SelectedUserList'
 
 function InviteUserToChannelModal({ handleClose }) {
   const channelInfo = useRecoilValue(currentChannelInfoRecoil)
-  const workspaceUserInfo = useRecoilValue(workspaceRecoil)
   const setModal = useSetRecoilState(modalRecoil)
   const setForceUpdate = useSetRecoilState(forceUpdate)
   const forceUpdateFunc = () => setForceUpdate(n => n + 1)
   const [searchResult, setSearchResult] = useState(null)
   const [inviteUserList, setInviteUserList] = useState([])
+  const { workspaceId } = useParams()
 
   const SearchUser = async search => {
     if (search.length === 0) return setSearchResult(null)
     const { data } = await request.POST('/api/search/user', {
       keyword: search,
       channelId: channelInfo.channelId._id,
-      workspaceId: workspaceUserInfo.workspaceId._id,
+      workspaceId,
     })
     setSearchResult(data.result)
   }
