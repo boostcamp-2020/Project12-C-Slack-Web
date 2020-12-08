@@ -29,7 +29,11 @@ exports.invited = asyncWrapper(async (req, res) => {
     ...req.params,
     userId: req.user.id,
   })
-  return res.status(code).json({ success, data })
+  const workspaceRedirectURL = `${process.env.FRONTEND_HOST}/workspace/${data.workspaceId}/${data.default_channel}`
+  if (success) {
+    return res.status(code).redirect(workspaceRedirectURL)
+  }
+  return res.status(code).redirect(process.env.FRONTEND_HOST)
 })
 
 exports.getWorkspaceUserInfo = asyncWrapper(async (req, res) => {
