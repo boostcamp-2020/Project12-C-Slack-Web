@@ -9,17 +9,30 @@ const ChatContent = ({
 }) => {
   return (
     <StyledChatContent>
-      <StyledUserName onClick={handleProfileModal}>
-        {displayName}
-      </StyledUserName>
-      <StyledDate>{createdAt}</StyledDate>
-      <div>{contents}</div>
+      <ChatHeader>
+        <StyledUserName onClick={handleProfileModal}>
+          {displayName}
+        </StyledUserName>
+        <StyledDate>{createdAt}</StyledDate>
+      </ChatHeader>
+      <ChatContentArea>{contents}</ChatContentArea>
     </StyledChatContent>
   )
 }
 const StyledChatContent = styled.div`
-  margin-left: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  margin-left: 15px;
 `
+const ChatHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+`
+
 const StyledDate = styled.span`
   color: ${COLOR.GRAY};
   font-size: 12px;
@@ -35,5 +48,9 @@ const StyledUserName = styled.div`
     cursor: pointer;
     text-decoration: underline;
   }
+`
+
+const ChatContentArea = styled.div`
+  word-break: break-all;
 `
 export default ChatContent
