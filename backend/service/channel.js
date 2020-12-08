@@ -69,8 +69,8 @@ const getChannelHeaderInfoDB = async ({ channelId, workspaceUserInfoId }) => {
 
 const inviteUserDB = async ({ channelId, workspaceUserInfoId }) => {
   verifyRequiredParams(channelId, workspaceUserInfoId)
-  await Promise.all([
-    workspaceUserInfoId.forEach(el => {
+  await Promise.all(
+    workspaceUserInfoId.map(el => {
       dbErrorHandler(() => {
         const channelConfig = ChannelConfig({
           workspaceUserInfoId: el,
@@ -82,7 +82,7 @@ const inviteUserDB = async ({ channelId, workspaceUserInfoId }) => {
         channelConfig.save()
       })
     }),
-  ])
+  )
 
   return {
     code: statusCode.OK,
