@@ -27,8 +27,6 @@ function ReactionBar({ setOpenModal, chatId }) {
   }
 
   const openEmojiModal = e => {
-    console.log(e.target.offset)
-    console.log(e.target.offsetY)
     const widthSize = e.view.innerWidth - (e.clientX + 320)
     const heightSize = e.view.innerHeight - (e.clientY + 430)
     let axisX = e.clientX
