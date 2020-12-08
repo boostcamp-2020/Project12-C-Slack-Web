@@ -1,4 +1,5 @@
 import { Workspace } from '../model/Workspace'
+import { User } from '../model/User'
 import { WorkspaceUserInfo } from '../model/WorkspaceUserInfo'
 import statusCode from '../util/statusCode'
 import resMessage from '../util/resMessage'
@@ -14,6 +15,9 @@ const createWorkspace = async params => {
   const findedWorkspaceData = await dbErrorHandler(() =>
     Workspace.findOne({ name: params.name }),
   )
+  const findedUser = await dbErrorHandler(() =>
+    User.findOne({ _id: params.creator }),
+  )
   if (findedWorkspaceData) {
     throw {
       status: statusCode.BAD_REQUEST,
@@ -25,6 +29,10 @@ const createWorkspace = async params => {
     WorkspaceUserInfo.create({
       userId: params.creator,
       workspaceId: workspaceData._id,
+      title: findedUser.fullName,
+      fullName: findedUser.fullName,
+      displayName: findedUser.fullName,
+      profileUrl: findedUser.profileUrl,
     }),
   )
   const channelData = await dbErrorHandler(() =>
@@ -38,6 +46,7 @@ const createWorkspace = async params => {
     ChannelConfig.create({
       channelId: ObjectId(channelData._id),
       workspaceUserInfoId: ObjectId(channelData.creator),
+      sectionName: null,
     }),
   )
   await dbErrorHandler(() =>
@@ -101,9 +110,19 @@ const invited = async ({ userId, code }) => {
       workspaceId,
       userId,
     })
+
+    const findedUser = await dbErrorHandler(() => User.findOne({ _id: userId }))
+
     if (!workspaceUserData) {
       const createdWorkspaceUserData = await dbErrorHandler(() =>
-        WorkspaceUserInfo.create({ userId, workspaceId }),
+        WorkspaceUserInfo.create({
+          userId,
+          workspaceId,
+          title: findedUser.fullName,
+          fullName: findedUser.fullName,
+          displayName: findedUser.fullName,
+          profileUrl: findedUser.profileUrl,
+        }),
       )
       const workspaceData = await dbErrorHandler(() =>
         Workspace.findOne({ _id: ObjectId(workspaceId) }),
@@ -131,6 +150,16 @@ const invited = async ({ userId, code }) => {
   }
 }
 
+const checkDuplicateName = async ({ name }) => {
+  verifyRequiredParams(name)
+  const result = await dbErrorHandler(() => Workspace.findOne({ name: name }))
+  return {
+    code: statusCode.OK,
+    data: result ? true : false,
+    success: true,
+  }
+}
+
 const getWorkspaceUserInfo = async ({ userId, workspaceId }) => {
   verifyRequiredParams(userId, workspaceId)
   const result = await dbErrorHandler(() =>
@@ -151,5 +180,6 @@ module.exports = {
   getWorkspaces,
   invite,
   invited,
+  checkDuplicateName,
   getWorkspaceUserInfo,
 }

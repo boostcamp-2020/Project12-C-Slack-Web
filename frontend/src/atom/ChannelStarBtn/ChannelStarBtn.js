@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 
 import { COLOR } from '../../constant/style'
 import Icon from '../Icon'
+import { workspaceRecoil } from '../../store'
 import { STAR, COLOREDSTAR } from '../../constant/icon'
 import { atom, useRecoilState, useRecoilValue } from 'recoil'
 import useChannelList from '../../hooks/useChannelList'
@@ -15,6 +16,7 @@ function ChannelStarBtn({ channel }) {
   const { channelId } = useParams()
   const [Channels, setChannels] = useChannelList()
   const [sectionInfo, setSectionInfo] = useState(section)
+  const workspaceUserInfo = useRecoilValue(workspaceRecoil)
 
   const history = useHistory()
 
@@ -28,7 +30,7 @@ function ChannelStarBtn({ channel }) {
       if (sectionInfo === null) sectionName = 'Starred'
 
       const { data } = await request.PATCH('/api/channel/section', {
-        workspaceUserInfoId: '5fc4fe427b2d5f6ae44dc15e',
+        workspaceUserInfoId: workspaceUserInfo._id,
         channelId,
         sectionName,
       })
@@ -39,7 +41,6 @@ function ChannelStarBtn({ channel }) {
       //채널 목록 재요청
       setChannels()
     } catch (err) {
-      console.log(err)
       toast.error('채널 섹션 정보를 가져오는데 오류가 발생했습니다.', {
         onClose: () => history.goBack(),
       })

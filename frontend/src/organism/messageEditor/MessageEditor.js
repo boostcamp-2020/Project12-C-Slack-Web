@@ -8,7 +8,7 @@ function MessageEditor({ channelTitle, sendMessage }) {
     setMessage(e.target.value)
   }
   const handleKey = e => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && e.target.value) {
       sendMessage(message)
       setMessage('')
     }

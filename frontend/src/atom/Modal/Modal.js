@@ -28,13 +28,11 @@ const StyledModalOverlay = styled.div`
     withBackgound ? 'background-color:rgba(0, 0, 0, 0.3);' : ''}
 `
 const StyledModalContent = styled.div`
-  border-radius: 8px;
   z-index: 1100;
   display: flex;
   flex-direction: column;
   max-height: 100%;
   position: relative;
-  overflow: hidden;
   width: 100%;
   max-width: 520px;
   box-shadow: 0 0 0 1px rgba(29, 28, 29, 0.13),

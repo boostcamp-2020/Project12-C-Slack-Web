@@ -2,7 +2,7 @@ import React, { useState, Suspense, useEffect } from 'react'
 import styled from 'styled-components'
 import { Route, useParams, useRouteMatch } from 'react-router-dom'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { modalAtom, workspace } from '../../store'
+import { modalRecoil, workspaceRecoil } from '../../store'
 import { getWorkspaceUserInfo } from '../../api/workspace'
 import { throttle } from '../../util'
 import usePromise from '../../hooks/usePromise'
@@ -17,8 +17,8 @@ function WorkspacePage(props) {
   const { path } = useRouteMatch()
   const { workspaceId, channelId } = useParams()
   const [lineWidth, setLineWidth] = useState(20)
-  const Modal = useRecoilValue(modalAtom)
-  const setWorkspaceUserInfo = useSetRecoilState(workspace)
+  const Modal = useRecoilValue(modalRecoil)
+  const setWorkspaceUserInfo = useSetRecoilState(workspaceRecoil)
   const [loading, resolved, error] = usePromise(
     () => getWorkspaceUserInfo({ workspaceId }),
     [],
@@ -27,6 +27,7 @@ function WorkspacePage(props) {
   if (error) return <div>{error.toString()}</div>
   if (!resolved) return null
   setWorkspaceUserInfo(resolved)
+
   const moveLine = e => {
     if (e.pageX === 0) return false
     let mouse = e.pageX

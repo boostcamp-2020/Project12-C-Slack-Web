@@ -36,6 +36,13 @@ exports.invited = asyncWrapper(async (req, res) => {
   return res.status(code).redirect(process.env.FRONTEND_HOST)
 })
 
+exports.checkDuplicateName = asyncWrapper(async (req, res) => {
+  const { code, success, data } = await service.checkDuplicateName({
+    ...req.query,
+  })
+  return res.status(code).json({ success, data })
+})
+
 exports.getWorkspaceUserInfo = asyncWrapper(async (req, res) => {
   const { code, success, data } = await service.getWorkspaceUserInfo({
     ...req.params,

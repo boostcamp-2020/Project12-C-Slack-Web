@@ -3,10 +3,7 @@ import { WorkspaceUserInfo } from '../model/WorkspaceUserInfo'
 import { ChannelConfig } from '../model/ChannelConfig'
 import statusCode from '../util/statusCode'
 import resMessage from '../util/resMessage'
-import mongoose from 'mongoose'
 import { verifyRequiredParams, dbErrorHandler } from '../util'
-
-const ObjectId = mongoose.Types.ObjectId
 
 const createChannel = async params => {
   verifyRequiredParams(params.creator, params.title, params.channelType)
@@ -47,16 +44,13 @@ const checkDuplicate = async ({ title, workspaceId }) => {
 
 const getChannelListDB = async ({ workspaceUserInfoId }) => {
   verifyRequiredParams(workspaceUserInfoId)
-  const [userInfo, channelConfig] = await Promise.all([
-    dbErrorHandler(() =>
-      WorkspaceUserInfo.getWorkspaceUserInfo(workspaceUserInfoId),
-    ),
-    dbErrorHandler(() => ChannelConfig.getChannelList(workspaceUserInfoId)),
-  ])
+  const channelConfig = await dbErrorHandler(() =>
+    ChannelConfig.getChannelList(workspaceUserInfoId),
+  )
 
   return {
     code: statusCode.OK,
-    result: { channelConfig, userInfo },
+    result: channelConfig,
     success: true,
   }
 }
@@ -75,20 +69,20 @@ const getChannelHeaderInfoDB = async ({ channelId, workspaceUserInfoId }) => {
 
 const inviteUserDB = async ({ channelId, workspaceUserInfoId }) => {
   verifyRequiredParams(channelId, workspaceUserInfoId)
-  await Promise.all([
-    workspaceUserInfoId.forEach(el => {
+  await Promise.all(
+    workspaceUserInfoId.map(el => {
       dbErrorHandler(() => {
         const channelConfig = ChannelConfig({
           workspaceUserInfoId: el,
           channelId,
           isMute: false,
           notification: 0,
-          sectionId: null,
+          sectionName: null,
         })
         channelConfig.save()
       })
     }),
-  ])
+  )
 
   return {
     code: statusCode.OK,

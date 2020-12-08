@@ -1,3 +1,4 @@
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import styled from 'styled-components'
 import { COLOR } from '../../constant/style'
@@ -5,10 +6,13 @@ import { COLOR } from '../../constant/style'
 function ChannelMemberThumbnail(props) {
   const { member, memberNum } = props
 
-  const renderThumbnails = member.map((user, index) => {
-    if (user === null) return
-    return <Thumbnail key={index} src={user.profileUrl} index={3 - index} />
-  })
+  const renderThumbnails = member
+    .map((user, index) => {
+      if (user === null) return
+      if (index > 2) return
+      return <Thumbnail key={index} src={user.profileUrl} index={3 - index} />
+    })
+    .filter(val => val)
 
   return (
     <MemberInfoArea>

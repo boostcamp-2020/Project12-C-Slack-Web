@@ -6,13 +6,13 @@ import SectionLabel from '../SectionLabel'
 import SideMenuList from '../SideMenuList'
 import { useRecoilState } from 'recoil'
 
-import { workspaceUserInfoAtom } from '../../store'
+import { workspaceRecoil } from '../../store'
 import useChannelList from '../../hooks/useChannelList'
 
 function ChannelList(props) {
   const [list, setList] = useState([])
   const [Channels, setChannels] = useChannelList()
-  const [userInfo, setUserInfo] = useRecoilState(workspaceUserInfoAtom)
+  const [userInfo, setUserInfo] = useRecoilState(workspaceRecoil)
 
   const history = useHistory()
 
