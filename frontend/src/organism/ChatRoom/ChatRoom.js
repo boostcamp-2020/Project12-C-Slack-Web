@@ -10,7 +10,7 @@ import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
 import usePromise from '../../hooks/usePromise'
 import MessageEditor from '../messageEditor/MessageEditor'
-import { workspace } from '../../store'
+import { workspaceRecoil } from '../../store'
 
 const baseURL =
   process.env.NODE_ENV === 'development'
@@ -18,7 +18,7 @@ const baseURL =
     : process.env.REACT_APP_CHAT_HOST
 
 const ChatRoom = () => {
-  const workspaceUserInfo = useRecoilValue(workspace)
+  const workspaceUserInfo = useRecoilValue(workspaceRecoil)
   const { workspaceId, channelId } = useParams()
   const [currentCursor, setCurrentCursor] = useState(new Date())
   const [socket, setSocket] = useState(null)
@@ -42,6 +42,7 @@ const ChatRoom = () => {
   }
 
   useEffect(() => {
+    if (workspaceUserInfo === null) return false
     setSocket(
       io(baseURL, { query: { channelId, creator: workspaceUserInfo._id } }),
     )
@@ -70,6 +71,7 @@ const ChatRoom = () => {
   }, [socket])
 
   useEffect(() => {
+    if (workspaceUserInfo === null) return false
     if (resolved) setMessages(resolved)
   }, [resolved])
 

@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 
 import { COLOR } from '../../constant/style'
 import Icon from '../Icon'
-import { workspaceUserInfoAtom } from '../../store'
+import { workspaceRecoil } from '../../store'
 import { STAR, COLOREDSTAR } from '../../constant/icon'
 import { atom, useRecoilState, useRecoilValue } from 'recoil'
 import useChannelList from '../../hooks/useChannelList'
@@ -16,7 +16,7 @@ function ChannelStarBtn({ channel }) {
   const { channelId } = useParams()
   const [Channels, setChannels] = useChannelList()
   const [sectionInfo, setSectionInfo] = useState(section)
-  const workspaceUserInfo = useRecoilValue(workspaceUserInfoAtom)
+  const workspaceUserInfo = useRecoilValue(workspaceRecoil)
 
   const history = useHistory()
 
