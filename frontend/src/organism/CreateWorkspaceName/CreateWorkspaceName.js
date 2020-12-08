@@ -20,10 +20,10 @@ const CreateWorkspaceName = ({
   setIsInputName,
 }) => {
   const [nameError, setNameError] = useState('')
-
+  const [isErrorName, setIsErrorName] = useState(true)
   const checkName = workspaceName => {
     if (
-      workspaceName.length >= 0 &&
+      workspaceName.length > 0 &&
       workspaceName.length <= MAX_WORKSPACE_NAME
     ) {
       return true
@@ -37,6 +37,7 @@ const CreateWorkspaceName = ({
   }
 
   const checkDuplicateName = async name => {
+    if (!name) return
     const isDuplicateName = (
       await checkDuplicateWorkspaceName({
         name,
@@ -44,6 +45,8 @@ const CreateWorkspaceName = ({
     ).data
     if (name && isDuplicateName) {
       setNameError(DUPLICATED_NAME_ERROR)
+    } else {
+      setIsErrorName(false)
     }
   }
 
@@ -52,6 +55,7 @@ const CreateWorkspaceName = ({
   ).current
 
   const handleName = e => {
+    setIsErrorName(true)
     setWorkspaceName(e.target.value)
     if (MAX_WORKSPACE_NAME < e.target.value.length)
       setNameError(MAXIMUM_NAME_LENGH_ERROR)
@@ -76,7 +80,12 @@ const CreateWorkspaceName = ({
       ></Input>
       <StyledErrorMessage>{nameError}</StyledErrorMessage>
       <StyledDiv>
-        <Button handleClick={() => goInitChannel(workspaceName)}>다음</Button>
+        <Button
+          handleClick={() => goInitChannel(workspaceName)}
+          disabled={isErrorName}
+        >
+          다음
+        </Button>
       </StyledDiv>
     </>
   )

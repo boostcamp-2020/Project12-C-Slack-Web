@@ -15,6 +15,7 @@ const MAXIMUM_NAME_LENGH_ERROR =
 
 const CreateWorkspaceInitChannel = ({ workspaceName }) => {
   const history = useHistory()
+  const [isErrorName, setIsErrorName] = useState(true)
   const [nameError, setNameError] = useState('')
   const [channelName, setChannelName] = useState('')
   const checkChannelName = channelName => {
@@ -42,11 +43,13 @@ const CreateWorkspaceInitChannel = ({ workspaceName }) => {
   }
 
   const handleName = e => {
+    setIsErrorName(true)
     setChannelName(e.target.value)
     if (MAX_CHANNEL_NAME < e.target.value.length)
       setNameError(MAXIMUM_NAME_LENGH_ERROR)
-    else {
+    else if (e.target.value.length > 0) {
       setNameError('')
+      setIsErrorName(false)
     }
   }
   return (
@@ -65,16 +68,16 @@ const CreateWorkspaceInitChannel = ({ workspaceName }) => {
       ></Input>
       <StyledErrorMessage>{nameError}</StyledErrorMessage>
       <StyledDiv>
-        <Button handleClick={() => createWorkspace(channelName)}>생성</Button>
+        <Button
+          handleClick={() => createWorkspace(channelName)}
+          disabled={isErrorName}
+        >
+          생성
+        </Button>
       </StyledDiv>
     </>
   )
 }
-
-const StyledInput = styled.input`
-  width: 100%;
-  min-height: 30px;
-`
 
 const StyledDiv = styled.div`
   margin-top: 30px;
