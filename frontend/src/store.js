@@ -6,6 +6,11 @@ export const workspace = atom({
   default: {},
 })
 
+export const forceUpdate = atom({
+  key: 'forceUpdate',
+  default: 0,
+})
+
 export const currentChannelId = atom({
   key: 'currentChannelId',
   default: '',
@@ -14,6 +19,7 @@ export const currentChannelId = atom({
 export const currentChannelInfo = selector({
   key: 'currentChannel',
   get: async ({ get }) => {
+    get(forceUpdate)
     const channelId = get(currentChannelId)
     const workspaceUserInfoId = get(workspace)._id
     if (channelId && workspaceUserInfoId) {

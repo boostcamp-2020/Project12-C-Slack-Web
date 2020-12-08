@@ -8,11 +8,8 @@ function UserActive(props) {
 }
 
 const UserActiveCircle = styled.div`
-  position: absolute;
   width: 8px;
   height: 8px;
-  right: 2px;
-  bottom: -3px;
   background: ${props => (props.isActive ? COLOR.USER_ACTIVE : 'white')};
   border: 1px solid black;
   border-radius: 5px;

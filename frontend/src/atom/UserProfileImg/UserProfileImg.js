@@ -6,13 +6,20 @@ const UserProfileImg = ({ user, size, showActive, type = 'default' }) => {
   return (
     <UserProfileImgStyle size={size}>
       <ProfileImg src={user.profileUrl} size={size} type={type} />
-      {showActive && <UserActive isActive={user.isActive} />}
+      {showActive && (
+        <UserActiveArea>
+          <UserActive isActive={user.isActive} />
+        </UserActiveArea>
+      )}
     </UserProfileImgStyle>
   )
 }
 
 const UserProfileImgStyle = styled.div`
+  width: ${({ size }) => size + 'px'};
+  height: ${({ size }) => size + 'px'};
   min-width: 25px;
+  position: relative;
 `
 
 const ProfileImg = styled.img`
@@ -31,6 +38,14 @@ const ProfileImg = styled.img`
   width: ${({ size }) => size}px;
   height: ${({ size }) => size}px;
   border-radius: 3px;
+`
+
+const UserActiveArea = styled.div`
+  width: auto;
+  height: auto;
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
 `
 
 export default UserProfileImg
