@@ -152,15 +152,19 @@ const checkDuplicateName = async ({ name }) => {
 
 const getWorkspaceUserInfo = async ({ userId, workspaceId }) => {
   verifyRequiredParams(userId, workspaceId)
-  const result = await dbErrorHandler(() =>
-    WorkspaceUserInfo.findOne({
-      workspaceId,
-      userId,
-    }),
-  )
+  const [workspaceUserInfo, workspaceInfo] = await Promise.all([
+    dbErrorHandler(() =>
+      WorkspaceUserInfo.findOne({
+        workspaceId,
+        userId,
+      }),
+    ),
+    dbErrorHandler(() => Workspace.findOne({ _id: workspaceId })),
+  ])
+  workspaceUserInfo.workspaceInfo = workspaceInfo
   return {
     code: statusCode.OK,
-    data: result,
+    data: workspaceUserInfo,
     success: true,
   }
 }
