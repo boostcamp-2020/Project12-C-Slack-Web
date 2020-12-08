@@ -9,6 +9,7 @@ import {
   faEllipsisV,
   faPlus,
   faChevronDown,
+  faChevronRight,
   faAt,
   faThumbtack,
   faTools,
@@ -38,6 +39,7 @@ export const ELLIPSISV = faEllipsisV
 export const PLUS = faPlus
 export const EDIT = faEdit
 export const CHEVRONDOWN = faChevronDown
+export const CHEVRONRIGHT = faChevronRight
 export const COMMENTDOTS = faCommentDots
 export const COMMENTS = faComments
 export const AT = faAt
