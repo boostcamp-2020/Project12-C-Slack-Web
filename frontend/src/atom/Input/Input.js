@@ -15,7 +15,7 @@ function Input({
       <StyledInput
         placeholder={placeholder}
         onChange={handleChange}
-        onKeyDown={handleKey}
+        onKeyPress={handleKey}
         value={value}
         tabIndex="0"
       />
