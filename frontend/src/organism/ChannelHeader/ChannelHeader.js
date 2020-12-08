@@ -120,7 +120,7 @@ const Divider = styled.div`
 `
 
 const ChannelButtonArea = styled.div`
-  width: 155px;
+  width: 180px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -143,7 +143,6 @@ const ChannelOption = styled.div`
 const IconBtn = styled.div`
   width: 30px;
   height: 30px;
-  margin: 0 5px;
   display: flex;
   flex-grow: 1;
   flex-direction: row;
