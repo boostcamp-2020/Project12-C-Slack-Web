@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { channelAtom, workspaceUserInfoAtom, workspace } from '../store'
+import { channelsRecoil, workspaceRecoil } from '../store'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { useHistory } from 'react-router'
 import { toast } from 'react-toastify'
@@ -7,22 +7,19 @@ import { toast } from 'react-toastify'
 import request from '../util/request'
 
 const useChannelList = () => {
-  const [Channels, setChannels] = useRecoilState(channelAtom)
-  const { _id: workspaceUserInfoId } = useRecoilValue(workspace)
-  const [workspaceUserInfo, setWorkspaceUserInfo] = useRecoilState(
-    workspaceUserInfoAtom,
-  )
+  const [Channels, setChannels] = useRecoilState(channelsRecoil)
+  const workspaceUserInfoId = useRecoilValue(workspaceRecoil)
 
   const history = useHistory()
   const getList = async () => {
     try {
-      if (workspaceUserInfoId) {
+      if (workspaceUserInfoId !== null) {
         const { data } = await request.GET('/api/channel', {
-          workspaceUserInfoId,
+          workspaceUserInfoId: workspaceUserInfoId._id,
         })
         if (data.success) {
-          setWorkspaceUserInfo(data.result.userInfo[0])
-          setChannels(data.result.channelConfig)
+          console.log(data)
+          setChannels(data.result)
         } else throw '채널 목록 요청 오류'
       }
     } catch (err) {

@@ -44,16 +44,13 @@ const checkDuplicate = async ({ title, workspaceId }) => {
 
 const getChannelListDB = async ({ workspaceUserInfoId }) => {
   verifyRequiredParams(workspaceUserInfoId)
-  const [userInfo, channelConfig] = await Promise.all([
-    dbErrorHandler(() =>
-      WorkspaceUserInfo.getWorkspaceUserInfo(workspaceUserInfoId),
-    ),
-    dbErrorHandler(() => ChannelConfig.getChannelList(workspaceUserInfoId)),
-  ])
+  const channelConfig = await dbErrorHandler(() =>
+    ChannelConfig.getChannelList(workspaceUserInfoId),
+  )
 
   return {
     code: statusCode.OK,
-    result: { channelConfig, userInfo },
+    result: channelConfig,
     success: true,
   }
 }

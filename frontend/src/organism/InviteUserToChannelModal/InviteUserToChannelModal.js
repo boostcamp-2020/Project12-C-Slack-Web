@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil'
 import {
-  modalAtom,
+  modalRecoil,
   forceUpdate,
-  currentChannelInfo,
-  workspaceUserInfoAtom,
+  currentChannelInfoRecoil,
+  workspaceRecoil,
 } from '../../store'
 
 import Button from '../../atom/Button'
@@ -18,9 +18,9 @@ import SearchUserList from '../SearchUserList'
 import SelectedUserList from '../SelectedUserList'
 
 function InviteUserToChannelModal({ handleClose }) {
-  const channelInfo = useRecoilValue(currentChannelInfo)
-  const workspaceUserInfo = useRecoilValue(workspaceUserInfoAtom)
-  const setModal = useSetRecoilState(modalAtom)
+  const channelInfo = useRecoilValue(currentChannelInfoRecoil)
+  const workspaceUserInfo = useRecoilValue(workspaceRecoil)
+  const setModal = useSetRecoilState(modalRecoil)
   const setForceUpdate = useSetRecoilState(forceUpdate)
   const forceUpdateFunc = () => setForceUpdate(n => n + 1)
   const [searchResult, setSearchResult] = useState(null)

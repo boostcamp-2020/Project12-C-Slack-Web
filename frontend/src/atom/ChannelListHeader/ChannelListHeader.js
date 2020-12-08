@@ -1,7 +1,7 @@
 import React from 'react'
 import { useRecoilValue } from 'recoil'
 import styled from 'styled-components'
-import { workspaceUserInfoAtom } from '../../store'
+import { workspaceRecoil } from '../../store'
 import Icon from '../../atom/Icon'
 import { EDIT, CHEVRONDOWN } from '../../constant/icon'
 
@@ -9,7 +9,7 @@ const ICON_SIZE = 13
 const ICON_COLOR = '#19181F'
 
 function ChannelListHeader() {
-  const workspaceUserInfo = useRecoilValue(workspaceUserInfoAtom)
+  const workspaceUserInfo = useRecoilValue(workspaceRecoil)
 
   return workspaceUserInfo !== null ? (
     <ChannelHeader>

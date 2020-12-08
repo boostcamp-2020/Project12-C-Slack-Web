@@ -1,9 +1,9 @@
 import { atom, selector } from 'recoil'
 import { getChannelHeaderInfo } from './api/channel'
 
-export const workspace = atom({
+export const workspaceRecoil = atom({
   key: 'workspace',
-  default: {},
+  default: null,
 })
 
 export const forceUpdate = atom({
@@ -11,17 +11,17 @@ export const forceUpdate = atom({
   default: 0,
 })
 
-export const currentChannelId = atom({
+export const currentChannelIdRecoil = atom({
   key: 'currentChannelId',
   default: '',
 })
 
-export const currentChannelInfo = selector({
+export const currentChannelInfoRecoil = selector({
   key: 'currentChannel',
   get: async ({ get }) => {
     get(forceUpdate)
-    const channelId = get(currentChannelId)
-    const workspaceUserInfoId = get(workspace)._id
+    const channelId = get(currentChannelIdRecoil)
+    const workspaceUserInfoId = get(workspaceRecoil)._id
     if (channelId && workspaceUserInfoId) {
       const { result } = await getChannelHeaderInfo({
         channelId,
@@ -33,22 +33,12 @@ export const currentChannelInfo = selector({
   },
 })
 
-export const channelAtom = atom({
+export const channelsRecoil = atom({
   key: 'Channels',
   default: {},
 })
 
-export const channelInfoAtom = atom({
-  key: 'ChannelInfo',
-  default: {},
-})
-
-export const modalAtom = atom({
+export const modalRecoil = atom({
   key: 'Modal',
-  default: null,
-})
-
-export const workspaceUserInfoAtom = atom({
-  key: 'WorkspaceUserInfo',
   default: null,
 })
