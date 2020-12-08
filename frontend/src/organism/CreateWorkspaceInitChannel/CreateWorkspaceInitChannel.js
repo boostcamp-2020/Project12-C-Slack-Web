@@ -12,14 +12,14 @@ import { COLOR } from '../../constant/style'
 const MAX_CHANNEL_NAME = 80
 const MAXIMUM_NAME_LENGH_ERROR =
   'channel names can’t be longer than 80 characters.'
+const NULL_NAME_ERROR = 'channel names can’t be empty'
 
 const CreateWorkspaceInitChannel = ({ workspaceName }) => {
   const history = useHistory()
-  const [isErrorName, setIsErrorName] = useState(true)
-  const [nameError, setNameError] = useState('')
+  const [nameError, setNameError] = useState(NULL_NAME_ERROR)
   const [channelName, setChannelName] = useState('')
   const checkChannelName = channelName => {
-    if (channelName.length >= 0 && channelName.length <= MAX_CHANNEL_NAME) {
+    if (channelName.length > 0 && channelName.length <= MAX_CHANNEL_NAME) {
       return true
     }
     return false
@@ -43,13 +43,13 @@ const CreateWorkspaceInitChannel = ({ workspaceName }) => {
   }
 
   const handleName = e => {
-    setIsErrorName(true)
     setChannelName(e.target.value)
-    if (MAX_CHANNEL_NAME < e.target.value.length)
+    if (MAX_CHANNEL_NAME < e.target.value.length) {
       setNameError(MAXIMUM_NAME_LENGH_ERROR)
-    else if (e.target.value.length > 0) {
+    } else if (e.target.value.length === 0) {
+      setNameError(NULL_NAME_ERROR)
+    } else if (e.target.value.length > 0) {
       setNameError('')
-      setIsErrorName(false)
     }
   }
   return (
@@ -70,7 +70,7 @@ const CreateWorkspaceInitChannel = ({ workspaceName }) => {
       <StyledDiv>
         <Button
           handleClick={() => createWorkspace(channelName)}
-          disabled={isErrorName}
+          disabled={!!nameError}
         >
           생성
         </Button>
