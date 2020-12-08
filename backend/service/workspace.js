@@ -157,9 +157,9 @@ const getWorkspaceUserInfo = async ({ userId, workspaceId }) => {
       WorkspaceUserInfo.findOne({
         workspaceId,
         userId,
-      }),
+      }).lean(),
     ),
-    dbErrorHandler(() => Workspace.findOne({ _id: workspaceId })),
+    dbErrorHandler(() => Workspace.findOne({ _id: workspaceId }).lean()),
   ])
   workspaceUserInfo.workspaceInfo = workspaceInfo
   return {
