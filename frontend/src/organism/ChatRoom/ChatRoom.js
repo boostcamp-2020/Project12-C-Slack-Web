@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import io from 'socket.io-client'
 import { useRecoilValue } from 'recoil'
-
-import ChannelHeader from '../ChannelHeader'
 import ChatMessage from '../ChatMessage'
 import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
 import usePromise from '../../hooks/usePromise'
 import MessageEditor from '../messageEditor/MessageEditor'
 import { workspaceRecoil } from '../../store'
+const ChannelHeader = React.lazy(() => import('../ChannelHeader'))
 
 const baseURL =
   process.env.NODE_ENV === 'development'
@@ -23,7 +22,7 @@ const ChatRoom = () => {
   const [currentCursor, setCurrentCursor] = useState(new Date())
   const [socket, setSocket] = useState(null)
   const [messages, setMessages] = useState([])
-  const [loading, resolved, error] = usePromise(
+  const [, resolved] = usePromise(
     () => getChatMessage({ workspaceId, channelId, currentCursor }),
     [currentCursor, channelId, workspaceId],
   )
@@ -78,7 +77,9 @@ const ChatRoom = () => {
   return (
     <ChatArea>
       <ChatHeader>
-        <ChannelHeader />
+        <Suspense fallback={<div>loading header...</div>}>
+          <ChannelHeader />
+        </Suspense>
       </ChatHeader>
       <ChatContents>
         {messages.map((message, i) => (
