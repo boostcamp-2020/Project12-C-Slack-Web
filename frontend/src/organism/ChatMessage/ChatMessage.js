@@ -30,6 +30,7 @@ const ChatMessage = ({
 const StyledMessageContainer = styled.div`
   display: flex;
   width: 100%;
+  max-width: -webkit-fill-available;
   ${({ type }) => {
     if (type === 'reply') return 'padding: 8px 24px 8px 16px;'
     return 'padding: 8px 20px;'
