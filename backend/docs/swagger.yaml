@@ -251,6 +251,99 @@ paths:
           explode: true
           schema:
             type: string
+  /api/workspace/info/{workspaceId}:
+    summary: get workspace, workspace user info
+    description: get workspace, workspace user info
+    get:
+      tags:
+        - workspace
+      summary: get workspace, workspace user info
+      description: get workspace, workspace user info
+      parameters:
+        - name: workspaceId
+          in: path
+          description: workspaceId
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: query
+          description: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      title:
+                        type: string
+                      displayName:
+                        type: string
+                      pause:
+                        type: string
+                      phoneNumber:
+                        type: string
+                      timeZone:
+                        type: string
+                      profileUrl:
+                        type: string
+                      status:
+                        type: string
+                      expireStatus:
+                        type: string
+                      isAdmin:
+                        type: boolean
+                      isActive:
+                        type: boolean
+                      worksacpeId:
+                        type: string
+                      sections:
+                        type: array
+                        items:
+                          type: string
+                      workspaceInfo:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                          name:
+                            type: string
+                          creator:
+                            type: string
+                          profileUrl:
+                            type: string
+                          default_channel:
+                            type: string
+          description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: bad request
+        '600':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: DB Error
 
   /api/thread/follow:
     summary: update follow config
