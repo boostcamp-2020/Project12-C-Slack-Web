@@ -218,6 +218,39 @@ paths:
           explode: true
           schema:
             type: string
+  /api/workspace/check-duplicate-name:
+    summary: check duplicate workspace name
+    description: invitedcheck duplicate workspace name
+    get:
+      tags:
+        - workspace
+      summary: check duplicate workspace name
+      description: check duplicate workspace name
+      operationId: ''
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: boolean
+                    description: is duplicate
+          description: success response
+        default:
+          description: Default error sample response
+      parameters:
+        - name: name
+          in: query
+          description: workspace name
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
 
   /api/thread/follow:
     summary: update follow config
