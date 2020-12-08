@@ -17,10 +17,8 @@ const useChannelList = () => {
         const { data } = await request.GET('/api/channel', {
           workspaceUserInfoId: workspaceUserInfoId._id,
         })
-        if (data.success) {
-          console.log(data)
-          setChannels(data.result)
-        } else throw '채널 목록 요청 오류'
+        if (data.success) setChannels(data.result)
+        else throw '채널 목록 요청 오류'
       }
     } catch (err) {
       toast.error('채널 목록 요청에 오류가 발생했습니다.', {
