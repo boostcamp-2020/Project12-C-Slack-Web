@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 
 import Icon from '../../atom/Icon'
 import { ADDUSER, INFOCIRCLE } from '../../constant/icon'
@@ -16,7 +16,7 @@ import useChannelInfo from '../../hooks/useChannelInfo'
 import { isEmpty } from '../../util'
 
 function ChannelHeader() {
-  const [, setModal] = useRecoilState(modalRecoil)
+  const setModal = useSetRecoilState(modalRecoil)
   const [channelInfo] = useChannelInfo()
   const openAddUserModal = () => {
     setModal(<InviteUserToChannelModal handleClose={() => setModal(null)} />)

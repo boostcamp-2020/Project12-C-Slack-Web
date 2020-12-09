@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import io from 'socket.io-client'
@@ -9,7 +9,7 @@ import { getChatMessage } from '../../api/chat'
 import usePromise from '../../hooks/usePromise'
 import MessageEditor from '../messageEditor/MessageEditor'
 import { workspaceRecoil } from '../../store'
-const ChannelHeader = React.lazy(() => import('../ChannelHeader'))
+import ChannelHeader from '../ChannelHeader'
 
 const baseURL =
   process.env.NODE_ENV === 'development'
@@ -77,9 +77,7 @@ const ChatRoom = () => {
   return (
     <ChatArea>
       <ChatHeader>
-        <Suspense fallback={<div>loading header...</div>}>
-          <ChannelHeader />
-        </Suspense>
+        <ChannelHeader />
       </ChatHeader>
       <ChatContents>
         {messages.map((message, i) => (
