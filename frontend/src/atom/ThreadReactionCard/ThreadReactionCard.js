@@ -8,18 +8,30 @@ function ThreadReactionCard({ emotion, users }) {
   const [userInfo, setUserInfo] = useRecoilState(workspaceRecoil)
   const [myReaction, setMyReaction] = useState(false)
 
+  useEffect(() => {
+    setMyReaction(hasMyReaction())
+  }, [])
+
   const hasMyReaction = () => {
     const result = users.every(user => {
       return user._id !== userInfo._id
     })
     return !result
   }
-  useEffect(() => {
-    setMyReaction(hasMyReaction())
-  }, [])
+
+  const removeMyReaction = () => {
+    console.log('TODO: remove my reaction', emotion)
+  }
+
+  const addMyReaction = () => {
+    console.log('TODO: add my reaction', emotion)
+  }
 
   return (
-    <ThreadReactionCardStyle myReaction={myReaction}>
+    <ThreadReactionCardStyle
+      onClick={myReaction ? removeMyReaction : addMyReaction}
+      myReaction={myReaction}
+    >
       <EmotionArea>{emotion}</EmotionArea>
       <UserNumArea>{users.length}</UserNumArea>
     </ThreadReactionCardStyle>
