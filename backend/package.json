@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/boostcamp-2020/Project12-C-Slack-Web",
   "dependencies": {
+    "aws-sdk": "^2.348.0",
     "concurrently": "^5.3.0",
     "cookie-parser": "^1.4.5",
     "core-js": "^3.6.5",
@@ -29,6 +30,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.15",
     "morgan": "~1.9.1",
+    "multer": "^1.4.2",
     "nodemon": "^2.0.4",
     "passport": "^0.4.1",
     "passport-github": "^1.1.0",
