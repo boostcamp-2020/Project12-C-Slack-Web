@@ -104,7 +104,7 @@ chatSchema.statics.getChatMessages = ({ channelId, filter = {} }) =>
           {
             $project: {
               _id: 0,
-              emotion: '$_id.emotion',
+              emoji: '$_id.emotion',
               users: 1,
             },
           },

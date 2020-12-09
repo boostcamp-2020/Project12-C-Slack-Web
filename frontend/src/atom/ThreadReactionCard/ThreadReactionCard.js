@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil'
 import { workspaceRecoil } from '../../store'
 import { COLOR } from '../../constant/style'
 
-function ThreadReactionCard({ emotion, users }) {
+function ThreadReactionCard({ emoji, users }) {
   const [userInfo, setUserInfo] = useRecoilState(workspaceRecoil)
   const [myReaction, setMyReaction] = useState(false)
 
@@ -20,11 +20,11 @@ function ThreadReactionCard({ emotion, users }) {
   }
 
   const removeMyReaction = () => {
-    console.log('TODO: remove my reaction', emotion)
+    console.log('TODO: remove my reaction', emoji)
   }
 
   const addMyReaction = () => {
-    console.log('TODO: add my reaction', emotion)
+    console.log('TODO: add my reaction', emoji)
   }
 
   return (
@@ -32,7 +32,7 @@ function ThreadReactionCard({ emotion, users }) {
       onClick={myReaction ? removeMyReaction : addMyReaction}
       myReaction={myReaction}
     >
-      <EmotionArea>{emotion}</EmotionArea>
+      <EmotionArea>{emoji}</EmotionArea>
       <UserNumArea>{users.length}</UserNumArea>
     </ThreadReactionCardStyle>
   )
