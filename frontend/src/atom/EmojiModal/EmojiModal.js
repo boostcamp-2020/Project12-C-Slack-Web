@@ -2,6 +2,7 @@ import React from 'react'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 import styled from 'styled-components'
+import { SIZE } from '../../constant/style'
 
 function EmojiModal({ sendHandler, closeHandler, axisX, axisY }) {
   const addEmoji = emoji => {
@@ -22,8 +23,8 @@ function EmojiModal({ sendHandler, closeHandler, axisX, axisY }) {
           theme="dark"
           showPreview={false}
           style={{
-            width: '320px',
-            height: '430px',
+            width: `${SIZE.EMOJI_MODAL_WIDTH}px`,
+            height: `${SIZE.EMOJI_MODAL_HEIGHT}px`,
           }}
         />
       </EmojiContents>

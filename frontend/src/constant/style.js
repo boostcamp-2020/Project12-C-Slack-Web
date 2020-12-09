@@ -26,5 +26,7 @@ const COLOR = {
 const SIZE = {
   CHAT_PROFILE: 36,
   ICON_SIZE: 13,
+  EMOJI_MODAL_WIDTH: 320,
+  EMOJI_MODAL_HEIGHT: 430,
 }
 export { COLOR, SIZE }
