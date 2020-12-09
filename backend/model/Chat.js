@@ -79,5 +79,36 @@ chatSchema.statics.getChatMessages = ({ channelId, filter = {} }) =>
     { $limit: MAX_CHAT_MESSAGE },
   ])
 
+chatSchema.statics.getReplyMessages = ({ channelId, parentId }) =>
+  Chat.aggregate([
+    {
+      $match: {
+        channel: ObjectId(channelId),
+        parentId: ObjectId(parentId),
+      },
+    },
+    {
+      $lookup: {
+        from: 'workspaceuserinfos',
+        let: { creator: '$creator' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$_id', '$$creator'] } } },
+          { $project: { profileUrl: 1, displayName: 1, _id: 1 } },
+        ],
+        as: 'userInfo',
+      },
+    },
+    { $unwind: '$userInfo' },
+    {
+      $project: {
+        isDelete: 1,
+        contents: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        userInfo: 1,
+      },
+    },
+  ])
+
 const Chat = mongoose.model('Chat', chatSchema)
 module.exports = { Chat }
