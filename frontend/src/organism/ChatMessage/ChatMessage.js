@@ -107,7 +107,7 @@ const ThreadReactionStyle = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  padding: 0 10px;
+  padding: 5px 10px;
   border-radius: 5px;
 `
 export default ChatMessage

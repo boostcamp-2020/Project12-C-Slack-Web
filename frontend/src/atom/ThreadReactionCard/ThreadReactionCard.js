@@ -18,7 +18,7 @@ const ThreadReactionCardStyle = styled.div`
   min-width: 20px;
   height: 20px;
   padding: 0 7px;
-  margin-right: 10px;
+  margin: 0 10px 5px 0;
   border-radius: 20px;
   border: 1px solid gray;
   display: flex;
