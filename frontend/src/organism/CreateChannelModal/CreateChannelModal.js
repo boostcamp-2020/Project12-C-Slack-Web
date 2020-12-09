@@ -15,6 +15,7 @@ import { COLOR } from '../../constant/style'
 import ModalInputSection from '../ModalInputSection'
 import { checkDuplicateChannelName, createChannel } from '../../api/channel'
 import ToggleButton from '../../atom/Button/ToggleButton'
+import useChannelList from '../../hooks/useChannelList'
 
 const MAX_CHANNEL_NAME = 80
 const MAX_CHANNEL_DESCRIPTION = 250
@@ -30,6 +31,7 @@ const CreateChannelModal = ({ handleClose }) => {
   const history = useHistory()
   const { workspaceId } = useParams()
   const { _id: workspaceUserInfoId } = useRecoilValue(workspaceRecoil)
+  const [, updateChannelList] = useChannelList()
   const [isPrivate, setPrivateOption] = useState(false)
   const [channelName, setChannelName] = useState('')
   const [channelDescription, setChannelDescription] = useState('')
@@ -44,7 +46,6 @@ const CreateChannelModal = ({ handleClose }) => {
       }))
     )
       setNameError(DUPLICATED_NAME_ERROR)
-    if (nameError === DUPLICATED_NAME_ERROR) setNameError('')
   }
 
   const submitChannelInfo = async () => {
@@ -55,7 +56,8 @@ const CreateChannelModal = ({ handleClose }) => {
       description: channelDescription,
       workspaceId,
     })
-    history.push(`/${workspaceId}/${channelId}`)
+    updateChannelList()
+    history.push(`/workspace/${workspaceId}/${channelId}`)
     handleClose()
   }
 
@@ -65,12 +67,11 @@ const CreateChannelModal = ({ handleClose }) => {
 
   const handleName = e => {
     setChannelName(e.target.value)
+    if (e.target.value.length === 0) return setNameError('')
     if (MAX_CHANNEL_NAME - e.target.value.length < 0)
-      setNameError(MAXIMUM_NAME_LENGH_ERROR)
-    else {
-      handleDebounce(e.target.value)
-      setNameError('')
-    }
+      return setNameError(MAXIMUM_NAME_LENGH_ERROR)
+    setNameError('')
+    handleDebounce(e.target.value)
   }
 
   const handleDescription = async e => {
