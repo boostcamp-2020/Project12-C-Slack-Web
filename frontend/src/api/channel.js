@@ -11,7 +11,7 @@ export const createChannel = async params => {
   const { data } = await Request.POST('/api/channel', {
     ...params,
   })
-  return data?._id
+  return data?.data?._id
 }
 
 export const getChannelHeaderInfo = async ({

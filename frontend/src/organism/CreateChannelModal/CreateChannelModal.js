@@ -55,7 +55,7 @@ const CreateChannelModal = ({ handleClose }) => {
       description: channelDescription,
       workspaceId,
     })
-    history.push(`/${workspaceId}/${channelId}`)
+    history.push(`/workspace/${workspaceId}/${channelId}`)
     handleClose()
   }
 
