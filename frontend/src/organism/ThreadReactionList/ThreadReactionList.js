@@ -1,13 +1,19 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import ThreadReactionCard from '../../atom/ThreadReactionCard'
+import AddReactionButton from '../../atom/AddReactionButton'
 
 function ThreadReactionList({ reactions }) {
   const renderReactionCard = reactions.map((reaction, idx) => {
     return <ThreadReactionCard key={idx} {...reaction} />
   })
 
-  return <ThreadReactionListStyle>{renderReactionCard}</ThreadReactionListStyle>
+  return (
+    <ThreadReactionListStyle>
+      {renderReactionCard}
+      <AddReactionButton />
+    </ThreadReactionListStyle>
+  )
 }
 
 const ThreadReactionListStyle = styled.div`
