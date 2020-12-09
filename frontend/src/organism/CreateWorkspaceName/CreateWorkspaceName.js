@@ -13,17 +13,18 @@ const MAX_WORKSPACE_NAME = 250
 const MAXIMUM_NAME_LENGH_ERROR =
   'Workspace names can’t be longer than 250 characters.'
 const DUPLICATED_NAME_ERROR = 'That name is already exists'
+const NULL_NAME_ERROR = 'workspace names can’t be empty'
 
 const CreateWorkspaceName = ({
   workspaceName,
   setWorkspaceName,
   setIsInputName,
 }) => {
-  const [nameError, setNameError] = useState('')
-
+  const [nameError, setNameError] = useState(NULL_NAME_ERROR)
+  const [isTyping, setIsTyping] = useState(false)
   const checkName = workspaceName => {
     if (
-      workspaceName.length >= 0 &&
+      workspaceName.length > 0 &&
       workspaceName.length <= MAX_WORKSPACE_NAME
     ) {
       return true
@@ -37,6 +38,7 @@ const CreateWorkspaceName = ({
   }
 
   const checkDuplicateName = async name => {
+    if (!name) return
     const isDuplicateName = (
       await checkDuplicateWorkspaceName({
         name,
@@ -45,6 +47,7 @@ const CreateWorkspaceName = ({
     if (name && isDuplicateName) {
       setNameError(DUPLICATED_NAME_ERROR)
     }
+    setIsTyping(false)
   }
 
   const handleDebounce = useRef(
@@ -53,9 +56,12 @@ const CreateWorkspaceName = ({
 
   const handleName = e => {
     setWorkspaceName(e.target.value)
-    if (MAX_WORKSPACE_NAME < e.target.value.length)
+    setIsTyping(true)
+    if (MAX_WORKSPACE_NAME < e.target.value.length) {
       setNameError(MAXIMUM_NAME_LENGH_ERROR)
-    else {
+    } else if (e.target.value.length === 0) {
+      setNameError(NULL_NAME_ERROR)
+    } else {
       handleDebounce(e.target.value)
       setNameError('')
     }
@@ -76,7 +82,12 @@ const CreateWorkspaceName = ({
       ></Input>
       <StyledErrorMessage>{nameError}</StyledErrorMessage>
       <StyledDiv>
-        <Button handleClick={() => goInitChannel(workspaceName)}>다음</Button>
+        <Button
+          handleClick={() => goInitChannel(workspaceName)}
+          disabled={!!nameError || isTyping}
+        >
+          다음
+        </Button>
       </StyledDiv>
     </>
   )
