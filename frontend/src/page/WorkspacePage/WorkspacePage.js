@@ -1,33 +1,23 @@
-import React, { useState, Suspense, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Route, useParams, useRouteMatch } from 'react-router-dom'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { modalRecoil, workspaceRecoil } from '../../store'
-import { getWorkspaceUserInfo } from '../../api/workspace'
+import { useParams } from 'react-router-dom'
+import { useRecoilValue } from 'recoil'
+import { modalRecoil } from '../../store'
+
 import { throttle } from '../../util'
-import usePromise from '../../hooks/usePromise'
 import ChannelList from '../../organism/ChannelList'
 import ChannelListHeader from '../../atom/ChannelListHeader'
 import ChatRoom from '../../organism/ChatRoom'
 import { COLOR } from '../../constant/style'
 import Icon from '../../atom/Icon'
 import { TOOLS } from '../../constant/icon'
+import useWorkspace from '../../hooks/useWorkspace'
 
-function WorkspacePage(props) {
-  const { path } = useRouteMatch()
-  const { workspaceId, channelId } = useParams()
+function WorkspacePage() {
+  const { channelId } = useParams()
   const [lineWidth, setLineWidth] = useState(20)
   const Modal = useRecoilValue(modalRecoil)
-  const setWorkspaceUserInfo = useSetRecoilState(workspaceRecoil)
-  const [loading, resolved, error] = usePromise(
-    () => getWorkspaceUserInfo({ workspaceId }),
-    [],
-  )
-  if (loading) return <div>loading...</div>
-  if (error) return <div>{error.toString()}</div>
-  if (!resolved) return null
-  setWorkspaceUserInfo(resolved)
-
+  useWorkspace()
   const moveLine = e => {
     if (e.pageX === 0) return false
     let mouse = e.pageX
@@ -57,31 +47,30 @@ function WorkspacePage(props) {
         return <ChatRoom />
     }
   }
+
   return (
-    <Suspense fallback={<div>loading...</div>}>
-      <PageStyle>
-        {Modal}
-        <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
-        <MainArea>
-          <ChannelListSection width={lineWidth}>
-            <ChannelListHeaderArea>
-              <ChannelListHeader />
-            </ChannelListHeaderArea>
-            <ChannelListArea>
-              <ChannelList />
-            </ChannelListArea>
-          </ChannelListSection>
-          <ListLine draggable="true" onDrag={e => throttle(moveLine(e), 100)} />
-          <ContentsArea width={lineWidth}>
-            {switching()}
-            <SideBarArea>
-              <SideBarHeader></SideBarHeader>
-              <SideBarContents></SideBarContents>
-            </SideBarArea>
-          </ContentsArea>
-        </MainArea>
-      </PageStyle>
-    </Suspense>
+    <PageStyle>
+      {Modal}
+      <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
+      <MainArea>
+        <ChannelListSection width={lineWidth}>
+          <ChannelListHeaderArea>
+            <ChannelListHeader />
+          </ChannelListHeaderArea>
+          <ChannelListArea>
+            <ChannelList />
+          </ChannelListArea>
+        </ChannelListSection>
+        <ListLine draggable="true" onDrag={e => throttle(moveLine(e), 100)} />
+        <ContentsArea width={lineWidth}>
+          {switching()}
+          <SideBarArea>
+            <SideBarHeader></SideBarHeader>
+            <SideBarContents></SideBarContents>
+          </SideBarArea>
+        </ContentsArea>
+      </MainArea>
+    </PageStyle>
   )
 }
 

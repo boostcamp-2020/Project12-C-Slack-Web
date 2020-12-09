@@ -7,5 +7,5 @@ export const getChatMessage = async ({
   const { data } = await Request.GET(`/api/chat/${workspaceId}/${channelId}`, {
     currentCursor,
   })
-  return data.data
+  return data.data.reverse()
 }

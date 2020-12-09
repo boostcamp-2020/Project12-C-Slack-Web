@@ -25,4 +25,12 @@ function throttle(func, delay) {
   }
 }
 
-export { debounce, throttle }
+const isEmpty = value => {
+  if (value === null) return true
+  if (typeof value === 'undefined') return true
+  if (typeof value === 'string' && value === '') return true
+  if (typeof value === 'object' && !Object.keys(value).length) return true
+  return false
+}
+
+export { debounce, throttle, isEmpty }
