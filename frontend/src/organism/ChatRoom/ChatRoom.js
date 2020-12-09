@@ -36,7 +36,6 @@ const ChatRoom = () => {
         profileUrl: workspaceUserInfo.profileUrl,
       },
     }
-    setMessages(messages => [...messages, chat])
     socket.emit('new message', chat)
   }
 
