@@ -1,13 +1,25 @@
-import React from 'react'
-import styled from 'styled-components'
+import React, { useState, useEffect } from 'react'
+import styled, { css } from 'styled-components'
 import { useRecoilState } from 'recoil'
 import { workspaceRecoil } from '../../store'
+import { COLOR } from '../../constant/style'
 
 function ThreadReactionCard({ emotion, users }) {
   const [userInfo, setUserInfo] = useRecoilState(workspaceRecoil)
+  const [myReaction, setMyReaction] = useState(false)
+
+  const hasMyReaction = () => {
+    const result = users.every(user => {
+      return user._id !== userInfo._id
+    })
+    return !result
+  }
+  useEffect(() => {
+    setMyReaction(hasMyReaction())
+  }, [])
 
   return (
-    <ThreadReactionCardStyle>
+    <ThreadReactionCardStyle myReaction={myReaction}>
       <EmotionArea>{emotion}</EmotionArea>
       <UserNumArea>{users.length}</UserNumArea>
     </ThreadReactionCardStyle>
@@ -19,12 +31,23 @@ const ThreadReactionCardStyle = styled.div`
   height: 20px;
   padding: 0 7px;
   margin: 0 10px 5px 0;
-  border-radius: 20px;
-  border: 1px solid gray;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+  border-radius: 20px;
+  border: 1px solid
+    ${props => {
+      return props.myReaction ? COLOR.REACTION_MINE_TEXT_AND_LINE : 'gray'
+    }};
+
+  color: ${props => {
+    return props.myReaction ? COLOR.REACTION_MINE_TEXT_AND_LINE : 'black'
+  }};
+
+  background: ${props => {
+    return props.myReaction ? COLOR.BACKGROUND_REACTION_MINE : COLOR.HOVER_GRAY
+  }};
 `
 const EmotionArea = styled.div`
   display: flex;
