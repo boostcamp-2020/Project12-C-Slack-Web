@@ -75,6 +75,43 @@ chatSchema.statics.getChatMessages = ({ channelId, filter = {} }) =>
       },
     },
     { $unwind: '$userInfo' },
+    {
+      $lookup: {
+        from: 'reactions',
+        let: { chatId: '$_id' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$chatId', '$$chatId'] } } },
+          {
+            $lookup: {
+              from: 'workspaceuserinfos',
+              let: { workspaceUserInfoId: '$workspaceUserInfoId' },
+              pipeline: [
+                {
+                  $match: { $expr: { $eq: ['$_id', '$$workspaceUserInfoId'] } },
+                },
+                { $project: { profileUrl: 1, displayName: 1, _id: 1 } },
+              ],
+              as: 'workspaceUserInfoId',
+            },
+          },
+          { $unwind: '$workspaceUserInfoId' },
+          {
+            $group: {
+              _id: { emotion: '$emoticon' },
+              users: { $push: '$workspaceUserInfoId' },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              emotion: '$_id.emotion',
+              users: 1,
+            },
+          },
+        ],
+        as: 'reactions',
+      },
+    },
 
     { $limit: MAX_CHAT_MESSAGE },
   ])
