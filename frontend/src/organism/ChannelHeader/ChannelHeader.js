@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
+import { useSetRecoilState } from 'recoil'
+
 import Icon from '../../atom/Icon'
 import { ADDUSER, INFOCIRCLE } from '../../constant/icon'
 import ChannelCard from '../../atom/ChannelCard'
@@ -8,28 +9,20 @@ import ChannelStarBtn from '../../atom/ChannelStarBtn'
 import ChannelPinBtn from '../../atom/ChannelPinBtn'
 import ChannelTopicBtn from '../../atom/ChannelTopicBtn'
 import ChannelMemberThumbnail from '../../atom/ChannelMemberThumbnail'
-import {
-  modalRecoil,
-  currentChannelIdRecoil,
-  currentChannelInfoRecoil,
-} from '../../store'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { modalRecoil } from '../../store'
 import InviteUserToChannelModal from '../InviteUserToChannelModal'
 import { COLOR } from '../../constant/style'
+import useChannelInfo from '../../hooks/useChannelInfo'
+import { isEmpty } from '../../util'
 
 function ChannelHeader() {
-  const { channelId } = useParams()
-  const setCurrentChannel = useSetRecoilState(currentChannelIdRecoil)
-  const [modal, setModal] = useRecoilState(modalRecoil)
-  const channelInfo = useRecoilValue(currentChannelInfoRecoil)
-  useEffect(() => {
-    setCurrentChannel(channelId)
-  }, [channelId])
+  const setModal = useSetRecoilState(modalRecoil)
+  const [channelInfo] = useChannelInfo()
   const openAddUserModal = () => {
     setModal(<InviteUserToChannelModal handleClose={() => setModal(null)} />)
   }
 
-  return Object.keys(channelInfo).length !== 0 ? (
+  return isEmpty(channelInfo) ? null : (
     <ChannelHeaderStyle>
       <ChannelInfo>
         <MainInfo>
@@ -67,8 +60,6 @@ function ChannelHeader() {
         </ChannelOption>
       </ChannelButtonArea>
     </ChannelHeaderStyle>
-  ) : (
-    <div></div>
   )
 }
 

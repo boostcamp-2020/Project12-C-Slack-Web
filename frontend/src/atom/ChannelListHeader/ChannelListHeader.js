@@ -14,7 +14,7 @@ function ChannelListHeader() {
   return workspaceUserInfo !== null ? (
     <ChannelHeader>
       <WorkspaceName>
-        <NameArea>{workspaceUserInfo.workspaceId.name}</NameArea>
+        <NameArea>{workspaceUserInfo.workspaceInfo.name}</NameArea>
 
         <Icon icon={CHEVRONDOWN} color="#d1d2d3" size={10 + 'px'} />
       </WorkspaceName>
