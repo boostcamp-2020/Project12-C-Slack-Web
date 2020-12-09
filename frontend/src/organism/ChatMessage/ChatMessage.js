@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import UserProfileImg from '../../atom/UserProfileImg'
 import ChatContent from '../../atom/ChatContent'
+import ThreadReactionList from '../ThreadReactionList'
 import ActionBar from '../ActionBar'
 import { SIZE, COLOR } from '../../constant/style'
 
 const ChatMessage = ({
   userInfo,
   reply,
+  reactions,
   _id,
   createdAt,
   contents,
@@ -30,8 +32,10 @@ const ChatMessage = ({
         />
       </MessageContents>
       {/* TODO thread Reaction 구현  */}
-      {reply && reply.length !== 0 && (
-        <ThreadReactionStyle>thread Reaction</ThreadReactionStyle>
+      {reactions && reactions.length !== 0 && (
+        <ThreadReactionStyle>
+          <ThreadReactionList reactions={reactions} />
+        </ThreadReactionStyle>
       )}
 
       {/* TODO view thread reply 구현  */}
@@ -105,6 +109,5 @@ const ThreadReactionStyle = styled.div`
   align-items: center;
   padding: 0 10px;
   border-radius: 5px;
-  background: red;
 `
 export default ChatMessage
