@@ -94,8 +94,12 @@ function InviteUserToChannelModal({ handleClose }) {
               />
             )}
           </SearchResultArea>
-          <ButtonArea onClick={inviteUser}>
-            <Button children="Done" disabled={inviteUserList.length === 0} />
+          <ButtonArea>
+            <Button
+              children="Done"
+              handleClick={inviteUser}
+              disabled={inviteUserList.length === 0}
+            />
           </ButtonArea>
         </ContentsArea>
       </ModalForm>
