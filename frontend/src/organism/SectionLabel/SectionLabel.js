@@ -7,11 +7,17 @@ import { Link } from 'react-router-dom'
 import { COLOR, SIZE } from '../../constant/style'
 import ChannelCard from '../../atom/ChannelCard'
 import DirectMessageCard from '../../atom/DirectMessageCard'
+import AddButton from '../../atom/Button/AddButton'
+import { modalRecoil } from '../../store'
+import { useSetRecoilState } from 'recoil'
+import InviteWorkspaceModal from '../InviteWorkspaceModal/'
+import CreateChannelModal from '../CreateChannelModal/CreateChannelModal'
 
 function SectionLabel(props) {
   const [isOpen, setIsOpen] = useState(true)
   const { sectionName, lists } = props
   const { channelId, workspaceId } = useParams()
+  const setModal = useSetRecoilState(modalRecoil)
 
   const openSection = () => {
     setIsOpen(!isOpen)
@@ -53,6 +59,29 @@ function SectionLabel(props) {
       <div></div>
     )
 
+  const openCreateChannelModal = () => {
+    setModal(<CreateChannelModal handleClose={() => setModal(null)} />)
+  }
+
+  const openInviteWorkspaceModal = () => {
+    setModal(<InviteWorkspaceModal handleClose={() => setModal(null)} />)
+  }
+
+  const addButtons =
+    sectionName === 'Direct messages' ? (
+      <AddButton
+        isOpen={isOpen}
+        title="Add teammates"
+        onClick={openInviteWorkspaceModal}
+      />
+    ) : (
+      <AddButton
+        isOpen={isOpen}
+        title="Add channels"
+        onClick={openCreateChannelModal}
+      />
+    )
+
   return (
     <SectionLabelStyle>
       <TitleArea onClick={openSection}>
@@ -90,7 +119,10 @@ function SectionLabel(props) {
           </ButtonArea>
         </SectionTitle>
       </TitleArea>
-      <ListArea isOpen={isOpen}>{renderChannelCards}</ListArea>
+      <ListArea isOpen={isOpen}>
+        {renderChannelCards}
+        {addButtons}
+      </ListArea>
     </SectionLabelStyle>
   )
 }
