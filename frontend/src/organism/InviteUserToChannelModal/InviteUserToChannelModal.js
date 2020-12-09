@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { modalRecoil, forceUpdate, currentChannelInfoRecoil } from '../../store'
+import { useSetRecoilState } from 'recoil'
+import { modalRecoil } from '../../store'
 import { useParams } from 'react-router-dom'
 import Button from '../../atom/Button'
 import Icon from '../../atom/Icon'
@@ -11,12 +11,12 @@ import request from '../../util/request'
 import Modal from '../../atom/Modal'
 import SearchUserList from '../SearchUserList'
 import SelectedUserList from '../SelectedUserList'
+import useChannelInfo from '../../hooks/useChannelInfo'
 
 function InviteUserToChannelModal({ handleClose }) {
-  const channelInfo = useRecoilValue(currentChannelInfoRecoil)
+  const [channelInfo, updateChannelInfo] = useChannelInfo()
   const setModal = useSetRecoilState(modalRecoil)
-  const setForceUpdate = useSetRecoilState(forceUpdate)
-  const forceUpdateFunc = () => setForceUpdate(n => n + 1)
+
   const [searchResult, setSearchResult] = useState(null)
   const [inviteUserList, setInviteUserList] = useState([])
   const { workspaceId } = useParams()
@@ -32,17 +32,14 @@ function InviteUserToChannelModal({ handleClose }) {
   }
 
   const inviteUser = async () => {
-    const workspaceUserInfoIdArr = inviteUserList.map(user => {
-      return user._id
-    })
-
+    if (!inviteUserList.length) return
     const { data } = await request.POST('/api/channel/invite', {
       channelId: channelInfo.channelId._id,
-      workspaceUserInfoId: workspaceUserInfoIdArr,
+      workspaceUserInfoId: inviteUserList.map(user => user._id),
     })
 
     if (data.success) {
-      forceUpdateFunc()
+      updateChannelInfo(channelInfo.channelId._id)
       setModal(null)
     }
   }

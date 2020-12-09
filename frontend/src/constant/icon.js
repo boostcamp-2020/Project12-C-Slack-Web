@@ -14,6 +14,7 @@ import {
   faThumbtack,
   faTools,
   faCheck,
+  faPlusSquare,
   faShare,
 } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -47,5 +48,6 @@ export const BOOKMARK = faBookmark
 export const THUMBTACK = faThumbtack
 export const TOOLS = faTools
 export const CHECK = faCheck
+export const PLUSSQURE = faPlusSquare
 export const SMILE = faSmile
 export const SHARE = faShare

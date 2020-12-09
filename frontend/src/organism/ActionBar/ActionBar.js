@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import EmojiModal from '../../atom/EmojiModal'
 import Icon from '../../atom/Icon'
-import { COLOR } from '../../constant/style'
+import { COLOR, SIZE } from '../../constant/style'
 import {
   SMILE,
   COMMENTDOTS,
@@ -27,8 +27,9 @@ function ActionBar({ setOpenModal, chatId }) {
   }
 
   const openEmojiModal = e => {
-    const widthSize = e.view.innerWidth - (e.clientX + 320)
-    const heightSize = e.view.innerHeight - (e.clientY + 430)
+    const widthSize = e.view.innerWidth - (e.clientX + SIZE.EMOJI_MODAL_WIDTH)
+    const heightSize =
+      e.view.innerHeight - (e.clientY + SIZE.EMOJI_MODAL_HEIGHT)
     let axisX = e.clientX
     let axisY = e.clientY
     if (widthSize < 0) axisX += widthSize

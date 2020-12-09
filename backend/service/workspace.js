@@ -124,9 +124,19 @@ const invited = async ({ userId, code }) => {
           profileUrl: findedUser.profileUrl,
         }),
       )
+      const workspaceData = await dbErrorHandler(() =>
+        Workspace.findOne({ _id: ObjectId(workspaceId) }),
+      )
+      await dbErrorHandler(() =>
+        ChannelConfig.create({
+          channelId: ObjectId(workspaceData.default_channel),
+          workspaceUserInfoId: ObjectId(createdWorkspaceUserData._id),
+        }),
+      )
+
       return {
         code: statusCode.CREATED,
-        data: createdWorkspaceUserData,
+        data: { workspaceId, default_channel: workspaceData.default_channel },
         success: true,
       }
     } else {
@@ -157,9 +167,9 @@ const getWorkspaceUserInfo = async ({ userId, workspaceId }) => {
       WorkspaceUserInfo.findOne({
         workspaceId,
         userId,
-      }),
+      }).lean(),
     ),
-    dbErrorHandler(() => Workspace.findOne({ _id: workspaceId })),
+    dbErrorHandler(() => Workspace.findOne({ _id: workspaceId }).lean()),
   ])
   workspaceUserInfo.workspaceInfo = workspaceInfo
   return {

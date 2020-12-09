@@ -11,26 +11,9 @@ export const forceUpdate = atom({
   default: 0,
 })
 
-export const currentChannelIdRecoil = atom({
-  key: 'currentChannelId',
-  default: '',
-})
-
-export const currentChannelInfoRecoil = selector({
+export const currentChannelInfoRecoil = atom({
   key: 'currentChannel',
-  get: async ({ get }) => {
-    get(forceUpdate)
-    const channelId = get(currentChannelIdRecoil)
-    const workspaceUserInfoId = get(workspaceRecoil)._id
-    if (channelId && workspaceUserInfoId) {
-      const { result } = await getChannelHeaderInfo({
-        channelId,
-        workspaceUserInfoId,
-      })
-      return result
-    }
-    return {}
-  },
+  default: '',
 })
 
 export const channelsRecoil = atom({

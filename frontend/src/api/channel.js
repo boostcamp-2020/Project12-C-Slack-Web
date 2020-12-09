@@ -21,5 +21,5 @@ export const getChannelHeaderInfo = async ({
   const { data } = await Request.GET(`/api/channel/${channelId}/info`, {
     workspaceUserInfoId,
   })
-  return data
+  return data.result
 }
