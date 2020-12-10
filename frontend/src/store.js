@@ -1,14 +1,8 @@
-import { atom, selector } from 'recoil'
-import { getChannelHeaderInfo } from './api/channel'
+import { atom } from 'recoil'
 
 export const workspaceRecoil = atom({
   key: 'workspace',
   default: null,
-})
-
-export const forceUpdate = atom({
-  key: 'forceUpdate',
-  default: 0,
 })
 
 export const currentChannelInfoRecoil = atom({
