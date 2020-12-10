@@ -5,9 +5,23 @@ import { File } from '../model/File'
 const mongoose = require('mongoose')
 const ObjectId = mongoose.Types.ObjectId
 
-const getFile = async ({ fileId }) => {
+const getFileURL = async ({ fileId }) => {
   verifyRequiredParams(fileId)
+
+  const fileData = await dbErrorHandler(() =>
+    File.findOne({
+      _id: ObjectId(fileId),
+    }),
+  )
+
+  return {
+    code: statusCode.OK,
+    data: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKETNAME}/${fileData.originalName}`,
+    success: true,
+  }
 }
+
+const downloadFile = async ({ fileId }) => {}
 
 const uploadFile = async ({ file, userId }) => {
   verifyRequiredParams(file, userId)
@@ -37,6 +51,7 @@ const uploadFile = async ({ file, userId }) => {
       fileName: data.originalName,
       fileType: data.fileType,
       creator: data.creator,
+      etag: data.etag,
     },
     success: true,
   }
@@ -65,7 +80,8 @@ const deleteFile = async ({ fileId }) => {
 }
 
 module.exports = {
-  getFile,
   uploadFile,
+  getFileURL,
+  downloadFile,
   deleteFile,
 }

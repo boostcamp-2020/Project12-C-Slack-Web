@@ -1,8 +1,15 @@
 import { asyncWrapper } from '../../util'
 import service from '../../service/file'
 
-exports.getFile = asyncWrapper(async (req, res) => {
-  const { code, success, data } = await service.getFile({
+exports.getFileURL = asyncWrapper(async (req, res) => {
+  const { code, success, data } = await service.getFileURL({
+    ...req.query,
+  })
+  return res.status(code).json({ success, data })
+})
+
+exports.downloadFile = asyncWrapper(async (req, res) => {
+  const { code, success, data } = await service.downloadFile({
     ...req.body,
     creator: req.user.id,
   })
