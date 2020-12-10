@@ -30,12 +30,14 @@ const chatSchema = mongoose.Schema(
   },
   { timestamps: true },
 )
-chatSchema.statics.getChatMessages = ({ channelId, filter = {} }) =>
+chatSchema.statics.getChatMessages = ({ channelId, currentCursor, fromDate }) =>
   Chat.aggregate([
     { $sort: { createdAt: -1 } },
     {
       $match: {
-        ...filter,
+        createdAt: fromDate
+          ? { $gt: new Date(fromDate) }
+          : { $lt: new Date(currentCursor) },
         channel: ObjectId(channelId),
         parentId: null,
       },

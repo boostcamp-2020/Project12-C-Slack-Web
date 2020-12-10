@@ -26,7 +26,7 @@ namespace.on('connection', socket => {
       channelId,
       contents,
     })
-    socket.broadcast.to(channelId).emit('new message', {
+    namespace.in(channelId).emit('new message', {
       message: { ...data, _id: result._id, createdAt: result.createdAt },
     })
   })

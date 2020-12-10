@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import io from 'socket.io-client'
@@ -6,7 +6,6 @@ import { useRecoilValue } from 'recoil'
 import ChatMessage from '../ChatMessage'
 import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
-import usePromise from '../../hooks/usePromise'
 import MessageEditor from '../messageEditor/MessageEditor'
 import { workspaceRecoil } from '../../store'
 import ChannelHeader from '../ChannelHeader'
@@ -17,15 +16,36 @@ const baseURL =
     : process.env.REACT_APP_CHAT_HOST
 
 const ChatRoom = () => {
+  const viewport = useRef(null)
+  const target = useRef(null)
+  const messageEndRef = useRef(null)
+  const [targetState, setTargetState] = useState()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
   const { workspaceId, channelId } = useParams()
-  const [currentCursor, setCurrentCursor] = useState(new Date())
   const [socket, setSocket] = useState(null)
   const [messages, setMessages] = useState([])
-  const [, resolved] = usePromise(
-    () => getChatMessage({ workspaceId, channelId, currentCursor }),
-    [currentCursor, channelId, workspaceId],
-  )
+  const load = useRef(false)
+
+  const loadMessage = async (workspaceId, channelId, currentCursor) => {
+    load.current = true
+    const newMessages = await getChatMessage({
+      workspaceId,
+      channelId,
+      currentCursor,
+    })
+    setMessages(messages => [...newMessages, ...messages])
+    load.current = false
+  }
+
+  useEffect(() => {
+    setMessages([])
+    loadMessage(workspaceId, channelId, new Date())
+    scrollTo()
+  }, [workspaceId, channelId])
+
+  const scrollTo = (targetRef = messageEndRef.current) => {
+    targetRef.scrollIntoView()
+  }
 
   const sendMessage = message => {
     const chat = {
@@ -36,7 +56,6 @@ const ChatRoom = () => {
         profileUrl: workspaceUserInfo.profileUrl,
       },
     }
-    setMessages(messages => [...messages, chat])
     socket.emit('new message', chat)
   }
 
@@ -58,6 +77,7 @@ const ChatRoom = () => {
       socket.emit('join-room', channelId)
       socket.on('new message', ({ message }) => {
         setMessages(messages => [...messages, message])
+        if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
     }
     return () => {
@@ -70,19 +90,46 @@ const ChatRoom = () => {
   }, [socket])
 
   useEffect(() => {
-    if (workspaceUserInfo === null) return false
-    if (resolved) setMessages(resolved)
-  }, [resolved])
+    const option = {
+      root: viewport.current,
+      threshold: 0,
+    }
+    const handleIntersection = (entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if (!load.current) {
+            loadMessage(workspaceId, channelId, target.current.id)
+            observer.unobserve(entry.target)
+            observer.observe(target.current)
+          }
+        }
+      })
+    }
+    const IO = new IntersectionObserver(handleIntersection, option)
+    if (target.current) IO.observe(target.current)
+    return () => IO && IO.disconnect()
+  }, [viewport, targetState])
+
+  const setTarget = useCallback(node => {
+    target.current = node
+    setTargetState(node)
+  }, [])
 
   return (
     <ChatArea>
       <ChatHeader>
         <ChannelHeader />
       </ChatHeader>
-      <ChatContents>
+      <ChatContents ref={viewport}>
         {messages.map((message, i) => (
-          <ChatMessage key={i} {...message} />
+          <ChatMessage
+            key={i}
+            {...message}
+            ref={i ? null : setTarget}
+            id={message.createdAt}
+          />
         ))}
+        <div ref={messageEndRef}></div>
       </ChatContents>
       <MessageEditor channelTitle={'hello world'} sendMessage={sendMessage} />
     </ChatArea>
@@ -93,7 +140,7 @@ const ChatArea = styled.div`
   flex-direction: column;
   height: 100%;
   width: 70%;
-  background: blue;
+  background: ${COLOR.HOVER_GRAY};
 `
 
 const ChatHeader = styled.div`
@@ -107,7 +154,6 @@ const ChatHeader = styled.div`
 const ChatContents = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
   height: calc(100% - 100px);
   overflow-x: hidden;
   overflow-y: auto;

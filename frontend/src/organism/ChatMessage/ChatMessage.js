@@ -1,55 +1,51 @@
-import React, { useState } from 'react'
-import styled, { css } from 'styled-components'
+import React, { useState, forwardRef } from 'react'
+import styled from 'styled-components'
 import UserProfileImg from '../../atom/UserProfileImg'
 import ChatContent from '../../atom/ChatContent'
 import ThreadReactionList from '../ThreadReactionList'
 import ActionBar from '../ActionBar'
 import { SIZE, COLOR } from '../../constant/style'
 
-const ChatMessage = ({
-  userInfo,
-  reply,
-  reactions,
-  _id,
-  createdAt,
-  contents,
-  type = 'chat',
-}) => {
-  const [openModal, setOpenModal] = useState(false)
+const ChatMessage = forwardRef(
+  (
+    { userInfo, reply, reactions, _id, createdAt, contents, type = 'chat' },
+    ref,
+  ) => {
+    const [openModal, setOpenModal] = useState(false)
 
-  return (
-    <StyledMessageContainer type={type}>
-      <MessageContents>
-        <UserProfileImg
-          user={{ profileUrl: userInfo.profileUrl }}
-          size={SIZE.CHAT_PROFILE}
-          type="chat"
-        />
-        <ChatContent
-          displayName={userInfo.displayName}
-          createdAt={createdAt}
-          contents={contents}
-        />
-      </MessageContents>
-      {/* TODO thread Reaction 구현  */}
-      {reactions && reactions.length !== 0 && (
-        <ThreadReactionStyle>
-          <ThreadReactionList reactions={reactions} />
-        </ThreadReactionStyle>
-      )}
+    return (
+      <StyledMessageContainer type={type} ref={ref} id={createdAt}>
+        <MessageContents>
+          <UserProfileImg
+            user={{ profileUrl: userInfo.profileUrl }}
+            size={SIZE.CHAT_PROFILE}
+            type="chat"
+          />
+          <ChatContent
+            displayName={userInfo.displayName}
+            createdAt={createdAt}
+            contents={contents}
+          />
+        </MessageContents>
+        {/* TODO thread Reaction 구현  */}
+        {reactions && reactions.length !== 0 && (
+          <ThreadReactionStyle>
+            <ThreadReactionList reactions={reactions} />
+          </ThreadReactionStyle>
+        )}
+        {/* TODO view thread reply 구현  */}
+        {reply && reply.length !== 0 && (
+          <ViewThreadBarStyle>view thread</ViewThreadBarStyle>
+        )}
 
-      {/* TODO view thread reply 구현  */}
-      {reply && reply.length !== 0 && (
-        <ViewThreadBarStyle>view thread</ViewThreadBarStyle>
-      )}
-
-      {/* TODO Action bar 구현 */}
-      <ActionBarStyle openModal={openModal}>
-        <ActionBar setOpenModal={setOpenModal} chatId={_id} />
-      </ActionBarStyle>
-    </StyledMessageContainer>
-  )
-}
+        {/* TODO Action bar 구현 */}
+        <ActionBarStyle openModal={openModal}>
+          <ActionBar setOpenModal={setOpenModal} chatId={_id} />
+        </ActionBarStyle>
+      </StyledMessageContainer>
+    )
+  },
+)
 
 const ActionBarStyle = styled.div`
   position: absolute;

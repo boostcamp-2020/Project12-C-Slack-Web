@@ -4,11 +4,6 @@ import { verifyRequiredParams, dbErrorHandler } from '../util'
 
 const getChatMessages = async ({ channelId, currentCursor, fromDate }) => {
   verifyRequiredParams(channelId)
-  const filter = {}
-  if (currentCursor)
-    filter.createdAt = { $lt: `${new Date(currentCursor).toISOString()}` }
-  if (fromDate)
-    filter.createdAt = { $gt: `${new Date(fromDate).toISOString()}` }
   const result = await dbErrorHandler(() =>
     Chat.getChatMessages({ channelId, currentCursor, fromDate }),
   )
