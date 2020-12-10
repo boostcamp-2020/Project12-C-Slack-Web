@@ -1,6 +1,8 @@
 import React from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
+import { COLOR } from '../../constant/style'
+
 function Modal({ children, handleClose, withBackgound = false }) {
   const stopPropagation = e => {
     e.stopPropagation()
@@ -37,6 +39,6 @@ const StyledModalContent = styled.div`
   max-width: 520px;
   box-shadow: 0 0 0 1px rgba(29, 28, 29, 0.13),
     0 18px 48px 0 rgba(0, 0, 0, 0.35);
-  background: white;
+  background: ${COLOR.BACKGROUNT_MODAL_GRAY};
 `
 export default Modal

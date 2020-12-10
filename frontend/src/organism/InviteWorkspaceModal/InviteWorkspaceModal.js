@@ -15,7 +15,7 @@ const baseURL =
     : process.env.REACT_APP_API_URL
 
 const InviteWorkspaceModal = ({ handleClose }) => {
-  const [inviteURL, setInviteURL] = useState('')
+  const [inviteURL, setInviteURL] = useState('생성중...')
   const { workspaceId } = useParams()
 
   useEffect(() => {
@@ -57,6 +57,7 @@ const StyeldTextarea = styled.textarea`
   display: inline;
   width: 95%;
   resize: none;
+  background: ${COLOR.BACKGROUNT_MODAL_GRAY};
 `
 
 export default InviteWorkspaceModal
