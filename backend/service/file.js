@@ -16,7 +16,10 @@ const getFileURL = async ({ fileId }) => {
 
   return {
     code: statusCode.OK,
-    data: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKETNAME}/${fileData.originalName}`,
+    data: {
+      url: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKETNAME}/${fileData.name}`,
+      originalName: fileData.originalName,
+    },
     success: true,
   }
 }
