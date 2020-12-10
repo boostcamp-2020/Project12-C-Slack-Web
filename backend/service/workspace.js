@@ -106,22 +106,19 @@ const invited = async ({ userId, code }) => {
   const deltaMinute = deltaTime / 1000 / 60
 
   if (deltaMinute < 60) {
-    const { data: workspaceUserData } = await getWorkspaceUserInfo({
-      workspaceId,
-      userId,
-    })
-
+    const workspaceUserData = await dbErrorHandler(() =>
+      WorkspaceUserInfo.findOne({ workspaceId, userId }),
+    )
     const findedUser = await dbErrorHandler(() => User.findOne({ _id: userId }))
-
     if (!workspaceUserData) {
       const createdWorkspaceUserData = await dbErrorHandler(() =>
         WorkspaceUserInfo.create({
           userId,
           workspaceId,
-          title: findedUser.fullName,
-          fullName: findedUser.fullName,
-          displayName: findedUser.fullName,
-          profileUrl: findedUser.profileUrl,
+          title: findedUser?.fullName,
+          fullName: findedUser?.fullName,
+          displayName: findedUser?.fullName,
+          profileUrl: findedUser?.profileUrl,
         }),
       )
       const workspaceData = await dbErrorHandler(() =>
