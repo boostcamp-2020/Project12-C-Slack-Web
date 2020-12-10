@@ -11,6 +11,7 @@ import {
   ELLIPSISV,
 } from '../../constant/icon'
 import { toast } from 'react-toastify'
+import calcEmojiModalLocation from '../../util/calculateEmojiModalLocation'
 import { modalRecoil } from '../../store'
 import { useRecoilState } from 'recoil'
 
@@ -27,13 +28,7 @@ function ActionBar({ setOpenModal, chatId }) {
   }
 
   const openEmojiModal = e => {
-    const widthSize = e.view.innerWidth - (e.clientX + SIZE.EMOJI_MODAL_WIDTH)
-    const heightSize =
-      e.view.innerHeight - (e.clientY + SIZE.EMOJI_MODAL_HEIGHT)
-    let axisX = e.clientX
-    let axisY = e.clientY
-    if (widthSize < 0) axisX += widthSize
-    if (heightSize < 0) axisY += heightSize
+    const [axisX, axisY] = calcEmojiModalLocation(e)
 
     setOpenModal(true)
     setModal(
