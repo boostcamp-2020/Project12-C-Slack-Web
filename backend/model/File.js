@@ -12,9 +12,15 @@ const fileSchema = mongoose.Schema(
     name: {
       type: String,
     },
+    originalName: {
+      type: String,
+    },
     creator: {
       type: Schema.Types.ObjectId,
       ref: 'User',
+    },
+    etag: {
+      type: String,
     },
   },
   { timestamps: true },
