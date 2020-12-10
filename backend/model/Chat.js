@@ -77,8 +77,76 @@ chatSchema.statics.getChatMessages = ({ channelId, currentCursor, fromDate }) =>
       },
     },
     { $unwind: '$userInfo' },
+    {
+      $lookup: {
+        from: 'reactions',
+        let: { chatId: '$_id' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$chatId', '$$chatId'] } } },
+          {
+            $lookup: {
+              from: 'workspaceuserinfos',
+              let: { workspaceUserInfoId: '$workspaceUserInfoId' },
+              pipeline: [
+                {
+                  $match: { $expr: { $eq: ['$_id', '$$workspaceUserInfoId'] } },
+                },
+                { $project: { profileUrl: 1, displayName: 1, _id: 1 } },
+              ],
+              as: 'workspaceUserInfoId',
+            },
+          },
+          { $unwind: '$workspaceUserInfoId' },
+          {
+            $group: {
+              _id: { emotion: '$emoticon' },
+              users: { $push: '$workspaceUserInfoId' },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              emoji: '$_id.emotion',
+              users: 1,
+            },
+          },
+        ],
+        as: 'reactions',
+      },
+    },
 
     { $limit: MAX_CHAT_MESSAGE },
+  ])
+
+chatSchema.statics.getReplyMessages = ({ channelId, parentId }) =>
+  Chat.aggregate([
+    {
+      $match: {
+        channel: ObjectId(channelId),
+        parentId: ObjectId(parentId),
+      },
+    },
+    {
+      $lookup: {
+        from: 'workspaceuserinfos',
+        let: { creator: '$creator' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$_id', '$$creator'] } } },
+          { $project: { profileUrl: 1, displayName: 1, _id: 1 } },
+        ],
+        as: 'userInfo',
+      },
+    },
+    { $unwind: '$userInfo' },
+    {
+      $project: {
+        isDelete: 1,
+        contents: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        userInfo: 1,
+      },
+    },
   ])
 
 const Chat = mongoose.model('Chat', chatSchema)

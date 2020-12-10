@@ -9,6 +9,15 @@ const getChat = asyncWrapper(async (req, res) => {
   return res.status(code).json({ success, data })
 })
 
+const getReply = asyncWrapper(async (req, res) => {
+  const { code, success, data } = await service.getReplyMessage({
+    ...req.query,
+    ...req.params,
+  })
+  return res.status(code).json({ success, data })
+})
+
 module.exports = {
   getChat,
+  getReply,
 }

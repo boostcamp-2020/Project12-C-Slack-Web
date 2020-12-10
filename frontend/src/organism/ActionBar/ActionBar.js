@@ -11,10 +11,11 @@ import {
   ELLIPSISV,
 } from '../../constant/icon'
 import { toast } from 'react-toastify'
+import calcEmojiModalLocation from '../../util/calculateEmojiModalLocation'
 import { modalRecoil } from '../../store'
 import { useRecoilState } from 'recoil'
 
-function ReactionBar({ setOpenModal, chatId }) {
+function ActionBar({ setOpenModal, chatId }) {
   const [modal, setModal] = useRecoilState(modalRecoil)
 
   const sendHandler = emoji => {
@@ -27,13 +28,7 @@ function ReactionBar({ setOpenModal, chatId }) {
   }
 
   const openEmojiModal = e => {
-    const widthSize = e.view.innerWidth - (e.clientX + SIZE.EMOJI_MODAL_WIDTH)
-    const heightSize =
-      e.view.innerHeight - (e.clientY + SIZE.EMOJI_MODAL_HEIGHT)
-    let axisX = e.clientX
-    let axisY = e.clientY
-    if (widthSize < 0) axisX += widthSize
-    if (heightSize < 0) axisY += heightSize
+    const [axisX, axisY] = calcEmojiModalLocation(e)
 
     setOpenModal(true)
     setModal(
@@ -47,7 +42,7 @@ function ReactionBar({ setOpenModal, chatId }) {
   }
 
   return (
-    <ReactionBarStyle>
+    <ActionBarStyle>
       <DefaultReactionBtn>👍</DefaultReactionBtn>
       <DefaultReactionBtn>👏</DefaultReactionBtn>
       <DefaultReactionBtn>😄</DefaultReactionBtn>
@@ -66,11 +61,11 @@ function ReactionBar({ setOpenModal, chatId }) {
       <DefaultReactionBtn>
         <Icon icon={ELLIPSISV} color={COLOR.LABEL_DEFAULT_TEXT} />
       </DefaultReactionBtn>
-    </ReactionBarStyle>
+    </ActionBarStyle>
   )
 }
 
-const ReactionBarStyle = styled.div`
+const ActionBarStyle = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
@@ -97,4 +92,4 @@ const DefaultReactionBtn = styled.div`
   }
 `
 
-export default ReactionBar
+export default ActionBar

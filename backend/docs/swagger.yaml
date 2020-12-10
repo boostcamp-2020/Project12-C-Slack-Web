@@ -1026,7 +1026,7 @@ paths:
                           type: number
 
           description: get user mention and reaction
-  '/api/chat/{channelId}':
+  '/api/chat/{workspaceId}/{channelId}':
     summary: get chat messages
     description: get chat messages
     get:
@@ -1115,6 +1115,24 @@ paths:
                               type: string
                             profileUrl:
                               type: string
+                        reactions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              emotion:
+                                type: string
+                              users:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    _id:
+                                      type: string
+                                    displayName:
+                                      type: string
+                                    profileUrl:
+                                      type: string
           description: success response
         '400':
           content:

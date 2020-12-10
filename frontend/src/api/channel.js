@@ -4,14 +4,14 @@ export const checkDuplicateChannelName = async ({ title, workspaceId }) => {
     title,
     workspaceId,
   })
-  return data
+  return data?.data
 }
 
 export const createChannel = async params => {
   const { data } = await Request.POST('/api/channel', {
     ...params,
   })
-  return data?._id
+  return data?.data?._id
 }
 
 export const getChannelHeaderInfo = async ({

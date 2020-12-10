@@ -74,12 +74,14 @@ function SectionLabel(props) {
         title="Add teammates"
         onClick={openInviteWorkspaceModal}
       />
-    ) : (
+    ) : sectionName === 'Channels' ? (
       <AddButton
         isOpen={isOpen}
         title="Add channels"
         onClick={openCreateChannelModal}
       />
+    ) : (
+      <div></div>
     )
 
   return (
