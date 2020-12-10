@@ -2,26 +2,44 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { createGlobalStyle } from 'styled-components'
 import './index.css'
-import Channel from './page/channel/Channel'
-import { BrowserRouter, Route } from 'react-router-dom'
+import WorkspacePage from './page/WorkspacePage'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
-import LoginPage from './page/LoginPage'
-import WorkspaceSelectPage from './page/WorkspaceSelectPage'
+import LoginPage from './page/login/Login'
+import CreateWorkspace from './page/createWorkspace/CreateWorkspace'
+import SelectWorkspace from './page/selectWorkspace/SelectWorkspace'
 import Auth from './hooks/Auth'
+import GithubOAuth from './hooks/GithubOAuth'
+import { RecoilRoot } from 'recoil'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const App = () => {
   return (
     <React.StrictMode>
-      <GlobalStyle />
-      <BrowserRouter>
-        <Route exact path="/login" component={Auth(LoginPage, false)} />
-        <Route
-          exact
-          path="/workspaceSelect"
-          component={Auth(WorkspaceSelectPage, true)}
-        />
-        <Route exact path="/" component={Channel} />
-      </BrowserRouter>
+      <RecoilRoot>
+        <ToastContainer />
+        <GlobalStyle />
+        <BrowserRouter>
+          <Route exact path="/" component={Auth(SelectWorkspace, true)} />
+          <Route exact path="/login" component={Auth(LoginPage, false)} />
+          <Route
+            path="/github-oauth"
+            component={GithubOAuth(LoginPage, false)}
+          />
+          <Route
+            exact
+            path="/create-workspace"
+            component={Auth(CreateWorkspace, true)}
+          />
+          <Switch>
+            <Route
+              path="/workspace/:workspaceId/:channelId"
+              component={Auth(WorkspacePage, true)}
+            />
+          </Switch>
+        </BrowserRouter>
+      </RecoilRoot>
     </React.StrictMode>
   )
 }

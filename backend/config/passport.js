@@ -18,6 +18,7 @@ async function gitStrategyLogin(profiles) {
       const data = await User.create({
         OAuthId: profiles.id,
         fullName: profiles.username,
+        profileUrl: profiles.photos[0].value,
         isDeleted: false,
       })
       return {

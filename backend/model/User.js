@@ -10,6 +10,9 @@ const userSchema = mongoose.Schema({
   isDeleted: {
     type: Boolean,
   },
+  profileUrl: {
+    type: String,
+  },
 })
 const User = mongoose.model('User', userSchema)
 module.exports = { User }

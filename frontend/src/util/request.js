@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const baseURL =
   process.env.NODE_ENV === 'development'
@@ -12,63 +13,71 @@ const options = {
 
 const GET = async (path, params = null) => {
   try {
-    const res = await axios.get(baseURL + path, { params, ...options })
-    return res.data
+    const { data, status } = await axios.get(baseURL + path, {
+      params,
+      ...options,
+    })
+    return { data, status }
   } catch (err) {
+    toast.error(err)
     console.error(err)
   }
 }
 
-const POST = async (path, data, contentType = 'application/json') => {
+const POST = async (path, params, contentType = 'application/json') => {
   try {
-    const response = await axios.post(baseURL + path, data, {
+    const { data, status } = await axios.post(baseURL + path, params, {
       headers: {
         'Content-Type': contentType,
       },
       ...options,
     })
-    return response.data
+    return { data, status }
   } catch (err) {
+    toast.error(err)
     console.error(err)
   }
 }
 
 const DELETE = async (path, params = null) => {
   try {
-    const response = await axios.delete(baseURL + path, {
+    const { data, status } = await axios.delete(baseURL + path, {
       params,
       ...options,
     })
-    return response.data
+    return { data, status }
   } catch (err) {
+    toast.error(err)
     console.error(err)
   }
 }
 
-const PATCH = async (path, data, contentType = 'application/json') => {
+const PATCH = async (path, params, contentType = 'application/json') => {
   try {
-    const response = await axios.patch(baseURL + path, data, {
+    const { data, status } = await axios.patch(baseURL + path, params, {
       headers: {
         'Content-Type': contentType,
       },
       ...options,
     })
-    return response.data
+    return { data, status }
   } catch (err) {
+    toast.error(err)
     console.error(err)
   }
 }
 
-const PUT = async (path, data, contentType = 'application/json') => {
+const PUT = async (path, params, contentType = 'application/json') => {
   try {
-    const response = await axios.put(baseURL + path, data, {
+    const { data, status } = await axios.put(baseURL + path, params, {
       headers: {
         'Content-Type': contentType,
       },
       ...options,
     })
-    return response.data
+    return { data, status }
   } catch (err) {
+    toast.error(err)
     console.error(err)
   }
 }

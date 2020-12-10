@@ -1,29 +1,32 @@
 import React, { useState, useEffect } from 'react'
 import request from '../util/request'
+import { toast } from 'react-toastify'
+import { useHistory } from 'react-router'
 
 export default function Auth(Component, loginRequired) {
   function Authentication(props) {
     const [loading, setloading] = useState(true)
+    const history = useHistory()
     useEffect(() => {
       ;(async () => {
         try {
-          const data = await request.GET('/api/user/auth')
-          if (!data.verify) {
-            // 로그인이 되어 있지 않을때
-            if (loginRequired) {
-              props.history.push('/login')
-            }
-          } else {
-            if (!loginRequired) {
-              // 로그인 유저가 접근하면 안되는 페이지
-              props.history.push('/')
-            }
+          const res = await request.GET('/api/user/auth')
+          if (res.status !== 200 && loginRequired) {
+            history.push('/login')
+          }
+          if (res.status === 200 && !loginRequired) {
+            history.push('/')
           }
           setloading(false)
         } catch (err) {
-          console.error(err)
+          // 토큰이 만료된 경우
+          await request.DELETE('/api/user/sign-out')
+          toast.error('로그인이 필요합니다.', {
+            onClose: () => history.go(0),
+          })
         }
       })()
+      return () => setloading(false)
     }, [])
     return !loading && <Component {...props} />
   }
