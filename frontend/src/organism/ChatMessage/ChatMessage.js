@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import UserProfileImg from '../../atom/UserProfileImg'
 import ChatContent from '../../atom/ChatContent'
-import ReactionBar from '../ReactionBar'
+import ActionBar from '../ActionBar'
 import { SIZE, COLOR } from '../../constant/style'
 
 const ChatMessage = ({
@@ -39,15 +39,15 @@ const ChatMessage = ({
         <ViewThreadBarStyle>view thread</ViewThreadBarStyle>
       )}
 
-      {/* TODO reaction bar 구현 */}
-      <ReactionBarStyle openModal={openModal}>
-        <ReactionBar setOpenModal={setOpenModal} chatId={_id} />
-      </ReactionBarStyle>
+      {/* TODO Action bar 구현 */}
+      <ActionBarStyle openModal={openModal}>
+        <ActionBar setOpenModal={setOpenModal} chatId={_id} />
+      </ActionBarStyle>
     </StyledMessageContainer>
   )
 }
 
-const ReactionBarStyle = styled.div`
+const ActionBarStyle = styled.div`
   position: absolute;
   width: 300px;
   height: 30px;
@@ -83,7 +83,7 @@ const StyledMessageContainer = styled.div`
   }}
   &:hover {
     background-color: ${COLOR.HOVER_GRAY};
-    ${ReactionBarStyle} {
+    ${ActionBarStyle} {
       display: flex;
     }
   }
