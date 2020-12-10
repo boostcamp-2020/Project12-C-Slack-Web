@@ -13,7 +13,6 @@ function FileUploader() {
     const formData = new FormData()
     formData.append('file', selectedFile)
     await request.POST('/api/file', formData, fileContentType)
-    console.log('formData: ', formData)
   }
 
   return (
