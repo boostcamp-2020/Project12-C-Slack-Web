@@ -28,7 +28,7 @@ const useChannelList = () => {
   }
 
   useEffect(() => {
-    if (Object.keys(Channels).length === 0) getList()
+    getList()
   }, [workspaceUserInfoId])
 
   const updateChannelList = async () => getList()
