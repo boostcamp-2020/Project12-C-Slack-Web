@@ -13,7 +13,6 @@ const ChatMessage = forwardRef(
   ) => {
     const [openModal, setOpenModal] = useState(false)
     const [hover, setHover] = useState(false)
-    console.log('hove', hover)
     return (
       <StyledMessageContainer
         type={type}
