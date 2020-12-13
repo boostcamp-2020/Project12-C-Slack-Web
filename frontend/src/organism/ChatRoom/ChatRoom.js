@@ -60,6 +60,48 @@ const ChatRoom = () => {
     socket.emit('new message', chat)
   }
 
+  const chageReactionState = (messages, reaction) => {
+    let done = false
+    const arr = messages.map((message, idx) => {
+      if (message._id === reaction.chatId) {
+        message.reactions &&
+          message.reactions.map((item, idx) => {
+            if (item.emoji === reaction.emoji) {
+              if (reaction.type) {
+                const userInfo = [
+                  {
+                    _id: reaction.workspaceUserInfoId,
+                    displayName: reaction.displayName,
+                  },
+                ]
+                item.users = [...item.users, ...userInfo]
+              } else {
+                item.users.map((user, idx) => {
+                  if (user._id === reaction.workspaceUserInfoId) {
+                    item.users.splice(idx, 1)
+                  }
+                })
+              }
+              done = true
+            }
+          })
+        if (!done && reaction.type === 1) {
+          message.reactions.push({
+            emoji: reaction.emoji,
+            users: [
+              {
+                _id: reaction.workspaceUserInfoId,
+                displayName: reaction.displayName,
+              },
+            ],
+          })
+        }
+      }
+      return message
+    })
+    return [...arr]
+  }
+
   useEffect(() => {
     if (socket) {
       socket.on('new message', ({ message }) => {
@@ -67,9 +109,12 @@ const ChatRoom = () => {
           setMessages(messages => [...messages, message])
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
+      socket.on('update reaction', ({ reaction }) => {
+        setMessages(messages => chageReactionState(messages, reaction))
+      })
     }
     return () => {
-      socket && socket.off('new message')
+      socket && socket.off('new message') && socket.off('update reaction')
     }
   }, [socket, channelId])
 
