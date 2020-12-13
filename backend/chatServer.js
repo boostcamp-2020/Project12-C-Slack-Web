@@ -19,8 +19,10 @@ namespace.use((socket, next) => {
 namespace.on('connection', socket => {
   const { workspaceUserInfoId } = socket.handshake.query
   socket.join(workspaceUserInfoId)
-  socket.on('invite channel', invitedMember => {
-    namespace.in(invitedMember).emit('invited channel')
+  socket.on('invite channel', ({ channelId, members }) => {
+    members.forEach(member =>
+      namespace.in(member).emit('invited channel', channelId),
+    )
   })
   socket.on('new message', async data => {
     const { contents, channelId } = data

@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { useSetRecoilState } from 'recoil'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
 
 import Icon from '../../atom/Icon'
 import { ADDUSER, INFOCIRCLE } from '../../constant/icon'
@@ -9,7 +9,7 @@ import ChannelStarBtn from '../../atom/ChannelStarBtn'
 import ChannelPinBtn from '../../atom/ChannelPinBtn'
 import ChannelTopicBtn from '../../atom/ChannelTopicBtn'
 import ChannelMemberThumbnail from '../../atom/ChannelMemberThumbnail'
-import { modalRecoil } from '../../store'
+import { modalRecoil, socketRecoil } from '../../store'
 import InviteUserToChannelModal from '../InviteUserToChannelModal'
 import { COLOR } from '../../constant/style'
 import useChannelInfo from '../../hooks/useChannelInfo'
@@ -17,11 +17,22 @@ import { isEmpty } from '../../util'
 
 function ChannelHeader() {
   const setModal = useSetRecoilState(modalRecoil)
-  const [channelInfo] = useChannelInfo()
+  const [channelInfo, updateChannelInfo] = useChannelInfo()
+  const socket = useRecoilValue(socketRecoil)
   const openAddUserModal = () => {
     setModal(<InviteUserToChannelModal handleClose={() => setModal(null)} />)
   }
-
+  useEffect(() => {
+    if (socket) {
+      socket.on('invited channel', channelId => {
+        if (channelId === channelInfo.channelId._id)
+          updateChannelInfo(channelId)
+      })
+    }
+    return () => {
+      socket && socket.off('invited channel')
+    }
+  }, [socket, channelInfo])
   return isEmpty(channelInfo) ? null : (
     <ChannelHeaderStyle>
       <ChannelInfo>

@@ -39,11 +39,13 @@ function InviteUserToChannelModal({ handleClose }) {
     })
 
     if (data.success) {
-      updateChannelInfo(channelInfo.channelId._id)
-      socket.emit(
-        'invite channel',
-        inviteUserList.map(user => user._id),
-      )
+      socket.emit('invite channel', {
+        channelId: channelInfo.channelId._id,
+        members: [
+          ...channelInfo.member.map(user => user._id),
+          ...inviteUserList.map(user => user._id),
+        ],
+      })
       setModal(null)
     }
   }

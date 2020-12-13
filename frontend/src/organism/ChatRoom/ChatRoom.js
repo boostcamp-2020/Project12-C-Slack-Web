@@ -50,7 +50,6 @@ const ChatRoom = () => {
     const chat = {
       contents: message,
       channelId,
-      member: channelInfo.member,
       userInfo: {
         _id: workspaceUserInfo._id,
         displayName: workspaceUserInfo.displayName,
