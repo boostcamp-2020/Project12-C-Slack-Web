@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import { useSetRecoilState } from 'recoil'
-import { modalRecoil } from '../../store'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
+import { modalRecoil, socketRecoil } from '../../store'
 import { useParams } from 'react-router-dom'
 import Button from '../../atom/Button'
 import Icon from '../../atom/Icon'
@@ -16,7 +16,7 @@ import useChannelInfo from '../../hooks/useChannelInfo'
 function InviteUserToChannelModal({ handleClose }) {
   const [channelInfo, updateChannelInfo] = useChannelInfo()
   const setModal = useSetRecoilState(modalRecoil)
-
+  const socket = useRecoilValue(socketRecoil)
   const [searchResult, setSearchResult] = useState(null)
   const [inviteUserList, setInviteUserList] = useState([])
   const { workspaceId } = useParams()
@@ -40,6 +40,10 @@ function InviteUserToChannelModal({ handleClose }) {
 
     if (data.success) {
       updateChannelInfo(channelInfo.channelId._id)
+      socket.emit(
+        'invite channel',
+        inviteUserList.map(user => user._id),
+      )
       setModal(null)
     }
   }

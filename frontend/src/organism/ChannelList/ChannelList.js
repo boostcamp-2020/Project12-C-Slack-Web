@@ -4,20 +4,25 @@ import styled from 'styled-components'
 import { toast } from 'react-toastify'
 import SectionLabel from '../SectionLabel'
 import SideMenuList from '../SideMenuList'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 
-import { workspaceRecoil } from '../../store'
+import { workspaceRecoil, socketRecoil } from '../../store'
 import useChannelList from '../../hooks/useChannelList'
 
 function ChannelList(props) {
   const [list, setList] = useState([])
   const [Channels, setChannels] = useChannelList()
   const [userInfo, setUserInfo] = useRecoilState(workspaceRecoil)
-
+  const socket = useRecoilValue(socketRecoil)
   const history = useHistory()
 
   let sectionMap = new Map()
-
+  useEffect(() => {
+    if (socket)
+      socket.on('invited channel', () => {
+        setChannels()
+      })
+  }, [socket])
   useEffect(() => {
     if (Channels === undefined) return
     if (Object.keys(Channels).length !== 0) {
