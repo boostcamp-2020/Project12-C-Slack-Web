@@ -24,8 +24,6 @@ const getFileURL = async ({ fileId }) => {
   }
 }
 
-const downloadFile = async ({ fileId }) => {}
-
 const uploadFile = async ({ file, userId }) => {
   verifyRequiredParams(file, userId)
   const fileName = `${file.fieldname}-${Date.now()}-${file.originalname}`
@@ -85,6 +83,5 @@ const deleteFile = async ({ fileId }) => {
 module.exports = {
   uploadFile,
   getFileURL,
-  downloadFile,
   deleteFile,
 }

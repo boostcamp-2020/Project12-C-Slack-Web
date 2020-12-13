@@ -8,14 +8,6 @@ exports.getFileURL = asyncWrapper(async (req, res) => {
   return res.status(code).json({ success, data })
 })
 
-exports.downloadFile = asyncWrapper(async (req, res) => {
-  const { code, success, data } = await service.downloadFile({
-    ...req.body,
-    creator: req.user.id,
-  })
-  return res.status(code).json({ success, data })
-})
-
 exports.uploadFile = asyncWrapper(async (req, res) => {
   const { code, success, data } = await service.uploadFile({
     file: req.file,
