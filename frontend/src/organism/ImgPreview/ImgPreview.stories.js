@@ -5,19 +5,20 @@ export default {
   title: 'Organism/ImgPreview',
   component: ImgPreview,
 }
-
-const Template = args => <ImgPreview {...args} />
+let isRender = true
+const Template = args => <>{isRender && <ImgPreview {...args} />}</>
 
 export const inputImgPreview = Template.bind({})
 inputImgPreview.args = {
   type: 'input', // input, message
-  fileId: '5fd1ed979f167053f728e7ce',
-  maxSize: '300px',
+  fileId: '5fd5dc7d8c8a82245fa0ab38',
+  setIsRender: () => {
+    isRender = false
+  },
 }
 
 export const messageImgPreview = Template.bind({})
 messageImgPreview.args = {
   type: 'message', // input, message
-  fileId: '5fd1ed979f167053f728e7ce',
-  maxSize: '300px',
+  fileId: '5fd5dc7d8c8a82245fa0ab38',
 }

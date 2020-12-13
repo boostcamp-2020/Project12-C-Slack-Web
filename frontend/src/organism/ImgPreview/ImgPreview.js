@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import request from '../../util/request'
-import Button from '../../atom/Button'
 import Icon from '../../atom/Icon'
 import { CLOSE } from '../../constant/icon'
 import { COLOR } from '../../constant/style'
+import SmallButton from '../../atom/Button/SmallButton'
 
-function ImgPreview({ type, fileId, maxSize }) {
+function ImgPreview({ type, fileId, setIsRender }) {
   const [fileData, setFileData] = useState({})
   const [isHover, setIsHover] = useState(false)
 
   useEffect(() => {
     ;(async () => {
-      const { data } = await request.GET('/api/file', { fileId })
-      setFileData(data.data)
+      const { data } = (await request.GET('/api/file', { fileId })) || {}
+      setFileData(data?.data)
     })()
   }, [fileId])
 
@@ -25,19 +25,17 @@ function ImgPreview({ type, fileId, maxSize }) {
     setIsHover(false)
   }
 
-  const handleClose = () => {
-    console.log('handleClose')
+  const handleDelete = async () => {
+    setIsRender(false)
+    await request.DELETE('/api/file', { fileId })
   }
 
   const deleteButton = () => {
     return (
-      <ButtonDiv
-        onMouseEnter={enterMouseHandle}
-        onMouseLeave={leaveMouseHandle}
-      >
-        <Button type="icon" handleClick={handleClose}>
-          <Icon icon={CLOSE} color={COLOR.GRAY} />
-        </Button>
+      <ButtonDiv>
+        <SmallButton type="icon" handleClick={handleDelete}>
+          <Icon icon={CLOSE} size="8px" color={COLOR.GRAY} />
+        </SmallButton>
       </ButtonDiv>
     )
   }
@@ -46,10 +44,8 @@ function ImgPreview({ type, fileId, maxSize }) {
     return (
       <DownloadDiv
         onClick={() => {
-          console.log('onClick!!!')
+          if (fileData) window.open(fileData.url, '_blank')
         }}
-        onMouseEnter={enterMouseHandle}
-        onMouseLeave={leaveMouseHandle}
       >
         <ClickToDownloadSpan>Click to Download</ClickToDownloadSpan>
       </DownloadDiv>
@@ -57,13 +53,11 @@ function ImgPreview({ type, fileId, maxSize }) {
   }
 
   return (
-    <StyledDiv>
+    <StyledDiv onMouseEnter={enterMouseHandle} onMouseLeave={leaveMouseHandle}>
       <StyledImg
-        alt={fileData.name || '이미지'}
-        maxSize={maxSize}
-        src={fileData.url}
-        onMouseEnter={enterMouseHandle}
-        onMouseLeave={leaveMouseHandle}
+        alt={fileData?.name || '이미지'}
+        src={fileData?.url}
+        type={type}
       ></StyledImg>
       {isHover &&
         (type === 'input'
@@ -81,17 +75,23 @@ const StyledDiv = styled.div`
 `
 
 const StyledImg = styled.img`
-  max-width: ${({ maxSize }) => maxSize};
+  max-width: ${({ type }) => {
+    return type === 'input' ? '50px' : '300px'
+  }};
   height: auto;
   border-radius: 2%;
   background: white;
 `
 
 const ButtonDiv = styled.div`
+  display: inline-block;
   position: absolute;
-  right: 5px;
+  right: 0;
   top: 0;
-  background: ${COLOR.LIGHT_GRAY};
+  background: white;
+  width: -webkit-fit-content;
+  height: -webkit-fit-content;
+  box-sizing: border-box;
 `
 
 const DownloadDiv = styled.div`
@@ -99,6 +99,7 @@ const DownloadDiv = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
+  cursor: pointer;
 `
 
 const ClickToDownloadSpan = styled.span`
