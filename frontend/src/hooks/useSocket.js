@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
-import { socketRecoil, workspaceRecoil, channelsRecoil } from '../store'
+import { socketRecoil, workspaceRecoil } from '../store'
 import { useParams } from 'react-router-dom'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { isEmpty } from '../util'
 import io from 'socket.io-client'
+import useChannelInfo from './useChannelInfo'
+import useChannelList from './useChannelList'
 
 const baseURL =
   process.env.NODE_ENV === 'development'
@@ -13,8 +15,9 @@ const baseURL =
 const useSocket = () => {
   const { workspaceId } = useParams()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
-  const channelList = useRecoilValue(channelsRecoil)
   const [socket, setSocket] = useRecoilState(socketRecoil)
+  const [channelList, setChannels] = useChannelList()
+  const [channelInfo, updateChannelInfo] = useChannelInfo()
 
   useEffect(() => {
     if (workspaceId && workspaceUserInfo) {
@@ -30,11 +33,18 @@ const useSocket = () => {
   }, [workspaceId, workspaceUserInfo])
 
   useEffect(() => {
-    if (socket && !isEmpty(channelList))
+    if (socket && !isEmpty(channelList)) {
       socket.emit(
         'join-room',
         channelList.map(channel => channel.channelId._id),
       )
+      socket.on('invited channel', ({ channelId, newMember }) => {
+        console.log('invited')
+        if (channelId === channelInfo.channelId._id)
+          updateChannelInfo(channelId)
+        if (newMember === workspaceUserInfo._id) setChannels()
+      })
+    }
     return () => {
       if (socket)
         socket.emit(
@@ -43,6 +53,20 @@ const useSocket = () => {
         )
     }
   }, [socket, channelList])
+
+  useEffect(() => {
+    if (socket && !isEmpty(channelInfo) && !isEmpty(workspaceUserInfo)) {
+      socket.on('invited channel', ({ channelId, newMember }) => {
+        if (channelId === channelInfo.channelId._id)
+          updateChannelInfo(channelId)
+        if (newMember.includes(workspaceUserInfo._id)) setChannels()
+      })
+    }
+    return () => {
+      if (socket) socket.off('invited channel')
+    }
+  }, [socket, channelInfo, workspaceUserInfo])
+
   return [socket]
 }
 
