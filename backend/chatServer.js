@@ -20,8 +20,7 @@ namespace.on('connection', socket => {
   const { workspaceUserInfoId } = socket.handshake.query
   socket.join(workspaceUserInfoId)
   socket.on('new message', async data => {
-    const { channelId } = socket.handshake.query
-    const { contents } = data
+    const { contents, channelId } = data
     const { data: result } = await createChatMessage({
       creator: workspaceUserInfoId,
       channelId,
@@ -34,6 +33,10 @@ namespace.on('connection', socket => {
   socket.on('join-room', roomId => {
     socket.join(roomId)
     console.log('joined', roomId)
+  })
+  socket.on('leave-room', roomId => {
+    socket.leave(roomId)
+    console.log('leaved', roomId)
   })
 })
 

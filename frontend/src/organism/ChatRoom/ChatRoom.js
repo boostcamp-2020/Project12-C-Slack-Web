@@ -1,19 +1,13 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import io from 'socket.io-client'
 import { useRecoilValue } from 'recoil'
 import ChatMessage from '../ChatMessage'
 import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
 import MessageEditor from '../messageEditor/MessageEditor'
-import { workspaceRecoil } from '../../store'
+import { workspaceRecoil, socketRecoil } from '../../store'
 import ChannelHeader from '../ChannelHeader'
-
-const baseURL =
-  process.env.NODE_ENV === 'development'
-    ? process.env.REACT_APP_DEV_CHAT_HOST
-    : process.env.REACT_APP_CHAT_HOST
 
 const ChatRoom = () => {
   const viewport = useRef(null)
@@ -22,7 +16,7 @@ const ChatRoom = () => {
   const [targetState, setTargetState] = useState()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
   const { workspaceId, channelId } = useParams()
-  const [socket, setSocket] = useState(null)
+  const socket = useRecoilValue(socketRecoil)
   const [messages, setMessages] = useState([])
   const load = useRef(false)
 
@@ -50,6 +44,7 @@ const ChatRoom = () => {
   const sendMessage = message => {
     const chat = {
       contents: message,
+      channelId,
       userInfo: {
         _id: workspaceUserInfo._id,
         displayName: workspaceUserInfo.displayName,
@@ -60,26 +55,14 @@ const ChatRoom = () => {
   }
 
   useEffect(() => {
-    if (workspaceUserInfo === null) return false
-    setSocket(
-      io(`${baseURL}/${workspaceId}`, {
-        query: {
-          workspaceId,
-          channelId,
-          workspaceUserInfoId: workspaceUserInfo._id,
-        },
-      }),
-    )
-  }, [workspaceId, channelId, workspaceUserInfo])
+    if (socket && channelId) socket.emit('join-room', channelId)
+    return () => {
+      socket && socket.emit('leave-room', channelId)
+    }
+  }, [channelId, socket])
 
   useEffect(() => {
     if (socket) {
-      socket.on('connect', () => {
-        console.log('connected')
-      })
-      socket.on('disconnect', () => {
-        console.log('disconnected')
-      })
       socket.emit('join-room', channelId)
       socket.on('new message', ({ message }) => {
         setMessages(messages => [...messages, message])
@@ -87,11 +70,7 @@ const ChatRoom = () => {
       })
     }
     return () => {
-      if (socket) {
-        socket.off('connect')
-        socket.off('disconnect')
-        socket.off('new message')
-      }
+      socket && socket.off('new message')
     }
   }, [socket])
 
