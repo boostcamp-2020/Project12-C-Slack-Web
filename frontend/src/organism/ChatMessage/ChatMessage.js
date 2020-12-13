@@ -12,9 +12,16 @@ const ChatMessage = forwardRef(
     ref,
   ) => {
     const [openModal, setOpenModal] = useState(false)
-
+    const [hover, setHover] = useState(false)
+    console.log('hove', hover)
     return (
-      <StyledMessageContainer type={type} ref={ref} id={createdAt}>
+      <StyledMessageContainer
+        type={type}
+        ref={ref}
+        id={createdAt}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
         <MessageContents>
           <UserProfileImg
             user={{ profileUrl: userInfo.profileUrl }}
@@ -39,9 +46,11 @@ const ChatMessage = forwardRef(
         )}
 
         {/* TODO Action bar 구현 */}
-        <ActionBarStyle openModal={openModal}>
-          <ActionBar setOpenModal={setOpenModal} chatId={_id} />
-        </ActionBarStyle>
+        {(hover || openModal) && (
+          <ActionBarStyle openModal={openModal}>
+            <ActionBar setOpenModal={setOpenModal} chatId={_id} />
+          </ActionBarStyle>
+        )}
       </StyledMessageContainer>
     )
   },
@@ -54,13 +63,7 @@ const ActionBarStyle = styled.div`
   top: -15px;
   right: 10px;
   border-radius: 5px;
-  display: none;
-  &:hover {
-    display: flex;
-  }
-  display: ${({ openModal }) => {
-    return openModal ? 'flex' : 'none'
-  }};
+  display: flex;
 `
 const MessageContents = styled.div`
   width: auto;
@@ -83,9 +86,6 @@ const StyledMessageContainer = styled.div`
   }}
   &:hover {
     background-color: ${COLOR.HOVER_GRAY};
-    ${ActionBarStyle} {
-      display: flex;
-    }
   }
 `
 
