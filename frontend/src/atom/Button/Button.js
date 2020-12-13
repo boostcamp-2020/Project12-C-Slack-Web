@@ -16,6 +16,7 @@ const Button = ({
 
 const StyledButton = styled.button`
   font-size: 15px;
+  font-weight: 900;
   height: 36px;
   padding: 0 12px 1px;
   border-style: none;
@@ -37,8 +38,6 @@ const StyledButton = styled.button`
     if (type === 'transparent') return `1px solid ${COLOR.TRANSPARENT_GRAY}`
     if (type === 'icon') return 'transparent'
   }};
-  font-size: 15px;
-  font-weight: 900;
   &:hover {
     ${({ type, disabled }) => {
       if (disabled) return
