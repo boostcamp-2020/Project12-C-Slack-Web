@@ -26,7 +26,7 @@ exports.uploadFile = asyncWrapper(async (req, res) => {
 
 exports.deleteFile = asyncWrapper(async (req, res) => {
   const { code, success } = await service.deleteFile({
-    ...req.body,
+    ...req.query,
   })
   return res.status(code).json({ success })
 })
