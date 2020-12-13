@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
+import { useParams } from 'react-router-dom'
 import EmojiModal from '../../atom/EmojiModal'
 import Icon from '../../atom/Icon'
 import { COLOR, SIZE } from '../../constant/style'
@@ -12,14 +13,24 @@ import {
 } from '../../constant/icon'
 import { toast } from 'react-toastify'
 import calcEmojiModalLocation from '../../util/calculateEmojiModalLocation'
-import { modalRecoil } from '../../store'
-import { useRecoilState } from 'recoil'
+import { modalRecoil, socketRecoil, workspaceRecoil } from '../../store'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import updateReaction from '../../util/updateReaction'
 
 function ActionBar({ setOpenModal, chatId }) {
+  const { channelId } = useParams()
   const [modal, setModal] = useRecoilState(modalRecoil)
+  const workspaceUserInfo = useRecoilValue(workspaceRecoil)
+  const socket = useRecoilValue(socketRecoil)
 
   const sendHandler = emoji => {
-    console.log('TODO: send reaction', emoji.native)
+    updateReaction({
+      workspaceUserInfo,
+      socket,
+      emoji: emoji.native || emoji,
+      chatId,
+      channelId,
+    })
   }
 
   const closeHandler = () => {
@@ -43,9 +54,15 @@ function ActionBar({ setOpenModal, chatId }) {
 
   return (
     <ActionBarStyle>
-      <DefaultReactionBtn>👍</DefaultReactionBtn>
-      <DefaultReactionBtn>👏</DefaultReactionBtn>
-      <DefaultReactionBtn>😄</DefaultReactionBtn>
+      <DefaultReactionBtn onClick={() => sendHandler('👍')}>
+        👍
+      </DefaultReactionBtn>
+      <DefaultReactionBtn onClick={() => sendHandler('👏')}>
+        👏
+      </DefaultReactionBtn>
+      <DefaultReactionBtn onClick={() => sendHandler('😄')}>
+        😄
+      </DefaultReactionBtn>
       <DefaultReactionBtn onClick={openEmojiModal}>
         <Icon icon={SMILE} color={COLOR.LABEL_DEFAULT_TEXT} />
       </DefaultReactionBtn>
