@@ -1,18 +1,29 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { useRecoilState } from 'recoil'
-import { modalRecoil } from '../../store'
+import { useParams } from 'react-router-dom'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { modalRecoil, socketRecoil, workspaceRecoil } from '../../store'
 import EmojiModal from '../EmojiModal'
+import updateReaction from '../../util/updateReaction'
 import Icon from '../Icon'
 import { PLUS, SMILE } from '../../constant/icon'
 import { COLOR } from '../../constant/style'
 import calcEmojiModalLocation from '../../util/calculateEmojiModalLocation'
 
-function AddReactionButton() {
+function AddReactionButton({ chatId }) {
+  const { channelId } = useParams()
   const [modal, setModal] = useRecoilState(modalRecoil)
+  const workspaceUserInfo = useRecoilValue(workspaceRecoil)
+  const socket = useRecoilValue(socketRecoil)
 
-  const sendHandler = emoji => {
-    console.log('TODO: send reaction', emoji.native)
+  const updateReactionHandler = emoji => {
+    updateReaction({
+      workspaceUserInfo,
+      socket,
+      emoji: emoji.native,
+      chatId,
+      channelId,
+    })
   }
 
   const closeHandler = () => {
@@ -24,7 +35,7 @@ function AddReactionButton() {
 
     setModal(
       <EmojiModal
-        sendHandler={sendHandler}
+        sendHandler={updateReactionHandler}
         closeHandler={closeHandler}
         axisX={axisX}
         axisY={axisY}
