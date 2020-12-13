@@ -30,7 +30,7 @@ const ChatMessage = forwardRef(
         {/* TODO thread Reaction 구현  */}
         {reactions && reactions.length !== 0 && (
           <ThreadReactionStyle>
-            <ThreadReactionList reactions={reactions} />
+            <ThreadReactionList reactions={reactions} chatId={_id} />
           </ThreadReactionStyle>
         )}
         {/* TODO view thread reply 구현  */}
