@@ -10,19 +10,20 @@ const io = createChatServer(server, {
   cors: { origin: process.env.FRONTEND_HOST, credentials: true },
 })
 
-const namespace = io.of('chat')
+const namespace = io.of(/^\/chat\/\w+$/)
 namespace.use((socket, next) => {
   // TODO jwt 검증 로직 필요
   next()
 })
 
 namespace.on('connection', socket => {
+  const { workspaceUserInfoId } = socket.handshake.query
+  socket.join(workspaceUserInfoId)
   socket.on('new message', async data => {
-    // TODO 특정 채널로 전송하도록 변경, db에 저장 필요 (현재는 자신 제외 전체 전송)
-    const { channelId, creator } = socket.handshake.query
+    const { channelId } = socket.handshake.query
     const { contents } = data
     const { data: result } = await createChatMessage({
-      creator,
+      creator: workspaceUserInfoId,
       channelId,
       contents,
     })

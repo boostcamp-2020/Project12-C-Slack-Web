@@ -62,7 +62,13 @@ const ChatRoom = () => {
   useEffect(() => {
     if (workspaceUserInfo === null) return false
     setSocket(
-      io(baseURL, { query: { channelId, creator: workspaceUserInfo._id } }),
+      io(`${baseURL}/${workspaceId}`, {
+        query: {
+          workspaceId,
+          channelId,
+          workspaceUserInfoId: workspaceUserInfo._id,
+        },
+      }),
     )
   }, [workspaceId, channelId, workspaceUserInfo])
 
