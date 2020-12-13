@@ -19,7 +19,7 @@ function ThreadReactionCard({ reaction, chatId }) {
   const hasMyReaction = () => {
     if (reaction.users[0] === undefined) return false
     const result = reaction.users.every(user => {
-      return user && user._id !== userInfo._id
+      return user && user._id !== null && user._id !== userInfo._id
     })
     return !result
   }
