@@ -71,7 +71,7 @@ const ChatRoom = () => {
     return () => {
       socket && socket.off('new message')
     }
-  }, [socket])
+  }, [socket, channelId])
 
   useEffect(() => {
     const option = {
