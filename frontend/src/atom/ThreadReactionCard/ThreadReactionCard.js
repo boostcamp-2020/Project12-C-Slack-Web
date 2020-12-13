@@ -1,40 +1,49 @@
 import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import styled, { css } from 'styled-components'
-import { useRecoilState } from 'recoil'
-import { workspaceRecoil } from '../../store'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { workspaceRecoil, socketRecoil } from '../../store'
 import { COLOR } from '../../constant/style'
+import updateReaction from '../../util/updateReaction'
 
-function ThreadReactionCard({ emoji, users }) {
+function ThreadReactionCard({ reaction, chatId }) {
+  const { channelId } = useParams()
+  const socket = useRecoilValue(socketRecoil)
   const [userInfo, setUserInfo] = useRecoilState(workspaceRecoil)
   const [myReaction, setMyReaction] = useState(false)
 
   useEffect(() => {
     setMyReaction(hasMyReaction())
-  }, [])
+  }, [reaction.users.length])
 
   const hasMyReaction = () => {
-    const result = users.every(user => {
-      return user._id !== userInfo._id
+    if (reaction.users[0] === undefined) return false
+    const result = reaction.users.every(user => {
+      return user && user._id !== userInfo._id
     })
     return !result
   }
 
-  const removeMyReaction = () => {
-    console.log('TODO: remove my reaction', emoji)
-  }
-
-  const addMyReaction = () => {
-    console.log('TODO: add my reaction', emoji)
+  const updateReactions = () => {
+    updateReaction({
+      workspaceUserInfo: userInfo,
+      socket,
+      emoji: reaction.emoji,
+      chatId,
+      channelId,
+    })
   }
 
   return (
-    <ThreadReactionCardStyle
-      onClick={myReaction ? removeMyReaction : addMyReaction}
-      myReaction={myReaction}
-    >
-      <EmotionArea>{emoji}</EmotionArea>
-      <UserNumArea>{users.length}</UserNumArea>
-    </ThreadReactionCardStyle>
+    reaction.users.length !== 0 && (
+      <ThreadReactionCardStyle
+        onClick={updateReactions}
+        myReaction={myReaction}
+      >
+        <EmotionArea>{reaction.emoji}</EmotionArea>
+        <UserNumArea>{reaction.users.length}</UserNumArea>
+      </ThreadReactionCardStyle>
+    )
   )
 }
 
