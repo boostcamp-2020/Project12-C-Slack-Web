@@ -6,7 +6,11 @@ import ChatMessage from '../ChatMessage'
 import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
 import MessageEditor from '../messageEditor/MessageEditor'
-import { workspaceRecoil, socketRecoil } from '../../store'
+import {
+  workspaceRecoil,
+  socketRecoil,
+  currentChannelInfoRecoil,
+} from '../../store'
 import ChannelHeader from '../ChannelHeader'
 
 const ChatRoom = () => {
@@ -15,6 +19,7 @@ const ChatRoom = () => {
   const messageEndRef = useRef(null)
   const [targetState, setTargetState] = useState()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
+  const channelInfo = useRecoilValue(currentChannelInfoRecoil)
   const { workspaceId, channelId } = useParams()
   const socket = useRecoilValue(socketRecoil)
   const [messages, setMessages] = useState([])
@@ -45,6 +50,7 @@ const ChatRoom = () => {
     const chat = {
       contents: message,
       channelId,
+      member: channelInfo.member,
       userInfo: {
         _id: workspaceUserInfo._id,
         displayName: workspaceUserInfo.displayName,
@@ -55,17 +61,10 @@ const ChatRoom = () => {
   }
 
   useEffect(() => {
-    if (socket && channelId) socket.emit('join-room', channelId)
-    return () => {
-      socket && socket.emit('leave-room', channelId)
-    }
-  }, [channelId, socket])
-
-  useEffect(() => {
     if (socket) {
-      socket.emit('join-room', channelId)
       socket.on('new message', ({ message }) => {
-        setMessages(messages => [...messages, message])
+        if (message.channelId === channelId)
+          setMessages(messages => [...messages, message])
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
     }

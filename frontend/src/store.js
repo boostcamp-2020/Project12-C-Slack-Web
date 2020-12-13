@@ -12,7 +12,7 @@ export const currentChannelInfoRecoil = atom({
 
 export const channelsRecoil = atom({
   key: 'channels',
-  default: {},
+  default: [],
 })
 
 export const modalRecoil = atom({

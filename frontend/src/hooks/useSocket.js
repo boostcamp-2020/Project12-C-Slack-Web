@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
-import { socketRecoil, workspaceRecoil } from '../store'
+import { socketRecoil, workspaceRecoil, channelsRecoil } from '../store'
 import { useParams } from 'react-router-dom'
 import { useRecoilState, useRecoilValue } from 'recoil'
+import { isEmpty } from '../util'
 import io from 'socket.io-client'
 
 const baseURL =
@@ -12,6 +13,7 @@ const baseURL =
 const useSocket = () => {
   const { workspaceId } = useParams()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
+  const channelList = useRecoilValue(channelsRecoil)
   const [socket, setSocket] = useRecoilState(socketRecoil)
 
   useEffect(() => {
@@ -27,6 +29,20 @@ const useSocket = () => {
     }
   }, [workspaceId, workspaceUserInfo])
 
+  useEffect(() => {
+    if (socket && !isEmpty(channelList))
+      socket.emit(
+        'join-room',
+        channelList.map(channel => channel.channelId._id),
+      )
+    return () => {
+      if (socket)
+        socket.emit(
+          'leave-room',
+          channelList.map(channel => channel.channelId._id),
+        )
+    }
+  }, [socket, channelList])
   return [socket]
 }
 

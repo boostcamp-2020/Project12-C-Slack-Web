@@ -33,9 +33,9 @@ namespace.on('connection', socket => {
       message: { ...data, _id: result._id, createdAt: result.createdAt },
     })
   })
-  socket.on('join-room', roomId => {
-    socket.join(roomId)
-    console.log('joined', roomId)
+  socket.on('join-room', (channelList = []) => {
+    socket.join(channelList)
+    console.log('joined', channelList)
   })
   socket.on('leave-room', roomId => {
     socket.leave(roomId)
