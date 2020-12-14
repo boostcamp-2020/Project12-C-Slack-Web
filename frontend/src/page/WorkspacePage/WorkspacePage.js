@@ -5,11 +5,11 @@ import { useRecoilValue } from 'recoil'
 import { modalRecoil } from '../../store'
 
 import { throttle } from '../../util'
-import ChannelList from '../../organism/ChannelList'
-import ChannelListHeader from '../../atom/ChannelListHeader'
-import ChatRoom from '../../organism/ChatRoom'
+import ChannelList from '../../container/ChannelList'
+import ChannelListHeader from '../../presenter/ChannelListHeader'
+import ChatRoom from '../../container/ChatRoom'
 import { COLOR } from '../../constant/style'
-import Icon from '../../atom/Icon'
+import Icon from '../../presenter/Icon'
 import { TOOLS } from '../../constant/icon'
 import useWorkspace from '../../hooks/useWorkspace'
 import useSocket from '../../hooks/useSocket'
@@ -18,7 +18,7 @@ function WorkspacePage() {
   const { channelId } = useParams()
   const [lineWidth, setLineWidth] = useState(20)
   const modal = useRecoilValue(modalRecoil)
-  useWorkspace()
+  const [workspaceUserInfo] = useWorkspace()
   useSocket()
   const moveLine = e => {
     if (e.pageX === 0) return false
@@ -57,7 +57,7 @@ function WorkspacePage() {
       <MainArea>
         <ChannelListSection width={lineWidth}>
           <ChannelListHeaderArea>
-            <ChannelListHeader />
+            <ChannelListHeader workspaceUserInfo={workspaceUserInfo} />
           </ChannelListHeaderArea>
           <ChannelListArea>
             <ChannelList />
