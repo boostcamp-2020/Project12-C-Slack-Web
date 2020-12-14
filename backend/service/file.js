@@ -2,13 +2,13 @@ import { verifyRequiredParams, dbErrorHandler } from '../util/'
 import statusCode from '../util/statusCode'
 import { S3, BUCKETNAME } from '../config/s3'
 import { File } from '../model/File'
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 const ObjectId = mongoose.Types.ObjectId
 
 const getFileURL = async ({ fileId }) => {
   verifyRequiredParams(fileId)
 
-  const fileData = await dbErrorHandler(() =>
+  const { name, originalName } = await dbErrorHandler(() =>
     File.findOne({
       _id: ObjectId(fileId),
     }),
@@ -17,8 +17,8 @@ const getFileURL = async ({ fileId }) => {
   return {
     code: statusCode.OK,
     data: {
-      url: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKETNAME}/${fileData.name}`,
-      originalName: fileData.originalName,
+      url: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKETNAME}/${name}`,
+      originalName: originalName,
     },
     success: true,
   }
@@ -60,22 +60,12 @@ const uploadFile = async ({ file, userId }) => {
 
 const deleteFile = async ({ fileId }) => {
   verifyRequiredParams(fileId)
-  const fileData = await dbErrorHandler(() =>
-    File.findOne({
-      _id: ObjectId(fileId),
-    }),
-  )
-  if (!fileData) {
-    return { code: statusCode.BAD_REQUEST, success: false }
-  }
-  await dbErrorHandler(() =>
-    File.deleteOne({
-      _id: ObjectId(fileId),
-    }),
+  const { name } = await dbErrorHandler(() =>
+    File.findOneAndDelete({ _id: ObjectId(fileId) }),
   )
   await S3.deleteObject({
     Bucket: BUCKETNAME,
-    Key: fileData.name,
+    Key: name,
   }).promise()
   return { code: statusCode.OK, success: true }
 }

@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk')
+import AWS from 'aws-sdk'
 require('dotenv').config()
 
 const S3 = new AWS.S3({
