@@ -62,19 +62,22 @@ const ChatRoom = () => {
 
   const chageReactionState = (messages, reaction) => {
     let done = false
-    const arr = messages.map((message, idx) => {
+    if (reaction.type === false) {
+      return messages
+    }
+    return messages.map((message, idx) => {
       if (message._id === reaction.chatId) {
         message.reactions &&
           message.reactions.map((item, idx) => {
             if (item.emoji === reaction.emoji) {
               if (reaction.type) {
-                const userInfo = [
+                item.users = [
+                  ...item.users,
                   {
                     _id: reaction.workspaceUserInfoId,
                     displayName: reaction.displayName,
                   },
                 ]
-                item.users = [...item.users, ...userInfo]
               } else {
                 item.users.map((user, idx) => {
                   if (user._id === reaction.workspaceUserInfoId) {
@@ -99,7 +102,6 @@ const ChatRoom = () => {
       }
       return message
     })
-    return [...arr]
   }
 
   useEffect(() => {
@@ -114,7 +116,10 @@ const ChatRoom = () => {
       })
     }
     return () => {
-      socket && socket.off('new message') && socket.off('update reaction')
+      if (socket) {
+        socket.off('new message')
+        socket.off('update reaction')
+      }
     }
   }, [socket, channelId])
 
