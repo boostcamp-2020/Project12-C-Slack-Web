@@ -2,7 +2,7 @@ import { config as dotenv } from 'dotenv'
 import express from 'express'
 import { createServer } from 'http'
 import createChatServer from 'socket.io'
-import { createChatMessage } from './service/chat'
+import { createChatMessage, createReplyMessage } from './service/chat'
 import { addReaction, removeReaction } from './service/reaction'
 dotenv()
 
@@ -36,6 +36,23 @@ namespace.on('connection', socket => {
     })
     namespace.in(channelId).emit('new message', {
       message: { ...data, _id: result._id, createdAt: result.createdAt },
+    })
+  })
+  socket.on('new reply', async data => {
+    const { contents, channelId, parentId } = data
+    const { data: result } = await createReplyMessage({
+      creator: workspaceUserInfoId,
+      channelId,
+      contents,
+      parentId,
+    })
+    namespace.in(channelId).emit('new reply', {
+      message: {
+        ...data,
+        _id: result._id,
+        createdAt: result.createdAt,
+        chatId: parentId,
+      },
     })
   })
   socket.on('update reaction', async data => {
