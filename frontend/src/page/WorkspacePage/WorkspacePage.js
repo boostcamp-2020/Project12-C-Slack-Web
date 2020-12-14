@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import styled, { css } from 'styled-components'
+import { useParams, Route } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
 import { modalRecoil } from '../../store'
 
@@ -8,6 +8,7 @@ import { throttle } from '../../util'
 import ChannelList from '../../container/ChannelList'
 import ChannelListHeader from '../../presenter/ChannelListHeader'
 import ChatRoom from '../../container/ChatRoom'
+import SideThreadBar from '../../container/SideThreadBar'
 import { COLOR } from '../../constant/style'
 import Icon from '../../presenter/Icon'
 import { TOOLS } from '../../constant/icon'
@@ -15,11 +16,18 @@ import useWorkspace from '../../hooks/useWorkspace'
 import useSocket from '../../hooks/useSocket'
 
 function WorkspacePage() {
-  const { channelId } = useParams()
+  const { channelId, chatId } = useParams()
   const [lineWidth, setLineWidth] = useState(20)
+  const [SideBarWidth, setSideBarWidth] = useState(30)
   const modal = useRecoilValue(modalRecoil)
   const [workspaceUserInfo] = useWorkspace()
   useSocket()
+
+  useEffect(() => {
+    if (chatId !== undefined) setSideBarWidth(30)
+    else setSideBarWidth(0)
+  }, [chatId])
+
   const moveLine = e => {
     if (e.pageX === 0) return false
     let mouse = e.pageX
@@ -36,17 +44,17 @@ function WorkspacePage() {
   const switching = () => {
     switch (channelId) {
       case 'threads':
-        return ConstructionPage()
+        return ConstructionPage(100 - SideBarWidth)
       case 'all-dms':
-        return ConstructionPage()
+        return ConstructionPage(100 - SideBarWidth)
       case 'saved-page':
-        return ConstructionPage()
+        return ConstructionPage(100 - SideBarWidth)
       case 'activity-page':
-        return ConstructionPage()
+        return ConstructionPage(100 - SideBarWidth)
       case 'more':
-        return ConstructionPage()
+        return ConstructionPage(100 - SideBarWidth)
       default:
-        return <ChatRoom />
+        return <ChatRoom width={100 - SideBarWidth} />
     }
   }
 
@@ -63,22 +71,23 @@ function WorkspacePage() {
             <ChannelList />
           </ChannelListArea>
         </ChannelListSection>
-        <ListLine draggable="true" onDrag={e => throttle(moveLine(e), 100)} />
+        <ListLine draggable="true" onDrag={throttle(moveLine, 100)} />
         <ContentsArea width={lineWidth}>
           {switching()}
-          <SideBarArea>
-            <SideBarHeader></SideBarHeader>
-            <SideBarContents></SideBarContents>
-          </SideBarArea>
+
+          <Route
+            path={'/workspace/:workspaceId/:channelId/:chatId'}
+            component={SideThreadBar}
+          />
         </ContentsArea>
       </MainArea>
     </PageStyle>
   )
 }
 
-const ConstructionPage = () => {
+const ConstructionPage = SideBarWidth => {
   return (
-    <SwitchContentsArea>
+    <SwitchContentsArea width={SideBarWidth}>
       <p>
         <Icon icon={TOOLS} size="100px" color={COLOR.LABEL_SELECT_TEXT} />
       </p>
@@ -168,7 +177,7 @@ const ContentsArea = styled.div`
 `
 const SwitchContentsArea = styled.div`
   height: 100%;
-  width: 70%;
+  width: ${props => props.width}%;
   font-size: 20px;
   color: ${COLOR.LABEL_DEFAULT_TEXT};
   display: flex;
@@ -177,29 +186,6 @@ const SwitchContentsArea = styled.div`
   align-items: center;
 
   background: ${COLOR.BACKGROUND_CONTENTS};
-`
-
-const SideBarArea = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 30%;
-  background: ${COLOR.BACKGROUND_CONTENTS};
-  border: 1px solid rgba(255, 255, 255, 0.1);
-`
-
-const SideBarHeader = styled.div`
-  display: flex;
-  width: 100%;
-  height: 60px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-right: 0;
-`
-
-const SideBarContents = styled.div`
-  width: 100%;
-  height: calc(100% - 60px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-right: 0;
 `
 
 export default WorkspacePage
