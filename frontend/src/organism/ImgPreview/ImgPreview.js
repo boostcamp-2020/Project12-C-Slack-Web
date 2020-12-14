@@ -4,7 +4,7 @@ import request from '../../util/request'
 import Icon from '../../atom/Icon'
 import { CLOSE } from '../../constant/icon'
 import { COLOR } from '../../constant/style'
-import SmallButton from '../../atom/Button/SmallButton'
+import Button from '../../atom/Button'
 
 function ImgPreview({ type, fileId, setIsRender }) {
   const [fileData, setFileData] = useState({})
@@ -33,9 +33,9 @@ function ImgPreview({ type, fileId, setIsRender }) {
   const deleteButton = () => {
     return (
       <ButtonDiv>
-        <SmallButton type="icon" handleClick={handleDelete}>
+        <Button type="icon" handleClick={handleDelete} size="small">
           <Icon icon={CLOSE} size="8px" color={COLOR.GRAY} />
-        </SmallButton>
+        </Button>
       </ButtonDiv>
     )
   }

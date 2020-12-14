@@ -6,19 +6,25 @@ const Button = ({
   children,
   type = 'default',
   disabled = false,
+  size = 'default',
 }) => {
   return (
-    <StyledButton onClick={handleClick} type={type} disabled={disabled}>
+    <StyledButton
+      onClick={handleClick}
+      type={type}
+      disabled={disabled}
+      size={size}
+    >
       {children}
     </StyledButton>
   )
 }
 
 const StyledButton = styled.button`
-  font-size: 15px;
+  font-size: ${({ size }) => (size === 'small' ? '8px' : '15px')};
   font-weight: 900;
-  height: 36px;
-  padding: 0 12px 1px;
+  height: ${({ size }) => (size === 'small' ? '' : '36px')};
+  padding: ${({ size }) => (size === 'small' ? '' : '0 12px 1px')};
   border-style: none;
   border-radius: 4px;
   outline: none;
