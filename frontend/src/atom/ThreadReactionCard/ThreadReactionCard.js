@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import styled, { css } from 'styled-components'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { workspaceRecoil, socketRecoil } from '../../store'
+import styled from 'styled-components'
+import { useRecoilState } from 'recoil'
+import { workspaceRecoil } from '../../store'
 import { COLOR } from '../../constant/style'
-import updateReaction from '../../util/updateReaction'
 
-function ThreadReactionCard({ reaction, chatId }) {
-  const { channelId } = useParams()
-  const socket = useRecoilValue(socketRecoil)
+function ThreadReactionCard({ reaction, chatId, updateReactionHandler }) {
   const [userInfo, setUserInfo] = useRecoilState(workspaceRecoil)
   const [myReaction, setMyReaction] = useState(false)
 
@@ -17,27 +13,25 @@ function ThreadReactionCard({ reaction, chatId }) {
   }, [reaction.users.length])
 
   const hasMyReaction = () => {
-    if (reaction.users[0] === undefined) return false
+    if (reaction.users[0] === undefined) {
+      reaction.set = false
+      return false
+    }
     const result = reaction.users.every(user => {
-      return user && user._id !== null && user._id !== userInfo._id
+      return user?._id !== userInfo?._id
     })
+    if (!result) {
+      reaction.set = true
+    } else {
+      reaction.set = false
+    }
     return !result
-  }
-
-  const updateReactions = () => {
-    updateReaction({
-      workspaceUserInfo: userInfo,
-      socket,
-      emoji: reaction.emoji,
-      chatId,
-      channelId,
-    })
   }
 
   return (
     reaction.users.length !== 0 && (
       <ThreadReactionCardStyle
-        onClick={updateReactions}
+        onClick={() => updateReactionHandler(reaction.emoji)}
         myReaction={myReaction}
       >
         <EmotionArea>{reaction.emoji}</EmotionArea>

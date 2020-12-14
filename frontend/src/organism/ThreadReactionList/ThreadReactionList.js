@@ -3,15 +3,25 @@ import styled, { css } from 'styled-components'
 import ThreadReactionCard from '../../atom/ThreadReactionCard'
 import AddReactionButton from '../../atom/AddReactionButton'
 
-function ThreadReactionList({ reactions, chatId }) {
+function ThreadReactionList({ reactions, chatId, updateReactionHandler }) {
   const renderReactionCard = reactions.map((reaction, idx) => {
-    return <ThreadReactionCard key={idx} reaction={reaction} chatId={chatId} />
+    return (
+      <ThreadReactionCard
+        key={idx}
+        reaction={reaction}
+        chatId={chatId}
+        updateReactionHandler={updateReactionHandler}
+      />
+    )
   })
 
   return (
     <ThreadReactionListStyle>
       {renderReactionCard}
-      <AddReactionButton chatId={chatId} />
+      <AddReactionButton
+        chatId={chatId}
+        updateReactionHandler={updateReactionHandler}
+      />
     </ThreadReactionListStyle>
   )
 }

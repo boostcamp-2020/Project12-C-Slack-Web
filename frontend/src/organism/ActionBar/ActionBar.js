@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
-import styled, { css } from 'styled-components'
-import { useParams } from 'react-router-dom'
+import React from 'react'
+import styled from 'styled-components'
 import EmojiModal from '../../atom/EmojiModal'
 import Icon from '../../atom/Icon'
-import { COLOR, SIZE } from '../../constant/style'
+import { COLOR } from '../../constant/style'
 import {
   SMILE,
   COMMENTDOTS,
@@ -11,27 +10,12 @@ import {
   BOOKMARK,
   ELLIPSISV,
 } from '../../constant/icon'
-import { toast } from 'react-toastify'
 import calcEmojiModalLocation from '../../util/calculateEmojiModalLocation'
-import { modalRecoil, socketRecoil, workspaceRecoil } from '../../store'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import updateReaction from '../../util/updateReaction'
+import { modalRecoil } from '../../store'
+import { useRecoilState } from 'recoil'
 
-function ActionBar({ setOpenModal, chatId }) {
-  const { channelId } = useParams()
+function ActionBar({ setOpenModal, chatId, updateReactionHandler }) {
   const [modal, setModal] = useRecoilState(modalRecoil)
-  const workspaceUserInfo = useRecoilValue(workspaceRecoil)
-  const socket = useRecoilValue(socketRecoil)
-
-  const sendHandler = emoji => {
-    updateReaction({
-      workspaceUserInfo,
-      socket,
-      emoji: emoji.native || emoji,
-      chatId,
-      channelId,
-    })
-  }
 
   const closeHandler = () => {
     setOpenModal(false)
@@ -44,7 +28,7 @@ function ActionBar({ setOpenModal, chatId }) {
     setOpenModal(true)
     setModal(
       <EmojiModal
-        sendHandler={sendHandler}
+        sendHandler={updateReactionHandler}
         closeHandler={closeHandler}
         axisX={axisX}
         axisY={axisY}
@@ -54,13 +38,13 @@ function ActionBar({ setOpenModal, chatId }) {
 
   return (
     <ActionBarStyle>
-      <DefaultReactionBtn onClick={() => sendHandler('👍')}>
+      <DefaultReactionBtn onClick={() => updateReactionHandler('👍')}>
         👍
       </DefaultReactionBtn>
-      <DefaultReactionBtn onClick={() => sendHandler('👏')}>
+      <DefaultReactionBtn onClick={() => updateReactionHandler('👏')}>
         👏
       </DefaultReactionBtn>
-      <DefaultReactionBtn onClick={() => sendHandler('😄')}>
+      <DefaultReactionBtn onClick={() => updateReactionHandler('😄')}>
         😄
       </DefaultReactionBtn>
       <DefaultReactionBtn onClick={openEmojiModal}>

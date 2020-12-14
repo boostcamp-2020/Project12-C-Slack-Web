@@ -1,30 +1,16 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { useParams } from 'react-router-dom'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { modalRecoil, socketRecoil, workspaceRecoil } from '../../store'
+import { useRecoilState } from 'recoil'
+import { modalRecoil } from '../../store'
 import EmojiModal from '../EmojiModal'
-import updateReaction from '../../util/updateReaction'
+
 import Icon from '../Icon'
 import { PLUS, SMILE } from '../../constant/icon'
 import { COLOR } from '../../constant/style'
 import calcEmojiModalLocation from '../../util/calculateEmojiModalLocation'
 
-function AddReactionButton({ chatId }) {
-  const { channelId } = useParams()
+function AddReactionButton({ updateReactionHandler }) {
   const [modal, setModal] = useRecoilState(modalRecoil)
-  const workspaceUserInfo = useRecoilValue(workspaceRecoil)
-  const socket = useRecoilValue(socketRecoil)
-
-  const updateReactionHandler = emoji => {
-    updateReaction({
-      workspaceUserInfo,
-      socket,
-      emoji: emoji.native,
-      chatId,
-      channelId,
-    })
-  }
 
   const closeHandler = () => {
     setModal(null)

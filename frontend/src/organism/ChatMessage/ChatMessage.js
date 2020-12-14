@@ -5,14 +5,60 @@ import ChatContent from '../../atom/ChatContent'
 import ThreadReactionList from '../ThreadReactionList'
 import ActionBar from '../ActionBar'
 import { SIZE, COLOR } from '../../constant/style'
+import { workspaceRecoil, socketRecoil } from '../../store'
+import { useRecoilValue } from 'recoil'
+import { useParams } from 'react-router-dom'
 
 const ChatMessage = forwardRef(
   (
     { userInfo, reply, reactions, _id, createdAt, contents, type = 'chat' },
     ref,
   ) => {
+    const { channelId } = useParams()
     const [openModal, setOpenModal] = useState(false)
     const [hover, setHover] = useState(false)
+    const workspaceUserInfo = useRecoilValue(workspaceRecoil)
+    const socket = useRecoilValue(socketRecoil)
+
+    const updateReaction = ({ emoji, chatId, channelId, type }) => {
+      const reaction = {
+        emoji,
+        chatId,
+        channelId,
+        type,
+        userInfo: {
+          _id: workspaceUserInfo._id,
+          displayName: workspaceUserInfo.displayName,
+        },
+      }
+      socket.emit('update reaction', reaction)
+    }
+
+    const updateReactionHandler = emoji => {
+      let done = false
+      reactions.map((reaction, idx) => {
+        if (reaction.emoji === emoji.native || reaction.emoji === emoji) {
+          if (reaction.set) {
+            updateReaction({
+              emoji: emoji.native || emoji,
+              chatId: _id,
+              channelId,
+              type: 0,
+            })
+            done = true
+          }
+        }
+      })
+      if (!done) {
+        updateReaction({
+          emoji: emoji.native || emoji,
+          chatId: _id,
+          channelId,
+          type: 1,
+        })
+      }
+    }
+
     return (
       <StyledMessageContainer
         type={type}
@@ -36,7 +82,11 @@ const ChatMessage = forwardRef(
         {/* TODO thread Reaction 구현  */}
         {reactions && reactions.length !== 0 && (
           <ThreadReactionStyle>
-            <ThreadReactionList reactions={reactions} chatId={_id} />
+            <ThreadReactionList
+              reactions={reactions}
+              chatId={_id}
+              updateReactionHandler={updateReactionHandler}
+            />
           </ThreadReactionStyle>
         )}
         {/* TODO view thread reply 구현  */}
@@ -47,7 +97,11 @@ const ChatMessage = forwardRef(
         {/* TODO Action bar 구현 */}
         {(hover || openModal) && (
           <ActionBarStyle openModal={openModal}>
-            <ActionBar setOpenModal={setOpenModal} chatId={_id} />
+            <ActionBar
+              setOpenModal={setOpenModal}
+              chatId={_id}
+              updateReactionHandler={updateReactionHandler}
+            />
           </ActionBarStyle>
         )}
       </StyledMessageContainer>
