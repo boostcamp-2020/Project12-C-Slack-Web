@@ -19,7 +19,7 @@ async function gitStrategyLogin(profiles) {
         OAuthId: profiles.id,
         fullName: profiles.username,
         profileUrl:
-          profiles.photos[0].value ||
+          profiles?.photos[0]?.value ||
           'https://user-images.githubusercontent.com/56837413/102013276-583f6000-3d92-11eb-8184-186bc09f2a98.jpg',
         isDeleted: false,
       })
