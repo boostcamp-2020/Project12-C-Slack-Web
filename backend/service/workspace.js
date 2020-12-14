@@ -46,7 +46,6 @@ const createWorkspace = async params => {
     ChannelConfig.create({
       channelId: ObjectId(channelData._id),
       workspaceUserInfoId: ObjectId(channelData.creator),
-      sectionName: null,
     }),
   )
   await dbErrorHandler(() =>
@@ -128,7 +127,6 @@ const invited = async ({ userId, code }) => {
         ChannelConfig.create({
           channelId: ObjectId(workspaceData.default_channel),
           workspaceUserInfoId: ObjectId(createdWorkspaceUserData._id),
-          sectionName: null,
         }),
       )
 

@@ -18,7 +18,6 @@ const createChannel = async params => {
     ChannelConfig.create({
       channelId: result._id,
       workspaceUserInfoId: result.creator,
-      sectionName: null,
     }),
   )
   return {
@@ -78,7 +77,6 @@ const inviteUserDB = async ({ channelId, workspaceUserInfoId }) => {
           channelId,
           isMute: false,
           notification: 0,
-          sectionName: null,
         })
         channelConfig.save()
       })
