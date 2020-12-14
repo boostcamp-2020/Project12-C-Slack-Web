@@ -6,18 +6,25 @@ const Button = ({
   children,
   type = 'default',
   disabled = false,
+  size = 'default',
 }) => {
   return (
-    <StyledButton onClick={handleClick} type={type} disabled={disabled}>
+    <StyledButton
+      onClick={handleClick}
+      type={type}
+      disabled={disabled}
+      size={size}
+    >
       {children}
     </StyledButton>
   )
 }
 
 const StyledButton = styled.button`
-  font-size: 15px;
-  height: 36px;
-  padding: 0 12px 1px;
+  font-size: ${({ size }) => (size === 'small' ? '8px' : '15px')};
+  font-weight: 900;
+  height: ${({ size }) => (size === 'small' ? '' : '36px')};
+  padding: ${({ size }) => (size === 'small' ? '' : '0 12px 1px')};
   border-style: none;
   border-radius: 4px;
   outline: none;
@@ -37,8 +44,6 @@ const StyledButton = styled.button`
     if (type === 'transparent') return `1px solid ${COLOR.TRANSPARENT_GRAY}`
     if (type === 'icon') return 'transparent'
   }};
-  font-size: 15px;
-  font-weight: 900;
   &:hover {
     ${({ type, disabled }) => {
       if (disabled) return
