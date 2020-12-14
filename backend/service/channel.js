@@ -77,7 +77,6 @@ const inviteUserDB = async ({ channelId, workspaceUserInfoId }) => {
           channelId,
           isMute: false,
           notification: 0,
-          sectionName: null,
         })
         channelConfig.save()
       })
