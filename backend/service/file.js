@@ -42,7 +42,6 @@ const uploadFile = async ({ file, userId }) => {
       path: '/',
       fileType: file.mimetype,
       creator: userId,
-      etag: result.ETag,
     }),
   )
   return {
@@ -52,7 +51,6 @@ const uploadFile = async ({ file, userId }) => {
       fileName: data.originalName,
       fileType: data.fileType,
       creator: data.creator,
-      etag: data.etag,
     },
     success: true,
   }

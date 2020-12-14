@@ -19,9 +19,6 @@ const fileSchema = mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    etag: {
-      type: String,
-    },
   },
   { timestamps: true },
 )
