@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import ChatMessage from '../ChatMessage'
 import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
@@ -9,7 +9,7 @@ import MessageEditor from '../MessageEditor/MessageEditor'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import ChannelHeader from '../ChannelHeader'
 
-const ChatRoom = () => {
+const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
   const target = useRef(null)
   const messageEndRef = useRef(null)
@@ -144,19 +144,22 @@ const ChatRoom = () => {
   }, [])
 
   return (
-    <ChatArea>
+    <ChatArea width={width}>
       <ChatHeader>
         <ChannelHeader />
       </ChatHeader>
       <ChatContents ref={viewport}>
-        {messages.map((message, i) => (
-          <ChatMessage
-            key={i}
-            {...message}
-            ref={i ? null : setTarget}
-            id={message.createdAt}
-          />
-        ))}
+        {messages &&
+          messages.map((message, i) => {
+            return (
+              <ChatMessage
+                key={i}
+                {...message}
+                ref={i ? null : setTarget}
+                id={message.createdAt}
+              />
+            )
+          })}
         <div ref={messageEndRef}></div>
       </ChatContents>
       <MessageEditor channelTitle={'hello world'} sendMessage={sendMessage} />
@@ -167,7 +170,7 @@ const ChatArea = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 70%;
+  width: calc(${props => props.width}% - 2px);
   background: ${COLOR.HOVER_GRAY};
 `
 
