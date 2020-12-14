@@ -32,12 +32,10 @@ const App = () => {
             path="/create-workspace"
             component={Auth(CreateWorkspace, true)}
           />
-          <Switch>
-            <Route
-              path="/workspace/:workspaceId/:channelId"
-              component={Auth(WorkspacePage, true)}
-            />
-          </Switch>
+          <Route
+            path="/workspace/:workspaceId/:channelId"
+            component={Auth(WorkspacePage, true)}
+          />
         </BrowserRouter>
       </RecoilRoot>
     </React.StrictMode>
