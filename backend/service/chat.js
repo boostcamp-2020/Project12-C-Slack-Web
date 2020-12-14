@@ -22,12 +22,10 @@ const createChatMessage = async ({ channelId, creator, contents }) => {
 }
 
 const getReplyMessage = async ({ channelId, parentId }) => {
-  console.log('channelId, parentId', channelId, parentId)
   verifyRequiredParams(channelId, parentId)
   const result = await dbErrorHandler(() =>
     Chat.getReplyMessages({ channelId, parentId }),
   )
-  console.log('result', result)
   return { code: statusCode.OK, data: result, success: true }
 }
 

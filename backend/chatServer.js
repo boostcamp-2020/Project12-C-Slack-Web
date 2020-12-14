@@ -3,6 +3,7 @@ import express from 'express'
 import { createServer } from 'http'
 import createChatServer from 'socket.io'
 import { createChatMessage } from './service/chat'
+import { addReaction, removeReaction } from './service/reaction'
 dotenv()
 
 const server = createServer(express())
@@ -37,6 +38,33 @@ namespace.on('connection', socket => {
       message: { ...data, _id: result._id, createdAt: result.createdAt },
     })
   })
+  socket.on('update reaction', async data => {
+    const { emoji, chatId, userInfo, channelId, type } = data
+    //1 = add, 0 = remove
+    const result =
+      type === 1
+        ? await addReaction({
+            workspaceUserInfoId,
+            chatId,
+            emoticon: emoji,
+          })
+        : await removeReaction({
+            workspaceUserInfoId,
+            chatId,
+            emoticon: emoji,
+          })
+
+    namespace.in(channelId).emit('update reaction', {
+      reaction: {
+        chatId: chatId,
+        emoji: emoji,
+        workspaceUserInfoId: userInfo._id,
+        displayName: userInfo.displayName,
+        type: result ? type : false,
+      },
+    })
+  })
+
   socket.on('join-room', (channelList = []) => {
     socket.join(channelList)
   })

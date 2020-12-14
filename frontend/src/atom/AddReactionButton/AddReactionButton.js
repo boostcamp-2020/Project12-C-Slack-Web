@@ -3,17 +3,14 @@ import styled, { css } from 'styled-components'
 import { useRecoilState } from 'recoil'
 import { modalRecoil } from '../../store'
 import EmojiModal from '../EmojiModal'
+
 import Icon from '../Icon'
 import { PLUS, SMILE } from '../../constant/icon'
 import { COLOR } from '../../constant/style'
 import calcEmojiModalLocation from '../../util/calculateEmojiModalLocation'
 
-function AddReactionButton() {
+function AddReactionButton({ updateReactionHandler }) {
   const [modal, setModal] = useRecoilState(modalRecoil)
-
-  const sendHandler = emoji => {
-    console.log('TODO: send reaction', emoji.native)
-  }
 
   const closeHandler = () => {
     setModal(null)
@@ -24,7 +21,7 @@ function AddReactionButton() {
 
     setModal(
       <EmojiModal
-        sendHandler={sendHandler}
+        sendHandler={updateReactionHandler}
         closeHandler={closeHandler}
         axisX={axisX}
         axisY={axisY}
