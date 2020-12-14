@@ -11,11 +11,17 @@ export const currentChannelInfoRecoil = atom({
 })
 
 export const channelsRecoil = atom({
-  key: 'Channels',
-  default: {},
+  key: 'channels',
+  default: [],
 })
 
 export const modalRecoil = atom({
-  key: 'Modal',
+  key: 'modal',
   default: null,
+})
+
+export const socketRecoil = atom({
+  key: 'socket',
+  default: null,
+  dangerouslyAllowMutability: true,
 })

@@ -9,6 +9,7 @@ import Icon from '../Icon'
 import { workspaceRecoil } from '../../store'
 import { STAR, COLOREDSTAR } from '../../constant/icon'
 import { atom, useRecoilState, useRecoilValue } from 'recoil'
+import { isEmpty } from '../../util'
 import useChannelList from '../../hooks/useChannelList'
 
 function ChannelStarBtn({ channel }) {
@@ -27,7 +28,7 @@ function ChannelStarBtn({ channel }) {
   const updateSection = async () => {
     try {
       let sectionName = null
-      if (sectionInfo === null) sectionName = 'Starred'
+      if (isEmpty(sectionInfo)) sectionName = 'Starred'
 
       const { data } = await request.PATCH('/api/channel/section', {
         workspaceUserInfoId: workspaceUserInfo._id,
@@ -49,7 +50,7 @@ function ChannelStarBtn({ channel }) {
 
   return (
     <StarIconStyle onClick={updateSection}>
-      {sectionInfo !== null ? (
+      {!isEmpty(sectionInfo) ? (
         <Icon icon={COLOREDSTAR} color={COLOR.STARBLUE} size="12px" />
       ) : (
         <Icon icon={STAR} color={COLOR.STARBLUE} size="12px" />

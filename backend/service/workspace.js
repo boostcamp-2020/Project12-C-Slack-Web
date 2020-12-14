@@ -46,7 +46,6 @@ const createWorkspace = async params => {
     ChannelConfig.create({
       channelId: ObjectId(channelData._id),
       workspaceUserInfoId: ObjectId(channelData.creator),
-      sectionName: null,
     }),
   )
   await dbErrorHandler(() =>

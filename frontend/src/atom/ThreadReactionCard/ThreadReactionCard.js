@@ -1,40 +1,43 @@
 import React, { useState, useEffect } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { useRecoilState } from 'recoil'
 import { workspaceRecoil } from '../../store'
 import { COLOR } from '../../constant/style'
 
-function ThreadReactionCard({ emoji, users }) {
+function ThreadReactionCard({ reaction, chatId, updateReactionHandler }) {
   const [userInfo, setUserInfo] = useRecoilState(workspaceRecoil)
   const [myReaction, setMyReaction] = useState(false)
 
   useEffect(() => {
     setMyReaction(hasMyReaction())
-  }, [])
+  }, [reaction.users.length])
 
   const hasMyReaction = () => {
-    const result = users.every(user => {
-      return user._id !== userInfo._id
+    if (reaction.users[0] === undefined) {
+      reaction.set = false
+      return false
+    }
+    const result = reaction.users.every(user => {
+      return user?._id !== userInfo?._id
     })
+    if (!result) {
+      reaction.set = true
+    } else {
+      reaction.set = false
+    }
     return !result
   }
 
-  const removeMyReaction = () => {
-    console.log('TODO: remove my reaction', emoji)
-  }
-
-  const addMyReaction = () => {
-    console.log('TODO: add my reaction', emoji)
-  }
-
   return (
-    <ThreadReactionCardStyle
-      onClick={myReaction ? removeMyReaction : addMyReaction}
-      myReaction={myReaction}
-    >
-      <EmotionArea>{emoji}</EmotionArea>
-      <UserNumArea>{users.length}</UserNumArea>
-    </ThreadReactionCardStyle>
+    reaction.users.length !== 0 && (
+      <ThreadReactionCardStyle
+        onClick={() => updateReactionHandler(reaction.emoji)}
+        myReaction={myReaction}
+      >
+        <EmotionArea>{reaction.emoji}</EmotionArea>
+        <UserNumArea>{reaction.users.length}</UserNumArea>
+      </ThreadReactionCardStyle>
+    )
   )
 }
 

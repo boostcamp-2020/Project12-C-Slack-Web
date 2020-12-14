@@ -12,12 +12,14 @@ import { COLOR } from '../../constant/style'
 import Icon from '../../atom/Icon'
 import { TOOLS } from '../../constant/icon'
 import useWorkspace from '../../hooks/useWorkspace'
+import useSocket from '../../hooks/useSocket'
 
 function WorkspacePage() {
   const { channelId } = useParams()
   const [lineWidth, setLineWidth] = useState(20)
-  const Modal = useRecoilValue(modalRecoil)
+  const modal = useRecoilValue(modalRecoil)
   useWorkspace()
+  useSocket()
   const moveLine = e => {
     if (e.pageX === 0) return false
     let mouse = e.pageX
@@ -50,7 +52,7 @@ function WorkspacePage() {
 
   return (
     <PageStyle>
-      {Modal}
+      {modal}
       <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
       <MainArea>
         <ChannelListSection width={lineWidth}>

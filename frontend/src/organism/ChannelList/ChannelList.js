@@ -4,34 +4,33 @@ import styled from 'styled-components'
 import { toast } from 'react-toastify'
 import SectionLabel from '../SectionLabel'
 import SideMenuList from '../SideMenuList'
-import { useRecoilState } from 'recoil'
-
+import { useRecoilValue } from 'recoil'
+import { isEmpty } from '../../util'
 import { workspaceRecoil } from '../../store'
 import useChannelList from '../../hooks/useChannelList'
 
-function ChannelList(props) {
+function ChannelList() {
   const [list, setList] = useState([])
-  const [Channels, setChannels] = useChannelList()
-  const [userInfo, setUserInfo] = useRecoilState(workspaceRecoil)
-
+  const [channels] = useChannelList()
+  const userInfo = useRecoilValue(workspaceRecoil)
   const history = useHistory()
 
-  let sectionMap = new Map()
+  const sectionMap = new Map()
 
   useEffect(() => {
-    if (Channels === undefined) return
-    if (Object.keys(Channels).length !== 0) {
+    if (channels === undefined) return
+    if (!isEmpty(channels)) {
       if (userInfo.sections)
-        userInfo.sections.map((sectionName, idx) => {
+        userInfo.sections.map(sectionName => {
           sectionMap.set(sectionName, [])
         })
       SectionOrganizing()
     }
-  }, [Channels])
+  }, [channels])
 
   const SectionOrganizing = () => {
     try {
-      Channels.map((channel, index) => {
+      channels.forEach(channel => {
         if (channel.sectionName == null) {
           if (channel.channelId.channelType === 2) {
             checkHasKeyAndSetKeyInMap(sectionMap, 'Direct messages', channel)
@@ -51,12 +50,12 @@ function ChannelList(props) {
     }
   }
 
-  const renderChannelSectionList = list.map((section, index) => {
+  const renderChannelSectionList = list.map(([sectionName, lists], index) => {
     return (
       <SectionLabel
         key={index}
-        sectionName={section[0]}
-        lists={section[1]}
+        sectionName={sectionName}
+        lists={lists}
       ></SectionLabel>
     )
   })
@@ -70,13 +69,8 @@ function ChannelList(props) {
 }
 
 const checkHasKeyAndSetKeyInMap = (map, key, data) => {
-  if (map.has(key)) {
-    let value = map.get(key)
-    value.push(data)
-    map.set(key, value)
-  } else {
-    map.set(key, [data])
-  }
+  if (map.has(key)) map.set(key, [...map.get(key)].concat(data))
+  else map.set(key, [data])
 }
 
 const checkHasDefaultChannel = map => {

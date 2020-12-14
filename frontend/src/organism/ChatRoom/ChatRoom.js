@@ -1,19 +1,17 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import io from 'socket.io-client'
 import { useRecoilValue } from 'recoil'
 import ChatMessage from '../ChatMessage'
 import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
 import MessageEditor from '../messageEditor/MessageEditor'
-import { workspaceRecoil } from '../../store'
+import {
+  workspaceRecoil,
+  socketRecoil,
+  currentChannelInfoRecoil,
+} from '../../store'
 import ChannelHeader from '../ChannelHeader'
-
-const baseURL =
-  process.env.NODE_ENV === 'development'
-    ? process.env.REACT_APP_DEV_CHAT_HOST
-    : process.env.REACT_APP_CHAT_HOST
 
 const ChatRoom = () => {
   const viewport = useRef(null)
@@ -21,8 +19,9 @@ const ChatRoom = () => {
   const messageEndRef = useRef(null)
   const [targetState, setTargetState] = useState()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
+  const channelInfo = useRecoilValue(currentChannelInfoRecoil)
   const { workspaceId, channelId } = useParams()
-  const [socket, setSocket] = useState(null)
+  const socket = useRecoilValue(socketRecoil)
   const [messages, setMessages] = useState([])
   const load = useRef(false)
 
@@ -50,6 +49,7 @@ const ChatRoom = () => {
   const sendMessage = message => {
     const chat = {
       contents: message,
+      channelId,
       userInfo: {
         _id: workspaceUserInfo._id,
         displayName: workspaceUserInfo.displayName,
@@ -59,35 +59,68 @@ const ChatRoom = () => {
     socket.emit('new message', chat)
   }
 
-  useEffect(() => {
-    if (workspaceUserInfo === null) return false
-    setSocket(
-      io(baseURL, { query: { channelId, creator: workspaceUserInfo._id } }),
-    )
-  }, [workspaceId, channelId, workspaceUserInfo])
+  const chageReactionState = (messages, reaction) => {
+    let done = false
+    if (reaction.type === false) {
+      return messages
+    }
+    return messages.map((message, idx) => {
+      if (message._id === reaction.chatId) {
+        message.reactions &&
+          message.reactions.map((item, idx) => {
+            if (item.emoji === reaction.emoji) {
+              if (reaction.type) {
+                item.users = [
+                  ...item.users,
+                  {
+                    _id: reaction.workspaceUserInfoId,
+                    displayName: reaction.displayName,
+                  },
+                ]
+              } else {
+                item.users.map((user, idx) => {
+                  if (user._id === reaction.workspaceUserInfoId) {
+                    item.users.splice(idx, 1)
+                  }
+                })
+              }
+              done = true
+            }
+          })
+        if (!done && reaction.type === 1) {
+          message.reactions.push({
+            emoji: reaction.emoji,
+            users: [
+              {
+                _id: reaction.workspaceUserInfoId,
+                displayName: reaction.displayName,
+              },
+            ],
+          })
+        }
+      }
+      return message
+    })
+  }
 
   useEffect(() => {
     if (socket) {
-      socket.on('connect', () => {
-        console.log('connected')
-      })
-      socket.on('disconnect', () => {
-        console.log('disconnected')
-      })
-      socket.emit('join-room', channelId)
       socket.on('new message', ({ message }) => {
-        setMessages(messages => [...messages, message])
+        if (message.channelId === channelId)
+          setMessages(messages => [...messages, message])
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
+      })
+      socket.on('update reaction', ({ reaction }) => {
+        setMessages(messages => chageReactionState(messages, reaction))
       })
     }
     return () => {
       if (socket) {
-        socket.off('connect')
-        socket.off('disconnect')
         socket.off('new message')
+        socket.off('update reaction')
       }
     }
-  }, [socket])
+  }, [socket, channelId])
 
   useEffect(() => {
     const option = {

@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { useSetRecoilState } from 'recoil'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
 
 import Icon from '../../atom/Icon'
 import { ADDUSER, INFOCIRCLE } from '../../constant/icon'
