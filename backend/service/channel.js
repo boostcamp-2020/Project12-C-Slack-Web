@@ -18,6 +18,7 @@ const createChannel = async params => {
     ChannelConfig.create({
       channelId: result._id,
       workspaceUserInfoId: result.creator,
+      sectionName: null,
     }),
   )
   return {
