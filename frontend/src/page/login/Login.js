@@ -1,10 +1,10 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import LoginButton from '../../atom/LoginButton/LoginButton'
+import LoginButton from '../../presenter/LoginButton/LoginButton'
 import { GITHUB } from '../../constant/icon'
-import Icon from '../../atom/Icon'
+import Icon from '../../presenter/Icon'
 import styled from 'styled-components'
-import SlackIcon from '../../atom/SlackImage'
+import SlackIcon from '../../presenter/SlackImage'
 
 const baseURL =
   process.env.NODE_ENV === 'development'
