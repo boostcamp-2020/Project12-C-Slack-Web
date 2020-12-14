@@ -11,7 +11,7 @@ const Template = args => <>{isRender && <FilePreview {...args} />}</>
 export const inputFilePreview = Template.bind({})
 inputFilePreview.args = {
   type: 'input', // input, message
-  fileId: '5fd5e4018c8a82245fa0ab39',
+  fileId: '5fd6ea342d026a63752cd31b',
   setIsRender: () => {
     isRender = false
   },
@@ -20,5 +20,5 @@ inputFilePreview.args = {
 export const messageFilePreview = Template.bind({})
 messageFilePreview.args = {
   type: 'message', // input, message
-  fileId: '5fd5e4018c8a82245fa0ab39',
+  fileId: '5fd6ea342d026a63752cd31b',
 }
