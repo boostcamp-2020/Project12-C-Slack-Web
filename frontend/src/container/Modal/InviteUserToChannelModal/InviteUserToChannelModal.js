@@ -15,7 +15,8 @@ import SelectedUserList from '../../../presenter/SelectedUserList'
 import useChannelInfo from '../../../hooks/useChannelInfo'
 import dmTitleGenerator from '../../../util/dmTitleGenerator'
 import { workspaceRecoil } from '../../../store'
-import { checkDuplicateChannelName, createChannel } from '../../../api/channel'
+import { createChannel, findChannelIdByName } from '../../../api/channel'
+import { getWorkspaceUserInfoByInfoId } from '../../../api/workspace'
 import useChannelList from '../../../hooks/useChannelList'
 
 function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
@@ -58,9 +59,16 @@ function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
 
   const inviteToDM = async () => {
     if (!inviteUserList.length) return
-    const title = dmTitleGenerator(inviteUserList)
-    console.log('title: ', title)
-    console.log('workspaceUserInfoId: ', workspaceUserInfoId)
+    const userInfoData = await getWorkspaceUserInfoByInfoId({
+      workspaceUserInfoId,
+    })
+    const title = dmTitleGenerator([...inviteUserList, userInfoData])
+    const findedChannelId = await findChannelIdByName({ title })
+    if (findedChannelId) {
+      history.push(`/workspace/${workspaceId}/${findedChannelId}`)
+      setModal(null)
+      return
+    }
     const channelId = await createChannel({
       title: title,
       creator: workspaceUserInfoId,
@@ -69,12 +77,6 @@ function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
       workspaceId,
     })
 
-    // title: channelName,
-    // creator: workspaceUserInfoId,
-    // channelType: isPrivate ? 0 : 1,
-    // description: channelDescription,
-    // workspaceId,
-    // 채널 생성해줘야함
     const { data } = await request.POST('/api/channel/invite', {
       channelId: channelId,
       workspaceUserInfoId: inviteUserList.map(user => user._id),
@@ -91,13 +93,9 @@ function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
 
     updateChannelList()
     history.push(`/workspace/${workspaceId}/${channelId}`)
-    // } else {
-    //   // history.push(`/workspace/${workspaceId}/${channelId}`)
-    // }
   }
 
   const inviteUser = async () => {
-    console.log('type: ', type)
     if (type === 'channel') return await inviteToChannel()
     else if (type === 'DM') return await inviteToDM()
   }
