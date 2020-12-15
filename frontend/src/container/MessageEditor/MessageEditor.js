@@ -54,7 +54,7 @@ function MessageEditor({ channelTitle, sendMessage }) {
       {/* TODO markdown, chat action 적용 필요 */}
       <div>{isRender && renderPreview()}</div>
       <div>
-        <FileUploader setFileData={setFileData} />
+        <FileUploader fileData={fileData} setFileData={setFileData} />
       </div>
     </div>
   )

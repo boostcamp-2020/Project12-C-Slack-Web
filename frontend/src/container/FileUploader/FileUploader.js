@@ -8,13 +8,16 @@ import { toast } from 'react-toastify'
 
 const fileContentType = 'multipart/form-data'
 
-function FileUploader({ setFileData }) {
+function FileUploader({ fileData, setFileData }) {
   const fileInput = useRef(null)
-
   const handleFileInput = async e => {
+    if (!e.target.files[0]) return
     if (e.target.files[0].size > 8192000) {
       toast.error('8MB 이하의 파일만 업로드 할 수 있습니다!')
       return
+    }
+    if (fileData !== null) {
+      await request.DELETE('/api/file', { fileId: fileData.fileId })
     }
     await handlePost(e.target.files[0])
   }
