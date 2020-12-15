@@ -18,7 +18,7 @@ import useSocket from '../../hooks/useSocket'
 function WorkspacePage() {
   const { channelId, chatId } = useParams()
   const [lineWidth, setLineWidth] = useState(20)
-  const [SideBarWidth, setSideBarWidth] = useState(30)
+  const [sideBarWidth, setSideBarWidth] = useState(30)
   const modal = useRecoilValue(modalRecoil)
   const [workspaceUserInfo] = useWorkspace()
   useSocket()
@@ -44,17 +44,17 @@ function WorkspacePage() {
   const switching = () => {
     switch (channelId) {
       case 'threads':
-        return ConstructionPage(100 - SideBarWidth)
+        return ConstructionPage(100 - sideBarWidth)
       case 'all-dms':
-        return ConstructionPage(100 - SideBarWidth)
+        return ConstructionPage(100 - sideBarWidth)
       case 'saved-page':
-        return ConstructionPage(100 - SideBarWidth)
+        return ConstructionPage(100 - sideBarWidth)
       case 'activity-page':
-        return ConstructionPage(100 - SideBarWidth)
+        return ConstructionPage(100 - sideBarWidth)
       case 'more':
-        return ConstructionPage(100 - SideBarWidth)
+        return ConstructionPage(100 - sideBarWidth)
       default:
-        return <ChatRoom width={100 - SideBarWidth} />
+        return <ChatRoom width={100 - sideBarWidth} />
     }
   }
 

@@ -5,12 +5,16 @@ import UserProfileImg from '../../presenter/UserProfileImg'
 import ChatContent from '../../presenter/ChatContent'
 import ThreadReactionList from '../../presenter/ThreadReactionList'
 import ActionBar from '../ActionBar'
+import { isEmpty } from '../../util'
 import { SIZE, COLOR } from '../../constant/style'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import { useRecoilValue } from 'recoil'
 
 const ChatMessage = forwardRef(
-  ({ userInfo, reply, reactions, _id, createdAt, contents, type }, ref) => {
+  (
+    { userInfo, reply, reactions, _id, createdAt, contents, type = 'chat' },
+    ref,
+  ) => {
     const { workspaceId, channelId } = useParams()
     const [openModal, setOpenModal] = useState(false)
     const [hover, setHover] = useState(false)
@@ -58,7 +62,7 @@ const ChatMessage = forwardRef(
 
     return (
       <StyledMessageContainer
-        type={type || 'chat'}
+        type
         ref={ref}
         id={createdAt}
         onMouseEnter={() => setHover(true)}
@@ -68,7 +72,7 @@ const ChatMessage = forwardRef(
           <UserProfileImg
             user={{ profileUrl: userInfo.profileUrl }}
             size={SIZE.CHAT_PROFILE}
-            type={type || 'chat'}
+            type={type}
           />
           <ChatContent
             displayName={userInfo.displayName}
@@ -77,7 +81,7 @@ const ChatMessage = forwardRef(
           />
         </MessageContents>
         {/* TODO thread Reaction 구현  */}
-        {reactions && reactions.length !== 0 && (
+        {!isEmpty(reactions) && (
           <ThreadReactionStyle>
             <ThreadReactionList
               reactions={reactions}
@@ -87,7 +91,7 @@ const ChatMessage = forwardRef(
           </ThreadReactionStyle>
         )}
         {/* TODO view thread reply 구현  */}
-        {type !== 'reply' && reply && reply.length !== 0 && (
+        {type !== 'reply' && !isEmpty(reply) && (
           <Link to={`/workspace/${workspaceId}/${channelId}/${_id}`}>
             <ViewThreadBarStyle>view thread</ViewThreadBarStyle>
           </Link>
