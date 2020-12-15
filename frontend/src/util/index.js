@@ -33,4 +33,8 @@ const isEmpty = value => {
   return false
 }
 
-export { debounce, throttle, isEmpty }
+const isImage = type => {
+  return type?.includes('image/')
+}
+
+export { debounce, throttle, isEmpty, isImage }
