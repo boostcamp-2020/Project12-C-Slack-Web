@@ -18,6 +18,16 @@ Lazy.filter = curry(function* (action, iterator) {
   for (const value of iterator) if (action(value)) yield value
 })
 
+Lazy.takeNoneDuplicate = function* (iterator) {
+  let res = []
+  for (const value of iterator) {
+    if (!res.includes(value)) {
+      res.push(value)
+      yield value
+    }
+  }
+}
+
 export const reduce = curry((action, acc, iterator) => {
   if (!iterator) {
     iterator = acc[Symbol.iterator]()
@@ -39,3 +49,7 @@ export const take = curry((length, iterator) => {
 
 export const go = (...iterator) =>
   reduce((value, action) => action(value), iterator)
+
+export const map = curry((action, iterator) => {
+  return iterator.map(action)
+})
