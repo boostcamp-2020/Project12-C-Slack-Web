@@ -35,7 +35,6 @@ const checkDuplicate = async ({ title, workspaceId }) => {
       WorkspaceUserInfo.findOne({ workspaceId, displayName: title }),
     ),
   ])
-  console.log('checkDuplicate result: ', result)
   return {
     code: statusCode.OK,
     data: result.every(v => v === null),
@@ -130,6 +129,17 @@ const updateChannelSectionDB = async ({
   }
 }
 
+const findChannelIdByName = async ({ title }) => {
+  verifyRequiredParams(title)
+  const channelData = await dbErrorHandler(() => Channel.findOne({ title }))
+
+  return {
+    code: statusCode.OK,
+    data: channelData._id,
+    success: true,
+  }
+}
+
 module.exports = {
   createChannel,
   checkDuplicate,
@@ -138,4 +148,5 @@ module.exports = {
   inviteUserDB,
   muteChannelDB,
   updateChannelSectionDB,
+  findChannelIdByName,
 }
