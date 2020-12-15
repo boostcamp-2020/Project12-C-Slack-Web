@@ -4,7 +4,7 @@ import FileUploader from './FileUploader'
 import styled from 'styled-components'
 import FilePreview from '../FilePreview'
 import ImgPreview from '../ImgPreview'
-import { isEmpty, isImage } from '../../util/index'
+import { isImage } from '../../util/index'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -15,7 +15,7 @@ const TestComponent = () => {
   const [isRender, setIsRender] = useState(false)
 
   useEffect(() => {
-    if (!isEmpty(fileData)) setIsRender(true)
+    if (fileData) setIsRender(true)
   }, [fileData])
 
   const renderPreview = () => {

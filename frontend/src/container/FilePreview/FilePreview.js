@@ -5,16 +5,19 @@ import Icon from '../../presenter/Icon'
 import { CLOSE, FILE } from '../../constant/icon'
 import { COLOR } from '../../constant/style'
 import Button from '../../presenter/Button/Button'
+import { isEmpty } from '../../util'
 
 function FilePreview({ type, fileId, setIsRender }) {
   const [fileData, setFileData] = useState({})
   const [isHover, setIsHover] = useState(false)
 
   useEffect(() => {
-    ;(async () => {
-      const { data } = (await request.GET('/api/file', { fileId })) || {}
-      setFileData(data?.data)
-    })()
+    if (!isEmpty(fileId)) {
+      ;(async () => {
+        const { data } = (await request.GET('/api/file', { fileId })) || {}
+        setFileData(data?.data)
+      })()
+    }
   }, [fileId])
 
   const enterMouseHandle = () => {
