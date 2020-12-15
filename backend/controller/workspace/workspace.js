@@ -50,3 +50,10 @@ exports.getWorkspaceUserInfo = asyncWrapper(async (req, res) => {
   })
   return res.status(code).json({ success, data })
 })
+
+exports.getWorkspaceUserInfoByInfoId = asyncWrapper(async (req, res) => {
+  const { code, success, data } = await service.getWorkspaceUserInfoByInfoId({
+    ...req.query,
+  })
+  return res.status(code).json({ success, data })
+})

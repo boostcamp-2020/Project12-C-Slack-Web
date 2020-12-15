@@ -9,5 +9,6 @@ router.post('/invite', Auth, controller.invite)
 router.get('/invite/:code', Auth, controller.invited)
 router.get('/check-duplicate-name', Auth, controller.checkDuplicateName)
 router.get('/info/:workspaceId', Auth, controller.getWorkspaceUserInfo)
+router.get('/info', Auth, controller.getWorkspaceUserInfoByInfoId)
 
 module.exports = router
