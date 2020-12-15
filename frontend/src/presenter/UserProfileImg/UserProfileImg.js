@@ -3,12 +3,13 @@ import styled from 'styled-components'
 import UserActive from '../UserActive'
 
 const UserProfileImg = ({ user, size, showActive, type = 'default' }) => {
+  console.log('user: ', user)
   return (
     <UserProfileImgStyle size={size}>
-      <ProfileImg src={user.profileUrl} size={size} type={type} />
+      <ProfileImg src={user && user.profileUrl} size={size} type={type} />
       {showActive && (
         <UserActiveArea>
-          <UserActive isActive={user.isActive} />
+          <UserActive isActive={user && user.isActive} />
         </UserActiveArea>
       )}
     </UserProfileImgStyle>

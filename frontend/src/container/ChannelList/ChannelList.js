@@ -33,8 +33,10 @@ function ChannelList() {
       channels.forEach(channel => {
         if (channel.sectionName == null) {
           if (channel.channelId.channelType === 2) {
+            console.log('Direct messages: ', channel)
             checkHasKeyAndSetKeyInMap(sectionMap, 'Direct messages', channel)
           } else {
+            console.log('channel: ', channel)
             checkHasKeyAndSetKeyInMap(sectionMap, 'Channels', channel)
           }
         } else {

@@ -35,6 +35,7 @@ const checkDuplicate = async ({ title, workspaceId }) => {
       WorkspaceUserInfo.findOne({ workspaceId, displayName: title }),
     ),
   ])
+  console.log('checkDuplicate result: ', result)
   return {
     code: statusCode.OK,
     data: result.every(v => v === null),

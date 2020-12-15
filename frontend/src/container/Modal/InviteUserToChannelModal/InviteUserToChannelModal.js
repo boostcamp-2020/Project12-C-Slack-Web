@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { useSetRecoilState, useRecoilValue } from 'recoil'
 import { modalRecoil, socketRecoil } from '../../../store'
@@ -12,26 +13,33 @@ import Modal from '../../../presenter/Modal'
 import SearchUserList from '../../../presenter/SearchUserList'
 import SelectedUserList from '../../../presenter/SelectedUserList'
 import useChannelInfo from '../../../hooks/useChannelInfo'
+import dmTitleGenerator from '../../../util/dmTitleGenerator'
+import { workspaceRecoil } from '../../../store'
+import { checkDuplicateChannelName, createChannel } from '../../../api/channel'
+import useChannelList from '../../../hooks/useChannelList'
 
-function InviteUserToChannelModal({ handleClose }) {
+function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
   const [channelInfo] = useChannelInfo()
   const setModal = useSetRecoilState(modalRecoil)
   const socket = useRecoilValue(socketRecoil)
   const [searchResult, setSearchResult] = useState(null)
   const [inviteUserList, setInviteUserList] = useState([])
   const { workspaceId } = useParams()
+  const { _id: workspaceUserInfoId } = useRecoilValue(workspaceRecoil)
+  const history = useHistory()
+  const [, updateChannelList] = useChannelList()
 
   const SearchUser = async search => {
     if (search.length === 0) return setSearchResult(null)
     const { data } = await request.POST('/api/search/user', {
       keyword: search,
-      channelId: channelInfo.channelId._id,
+      channelId: type === 'channel' ? channelInfo.channelId._id : null,
       workspaceId,
     })
     setSearchResult(data.result)
   }
 
-  const inviteUser = async () => {
+  const inviteToChannel = async () => {
     if (!inviteUserList.length) return
     const { data } = await request.POST('/api/channel/invite', {
       channelId: channelInfo.channelId._id,
@@ -48,10 +56,72 @@ function InviteUserToChannelModal({ handleClose }) {
     }
   }
 
+  const inviteToDM = async () => {
+    if (!inviteUserList.length) return
+    const title = dmTitleGenerator(inviteUserList)
+    console.log('title: ', title)
+    console.log('workspaceUserInfoId: ', workspaceUserInfoId)
+    const channelId = await createChannel({
+      title: title,
+      creator: workspaceUserInfoId,
+      description: '',
+      channelType: 2,
+      workspaceId,
+    })
+
+    // title: channelName,
+    // creator: workspaceUserInfoId,
+    // channelType: isPrivate ? 0 : 1,
+    // description: channelDescription,
+    // workspaceId,
+    // 채널 생성해줘야함
+    const { data } = await request.POST('/api/channel/invite', {
+      channelId: channelId,
+      workspaceUserInfoId: inviteUserList.map(user => user._id),
+    })
+
+    if (data.success) {
+      socket.emit('invite channel', {
+        channelId: channelId,
+        origin: [],
+        newMember: inviteUserList.map(user => user._id),
+      })
+      setModal(null)
+    }
+
+    updateChannelList()
+    history.push(`/workspace/${workspaceId}/${channelId}`)
+    // } else {
+    //   // history.push(`/workspace/${workspaceId}/${channelId}`)
+    // }
+  }
+
+  const inviteUser = async () => {
+    console.log('type: ', type)
+    if (type === 'channel') return await inviteToChannel()
+    else if (type === 'DM') return await inviteToDM()
+  }
+
   const handleDebounce = useRef(debounce(SearchUser, 1000)).current
 
   const handleChange = e => {
     handleDebounce(e.target.value)
+  }
+
+  const subtitleContent = () => {
+    if (type === 'channel') {
+      return (
+        <>
+          <Icon
+            icon={channelInfo.channelId.channelType ? HASHTAG : LOCK}
+            size="13px"
+          />
+          &nbsp;
+          {channelInfo.channelId.title}
+        </>
+      )
+    }
+    return null
   }
 
   return (
@@ -59,15 +129,8 @@ function InviteUserToChannelModal({ handleClose }) {
       <ModalForm>
         <Header>
           <TitleArea>
-            <Title>Add people</Title>
-            <SubTitle>
-              <Icon
-                icon={channelInfo.channelId.channelType ? HASHTAG : LOCK}
-                size="13px"
-              />
-              &nbsp;
-              {channelInfo.channelId.title}
-            </SubTitle>
+            <Title>{type === 'DM' ? 'DM' : 'Add people'}</Title>
+            <SubTitle>{subtitleContent()}</SubTitle>
           </TitleArea>
           <CloseIcon onClick={handleClose}>
             <Icon icon={CLOSE} size="13px" />
