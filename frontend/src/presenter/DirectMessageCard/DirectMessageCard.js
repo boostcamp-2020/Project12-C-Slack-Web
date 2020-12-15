@@ -7,7 +7,6 @@ import UserProfileImg from '../UserProfileImg'
 function DirectMessageCard(props) {
   const directMessage = props.directMessage
 
-  console.log('directMessage: ', directMessage)
   return (
     <DirectMessageCardLabel>
       <ImgArea>

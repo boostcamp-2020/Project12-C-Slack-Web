@@ -19,7 +19,6 @@ function SectionLabel(props) {
   const { sectionName, lists } = props
   const { channelId, workspaceId } = useParams()
   const setModal = useSetRecoilState(modalRecoil)
-
   const openSection = () => {
     setIsOpen(!isOpen)
   }

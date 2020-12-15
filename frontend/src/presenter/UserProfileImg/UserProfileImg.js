@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import UserActive from '../UserActive'
 
 const UserProfileImg = ({ user, size, showActive, type = 'default' }) => {
-  console.log('user: ', user)
   return (
     <UserProfileImgStyle size={size}>
       <ProfileImg src={user && user.profileUrl} size={size} type={type} />
