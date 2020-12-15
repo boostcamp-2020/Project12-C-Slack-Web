@@ -17,6 +17,7 @@ import {
   faPlusSquare,
   faShare,
   faFile,
+  faPaperclip,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faStar,
@@ -53,3 +54,4 @@ export const PLUSSQURE = faPlusSquare
 export const SMILE = faSmile
 export const SHARE = faShare
 export const FILE = faFile
+export const CLIP = faPaperclip
