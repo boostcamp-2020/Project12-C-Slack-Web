@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
@@ -32,7 +32,11 @@ function WorkspacePage() {
       setLineWidth(width)
     }
   }
-
+  useEffect(() => {
+    if (Notification.permission !== 'denied') {
+      Notification.requestPermission()
+    }
+  }, [])
   const switching = () => {
     switch (channelId) {
       case 'threads':
