@@ -1,26 +1,32 @@
 import React, { memo } from 'react'
+import styled from 'styled-components'
 import UserProfileImg from '../../UserProfileImg'
-import { go, Lazy, take } from '../../../util/fx'
+import { go, Lazy, take, map } from '../../../util/fx'
 const MAX_NUMBER_OF_PROFILES = 5
 const SMALL_SIZE = 24
 const ViewThreadButton = memo(({ reply }) => {
-  console.log(reply)
-  const removeDuplicateValues = profileList => [...new Set(profileList)]
-  const mapToComponent = (item, index) => (
-    <UserProfileImg key={index} user={{ profileUrl: item }} size={SMALL_SIZE} />
-  )
   return (
-    <div>
+    <ViewThreadContainer>
       {go(
         reply,
         Lazy.map(item => item?.userInfo?.profileUrl),
-        removeDuplicateValues,
+        Lazy.takeNoneDuplicate,
         take(MAX_NUMBER_OF_PROFILES),
-        mapToComponent,
+        map((item, index) => (
+          <UserProfileImg
+            key={index}
+            user={{ profileUrl: item }}
+            size={SMALL_SIZE}
+          />
+        )),
       )}
       {reply.length} {reply.length === 1 ? 'reply' : 'replies'}
-    </div>
+    </ViewThreadContainer>
   )
 })
 
+const ViewThreadContainer = styled.div`
+  display: flex;
+`
+const ProfileArea = styled.div``
 export default ViewThreadButton
