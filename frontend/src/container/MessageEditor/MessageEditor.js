@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import Editor from 'draft-js-plugins-editor'
 import createMarkdownShortcutsPlugin from 'draft-js-markdown-shortcuts-plugin'
 import {
@@ -11,13 +11,9 @@ import styled from 'styled-components'
 import 'draft-js/dist/Draft.css'
 import { COLOR } from '../../constant/style'
 
-const plugins = [createMarkdownShortcutsPlugin()]
-
 function MessageEditor({ channelTitle, sendMessage }) {
+  const plugins = useRef([createMarkdownShortcutsPlugin()])
   const [message, setMessage] = useState(EditorState.createEmpty())
-  const handleInput = e => {
-    setMessage(e)
-  }
 
   const keyBindingFn = e => {
     if (e.key === 'Enter') return 'send-message'
@@ -37,15 +33,14 @@ function MessageEditor({ channelTitle, sendMessage }) {
       )
     }
   }
-
   return (
     <MessageEditorContainer>
       <MessageEditorArea>
         <Editor
           placeholder={`Send a message to #${channelTitle}`}
           editorState={message}
-          onChange={handleInput}
-          plugins={plugins}
+          onChange={setMessage}
+          plugins={plugins.current}
           handleKeyCommand={handleKey}
           keyBindingFn={keyBindingFn}
         />
