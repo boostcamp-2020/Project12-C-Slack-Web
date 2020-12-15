@@ -23,3 +23,8 @@ export const getChannelHeaderInfo = async ({
   })
   return data.result
 }
+
+export const findChannelIdByName = async ({ title }) => {
+  const { data } = await Request.GET(`/api/channel/info?title=${title}`)
+  return data?.data
+}
