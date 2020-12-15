@@ -8,10 +8,23 @@ import { SIZE, COLOR } from '../../constant/style'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import { useRecoilValue } from 'recoil'
 import { useParams } from 'react-router-dom'
+import { isEmpty, isImage } from '../../util/index'
+import ImgPreview from '../ImgPreview'
+import FilePreview from '../FilePreview'
 
 const ChatMessage = forwardRef(
   (
-    { userInfo, reply, reactions, _id, createdAt, contents, type = 'chat' },
+    {
+      userInfo,
+      reply,
+      reactions,
+      _id,
+      createdAt,
+      contents,
+      type = 'chat',
+      fileId,
+      fileType,
+    },
     ref,
   ) => {
     const { channelId } = useParams()
@@ -59,6 +72,26 @@ const ChatMessage = forwardRef(
       }
     }
 
+    const renderFilePreview = () => {
+      if (isEmpty(fileType) || isEmpty(fileId)) {
+        return
+      }
+      return isImage(fileType) ? (
+        <ImgPreview type="message" fileId={fileId} />
+      ) : (
+        <FilePreview type="message" fileId={fileId} />
+      )
+    }
+
+    const renderContent = () => {
+      return (
+        <>
+          <div>{contents}</div>
+          {renderFilePreview()}
+        </>
+      )
+    }
+
     return (
       <StyledMessageContainer
         type={type}
@@ -76,7 +109,7 @@ const ChatMessage = forwardRef(
           <ChatContent
             displayName={userInfo.displayName}
             createdAt={createdAt}
-            contents={contents}
+            contents={renderContent()}
           />
         </MessageContents>
         {/* TODO thread Reaction 구현  */}
