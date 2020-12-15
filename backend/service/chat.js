@@ -13,10 +13,16 @@ const getChatMessages = async ({ channelId, currentCursor, fromDate }) => {
     success: true,
   }
 }
-const createChatMessage = async ({ channelId, creator, contents }) => {
+const createChatMessage = async ({
+  channelId,
+  creator,
+  contents,
+  fileId,
+  fileType,
+}) => {
   verifyRequiredParams(channelId, creator, contents)
   const result = await dbErrorHandler(() =>
-    Chat.create({ channel: channelId, creator, contents }),
+    Chat.create({ channel: channelId, creator, contents, fileId, fileType }),
   )
   return { data: result }
 }

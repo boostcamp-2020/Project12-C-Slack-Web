@@ -41,10 +41,12 @@ const ChatRoom = () => {
     targetRef.scrollIntoView()
   }
 
-  const sendMessage = message => {
+  const sendMessage = (message, fileData) => {
     const chat = {
       contents: message,
       channelId,
+      fileId: fileData.fileId,
+      fileType: fileData.fileType,
       userInfo: {
         _id: workspaceUserInfo._id,
         displayName: workspaceUserInfo.displayName,

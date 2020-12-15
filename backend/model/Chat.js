@@ -27,6 +27,13 @@ const chatSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    fileId: {
+      type: Schema.Types.ObjectId,
+      ref: 'File',
+    },
+    fileType: {
+      type: String,
+    },
   },
   { timestamps: true },
 )
