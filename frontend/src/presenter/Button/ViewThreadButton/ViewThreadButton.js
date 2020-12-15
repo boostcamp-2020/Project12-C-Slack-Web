@@ -1,6 +1,7 @@
 import React, { memo } from 'react'
 import styled from 'styled-components'
 import UserProfileImg from '../../UserProfileImg'
+import { COLOR } from '../../../constant/style'
 import { go, Lazy, take, map } from '../../../util/fx'
 const MAX_NUMBER_OF_PROFILES = 5
 const SMALL_SIZE = 24
@@ -20,7 +21,9 @@ const ViewThreadButton = memo(({ reply }) => {
           />
         )),
       )}
-      {reply.length} {reply.length === 1 ? 'reply' : 'replies'}
+      <ReplyCounts>
+        {reply.length} {reply.length === 1 ? 'reply' : 'replies'}
+      </ReplyCounts>
     </ViewThreadContainer>
   )
 })
@@ -28,5 +31,7 @@ const ViewThreadButton = memo(({ reply }) => {
 const ViewThreadContainer = styled.div`
   display: flex;
 `
-const ProfileArea = styled.div``
+const ReplyCounts = styled.div`
+  margin-left: 5px;
+`
 export default ViewThreadButton

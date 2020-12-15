@@ -1,14 +1,15 @@
 import React, { useState, forwardRef } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { NavLink, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { useRecoilValue } from 'recoil'
 import UserProfileImg from '../../presenter/UserProfileImg'
 import ChatContent from '../../presenter/ChatContent'
 import ThreadReactionList from '../../presenter/ThreadReactionList'
 import ActionBar from '../ActionBar'
+import ViewThreadButton from '../../presenter/Button/ViewThreadButton'
 import { isEmpty } from '../../util'
 import { SIZE, COLOR } from '../../constant/style'
 import { workspaceRecoil, socketRecoil } from '../../store'
-import { useRecoilValue } from 'recoil'
 
 const ChatMessage = forwardRef(
   (
@@ -62,7 +63,7 @@ const ChatMessage = forwardRef(
 
     return (
       <StyledMessageContainer
-        type
+        type={type}
         ref={ref}
         id={createdAt}
         onMouseEnter={() => setHover(true)}
@@ -80,7 +81,7 @@ const ChatMessage = forwardRef(
             contents={contents}
           />
         </MessageContents>
-        {/* TODO thread Reaction 구현  */}
+
         {!isEmpty(reactions) && (
           <ThreadReactionStyle>
             <ThreadReactionList
@@ -90,14 +91,15 @@ const ChatMessage = forwardRef(
             />
           </ThreadReactionStyle>
         )}
-        {/* TODO view thread reply 구현  */}
+
         {type !== 'reply' && !isEmpty(reply) && (
-          <Link to={`/workspace/${workspaceId}/${channelId}/${_id}`}>
-            <ViewThreadBarStyle>view thread</ViewThreadBarStyle>
-          </Link>
+          <StyleLink to={`/workspace/${workspaceId}/${channelId}/${_id}`}>
+            <ViewThreadBarStyle>
+              <ViewThreadButton reply={reply} />
+            </ViewThreadBarStyle>
+          </StyleLink>
         )}
 
-        {/* TODO Action bar 구현 */}
         {(hover || openModal) && (
           <ActionBarStyle openModal={openModal} type={type}>
             <ActionBar
@@ -164,5 +166,16 @@ const ThreadReactionStyle = styled.div`
   align-items: center;
   padding: 5px 10px;
   border-radius: 5px;
+`
+
+const StyleLink = styled(NavLink)`
+  text-decoration: none;
+  color: ${COLOR.STARBLUE};
+  padding: 5px;
+  margin-left: 15px;
+  &:hover {
+    border: 1px solid ${COLOR.LIGHT_GRAY};
+    border-radius: 5px;
+  }
 `
 export default ChatMessage
