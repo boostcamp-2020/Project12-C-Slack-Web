@@ -1,20 +1,21 @@
 import React, { useState, forwardRef } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import UserProfileImg from '../../presenter/UserProfileImg'
 import ChatContent from '../../presenter/ChatContent'
 import ThreadReactionList from '../../presenter/ThreadReactionList'
 import ActionBar from '../ActionBar'
+import { isEmpty } from '../../util'
 import { SIZE, COLOR } from '../../constant/style'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import { useRecoilValue } from 'recoil'
-import { useParams } from 'react-router-dom'
 
 const ChatMessage = forwardRef(
   (
     { userInfo, reply, reactions, _id, createdAt, contents, type = 'chat' },
     ref,
   ) => {
-    const { channelId } = useParams()
+    const { workspaceId, channelId } = useParams()
     const [openModal, setOpenModal] = useState(false)
     const [hover, setHover] = useState(false)
     const workspaceUserInfo = useRecoilValue(workspaceRecoil)
@@ -61,7 +62,7 @@ const ChatMessage = forwardRef(
 
     return (
       <StyledMessageContainer
-        type={type}
+        type
         ref={ref}
         id={createdAt}
         onMouseEnter={() => setHover(true)}
@@ -71,7 +72,7 @@ const ChatMessage = forwardRef(
           <UserProfileImg
             user={{ profileUrl: userInfo.profileUrl }}
             size={SIZE.CHAT_PROFILE}
-            type="chat"
+            type={type}
           />
           <ChatContent
             displayName={userInfo.displayName}
@@ -80,7 +81,7 @@ const ChatMessage = forwardRef(
           />
         </MessageContents>
         {/* TODO thread Reaction 구현  */}
-        {reactions && reactions.length !== 0 && (
+        {!isEmpty(reactions) && (
           <ThreadReactionStyle>
             <ThreadReactionList
               reactions={reactions}
@@ -90,17 +91,20 @@ const ChatMessage = forwardRef(
           </ThreadReactionStyle>
         )}
         {/* TODO view thread reply 구현  */}
-        {reply && reply.length !== 0 && (
-          <ViewThreadBarStyle>view thread</ViewThreadBarStyle>
+        {type !== 'reply' && !isEmpty(reply) && (
+          <Link to={`/workspace/${workspaceId}/${channelId}/${_id}`}>
+            <ViewThreadBarStyle>view thread</ViewThreadBarStyle>
+          </Link>
         )}
 
         {/* TODO Action bar 구현 */}
         {(hover || openModal) && (
-          <ActionBarStyle openModal={openModal}>
+          <ActionBarStyle openModal={openModal} type={type}>
             <ActionBar
               setOpenModal={setOpenModal}
               chatId={_id}
               updateReactionHandler={updateReactionHandler}
+              type={type}
             />
           </ActionBarStyle>
         )}
@@ -111,9 +115,11 @@ const ChatMessage = forwardRef(
 
 const ActionBarStyle = styled.div`
   position: absolute;
-  width: 300px;
+  ${({ type }) => {
+    if (type === 'reply') return 'width: 100px;'
+    return 'width: 300px;'
+  }}
   height: 30px;
-  top: -15px;
   right: 10px;
   border-radius: 5px;
   display: flex;

@@ -20,6 +20,18 @@ const createChatMessage = async ({ channelId, creator, contents }) => {
   )
   return { data: result }
 }
+const createReplyMessage = async ({
+  channelId,
+  creator,
+  contents,
+  parentId,
+}) => {
+  verifyRequiredParams(channelId, creator, contents, parentId)
+  const result = await dbErrorHandler(() =>
+    Chat.create({ channel: channelId, parentId: parentId, creator, contents }),
+  )
+  return { data: result }
+}
 
 const getReplyMessage = async ({ channelId, parentId }) => {
   verifyRequiredParams(channelId, parentId)
@@ -29,4 +41,9 @@ const getReplyMessage = async ({ channelId, parentId }) => {
   return { code: statusCode.OK, data: result, success: true }
 }
 
-module.exports = { getChatMessages, createChatMessage, getReplyMessage }
+module.exports = {
+  getChatMessages,
+  createChatMessage,
+  getReplyMessage,
+  createReplyMessage,
+}
