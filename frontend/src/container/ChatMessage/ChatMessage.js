@@ -62,7 +62,7 @@ const ChatMessage = forwardRef(
 
     return (
       <StyledMessageContainer
-        type
+        type={type}
         ref={ref}
         id={createdAt}
         onMouseEnter={() => setHover(true)}
