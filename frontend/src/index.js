@@ -22,11 +22,8 @@ const App = () => {
         <GlobalStyle />
         <BrowserRouter>
           <Route exact path="/" component={Auth(SelectWorkspace, true)} />
-          <Route exact path="/login" component={Auth(LoginPage, false)} />
-          <Route
-            path="/github-oauth"
-            component={GithubOAuth(LoginPage, false)}
-          />
+          <Route path="/login" component={Auth(LoginPage, false)} />
+          <Route path="/github-oauth" component={GithubOAuth(LoginPage)} />
           <Route
             exact
             path="/create-workspace"
