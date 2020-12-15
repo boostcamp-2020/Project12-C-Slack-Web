@@ -152,7 +152,6 @@ const StyledMessageContainer = styled.div`
 
 const ViewThreadBarStyle = styled.div`
   width: auto;
-  height: 30px;
   display: flex;
   flex-direction: row;
 `
@@ -171,6 +170,7 @@ const ThreadReactionStyle = styled.div`
 const StyleLink = styled(NavLink)`
   text-decoration: none;
   color: ${COLOR.STARBLUE};
+  background-color: ${COLOR.WHITE};
   padding: 5px;
   margin-left: 15px;
   &:hover {
