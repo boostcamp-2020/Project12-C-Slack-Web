@@ -7,6 +7,9 @@ import {
   getDefaultKeyBinding,
   convertToRaw,
 } from 'draft-js'
+import styled from 'styled-components'
+import 'draft-js/dist/Draft.css'
+import { COLOR } from '../../constant/style'
 
 const plugins = [createMarkdownShortcutsPlugin()]
 
@@ -36,19 +39,29 @@ function MessageEditor({ channelTitle, sendMessage }) {
   }
 
   return (
-    <div>
-      <Editor
-        placeholder={`Send a message to #${channelTitle}`}
-        editorState={message}
-        onChange={handleInput}
-        plugins={plugins}
-        handleKeyCommand={handleKey}
-        keyBindingFn={keyBindingFn}
-      />
+    <MessageEditorContainer>
+      <MessageEditorArea>
+        <Editor
+          placeholder={`Send a message to #${channelTitle}`}
+          editorState={message}
+          onChange={handleInput}
+          plugins={plugins}
+          handleKeyCommand={handleKey}
+          keyBindingFn={keyBindingFn}
+        />
 
-      {/* TODO markdown, chat action 적용 필요 */}
-    </div>
+        {/* TODO markdown, chat action 적용 필요 */}
+      </MessageEditorArea>
+    </MessageEditorContainer>
   )
 }
-
+const MessageEditorContainer = styled.div`
+  padding: 20px;
+  background-color: ${COLOR.WHITE};
+`
+const MessageEditorArea = styled.div`
+  border: 1px solid ${COLOR.LIGHT_GRAY};
+  padding: 10px;
+  border-radius: 5px;
+`
 export default MessageEditor
