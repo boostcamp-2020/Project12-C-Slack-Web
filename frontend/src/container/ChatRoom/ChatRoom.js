@@ -101,8 +101,16 @@ const ChatRoom = () => {
   useEffect(() => {
     if (socket) {
       socket.on('new message', ({ message }) => {
-        if (message.channelId === channelId)
+        if (message.channelId === channelId) {
           setMessages(messages => [...messages, message])
+        }
+
+        if (document.hidden) {
+          new Notification('새로운 메시지가 왔습니다.', {
+            body: `${message.userInfo.displayName} : ${message.contents}`,
+          })
+        }
+
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
       socket.on('update reaction', ({ reaction }) => {
@@ -115,7 +123,7 @@ const ChatRoom = () => {
         socket.off('update reaction')
       }
     }
-  }, [socket, channelId])
+  }, [socket, channelId, document.hidden])
 
   useEffect(() => {
     const option = {
