@@ -35,7 +35,12 @@ namespace.on('connection', socket => {
       contents,
     })
     namespace.in(channelId).emit('new message', {
-      message: { ...data, _id: result._id, createdAt: result.createdAt },
+      message: {
+        ...data,
+        _id: result._id,
+        createdAt: result.createdAt,
+        reactions: [],
+      },
     })
   })
   socket.on('new reply', async data => {
