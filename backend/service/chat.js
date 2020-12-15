@@ -20,7 +20,8 @@ const createChatMessage = async ({
   fileId,
   fileType,
 }) => {
-  verifyRequiredParams(channelId, creator, contents)
+  const fileValue = fileId || fileType
+  verifyRequiredParams(channelId, creator, contents || fileValue)
   const result = await dbErrorHandler(() =>
     Chat.create({ channel: channelId, creator, contents, fileId, fileType }),
   )
