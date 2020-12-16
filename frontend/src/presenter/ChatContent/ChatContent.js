@@ -2,6 +2,7 @@ import React, { memo } from 'react'
 import styled from 'styled-components'
 import { convertFromRaw, Editor, EditorState } from 'draft-js'
 import { COLOR } from '../../constant/style'
+import calculateTime from '../../util/calculateTime'
 
 const ChatContent = memo(
   ({ displayName, createdAt, contents, handleProfileModal }) => {
@@ -11,7 +12,13 @@ const ChatContent = memo(
           <StyledUserName onClick={handleProfileModal}>
             {displayName}
           </StyledUserName>
-          <StyledDate>{createdAt}</StyledDate>
+          <StyledDate
+            title={new Date(createdAt).toLocaleString({
+              timeZone: 'Asia/Seoul',
+            })}
+          >
+            {calculateTime(createdAt)}
+          </StyledDate>
         </ChatHeader>
         <ChatContentArea>
           <Editor
