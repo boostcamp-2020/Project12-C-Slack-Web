@@ -23,12 +23,14 @@ const TestComponent = () => {
       <ImgPreview
         type="input"
         fileId={fileData?.fileId}
+        file={fileData}
         setIsRender={setIsRender}
       />
     ) : (
       <FilePreview
         type="input"
         fileId={fileData?.fileId}
+        file={fileData}
         setIsRender={setIsRender}
       />
     )
@@ -38,7 +40,7 @@ const TestComponent = () => {
     <>
       <ToastContainer />
       <StyledDiv>{isRender && renderPreview()}</StyledDiv>
-      <FileUploader setFileData={setFileData} />
+      <FileUploader fileData={fileData} setFileData={setFileData} />
     </>
   )
 }

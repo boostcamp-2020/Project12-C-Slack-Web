@@ -5,6 +5,7 @@ import Button from '../../presenter/Button'
 import Icon from '../../presenter/Icon'
 import { CLIP } from '../../constant/icon'
 import { toast } from 'react-toastify'
+import { isEmpty } from '../../util'
 
 const fileContentType = 'multipart/form-data'
 
@@ -16,7 +17,7 @@ function FileUploader({ fileData, setFileData }) {
       toast.error('8MB 이하의 파일만 업로드 할 수 있습니다!')
       return
     }
-    if (fileData !== null) {
+    if (!isEmpty(fileData)) {
       await request.DELETE('/api/file', { fileId: fileData.fileId })
     }
     await handlePost(e.target.files[0])

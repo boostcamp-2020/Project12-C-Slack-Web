@@ -7,18 +7,19 @@ import { COLOR } from '../../constant/style'
 import Button from '../../presenter/Button/Button'
 import { isEmpty } from '../../util'
 
-function FilePreview({ type, fileId, setIsRender }) {
+function FilePreview({ type, setIsRender, file }) {
   const [fileData, setFileData] = useState({})
   const [isHover, setIsHover] = useState(false)
 
   useEffect(() => {
-    if (!isEmpty(fileId)) {
+    if (!isEmpty(file)) {
       ;(async () => {
-        const { data } = (await request.GET('/api/file', { fileId })) || {}
+        const { data } =
+          (await request.GET('/api/file', { fileId: file?.fileId })) || {}
         setFileData(data?.data)
       })()
     }
-  }, [fileId])
+  }, [file])
 
   const enterMouseHandle = () => {
     setIsHover(true)
@@ -30,7 +31,7 @@ function FilePreview({ type, fileId, setIsRender }) {
 
   const handleDelete = async () => {
     setIsRender(false)
-    await request.DELETE('/api/file', { fileId })
+    await request.DELETE('/api/file', { fileId: file?.fileId })
   }
 
   const deleteButton = () => {

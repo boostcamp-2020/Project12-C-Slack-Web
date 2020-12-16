@@ -11,7 +11,12 @@ const Template = args => <>{isRender && <ImgPreview {...args} />}</>
 export const inputImgPreview = Template.bind({})
 inputImgPreview.args = {
   type: 'input', // input, message
-  fileId: '5fd5dc7d8c8a82245fa0ab38',
+  file: {
+    fileId: '5fda2fe2e882860557e592fd',
+    fileName: '죠르디.jpg',
+    fileType: 'image/jpeg',
+    creator: '5fd81c4d630674160961baf4',
+  },
   setIsRender: () => {
     isRender = false
   },
@@ -20,5 +25,10 @@ inputImgPreview.args = {
 export const messageImgPreview = Template.bind({})
 messageImgPreview.args = {
   type: 'message', // input, message
-  fileId: '5fd5dc7d8c8a82245fa0ab38',
+  file: {
+    fileId: '5fda2fe2e882860557e592fd',
+    fileName: '죠르디.jpg',
+    fileType: 'image/jpeg',
+    creator: '5fd81c4d630674160961baf4',
+  },
 }

@@ -11,14 +11,24 @@ const Template = args => <>{isRender && <FilePreview {...args} />}</>
 export const inputFilePreview = Template.bind({})
 inputFilePreview.args = {
   type: 'input', // input, message
-  fileId: '5fd6ea342d026a63752cd31b',
   setIsRender: () => {
     isRender = false
+  },
+  file: {
+    fileId: '5fda2f97e882860557e592fc',
+    fileName: '5주 그룹프로젝트 4주차 데모 및 피어세션 그룹 안내.pdf',
+    fileType: 'application/pdf',
+    creator: '5fd81c4d630674160961baf4',
   },
 }
 
 export const messageFilePreview = Template.bind({})
 messageFilePreview.args = {
   type: 'message', // input, message
-  fileId: '5fd6ea342d026a63752cd31b',
+  file: {
+    fileId: '5fda2f97e882860557e592fc',
+    fileName: '5주 그룹프로젝트 4주차 데모 및 피어세션 그룹 안내.pdf',
+    fileType: 'application/pdf',
+    creator: '5fd81c4d630674160961baf4',
+  },
 }
