@@ -39,7 +39,6 @@ channelSchema.statics.getChannelBrowserData = async function (
   workspaceUserInfoId,
 ) {
   try {
-    console.log('cworkuserId', workspaceUserInfoId)
     const channel = this
 
     const result = await channel.aggregate([
