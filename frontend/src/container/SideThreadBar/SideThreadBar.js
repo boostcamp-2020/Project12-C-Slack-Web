@@ -103,9 +103,9 @@ function SideThreadBar() {
 
 const SideThreadBarStyle = styled.div`
   width: auto;
-  height: calc(100% - 1px);
-  background: ${COLOR.BACKGROUND_CONTENTS};
+  height: 100%;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
 `
 
 const SideBarHeader = styled.div`
@@ -121,7 +121,9 @@ const SideBarHeader = styled.div`
   justify-content: flex-start;
   align-items: center;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
   border-right: 0;
+  background-color: ${COLOR.BACKGROUND_CONTENTS};
 `
 
 const CloseBtn = styled.div`
@@ -132,33 +134,25 @@ const CloseBtn = styled.div`
 
 const SideBarContents = styled.div`
   width: auto;
-  height: calc(100% - 63px);
-  color: ${COLOR.LABEL_SELECT_TEXT};
+  height: calc(100% - 60px);
+  overflow-y: auto;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-right: 0;
+  box-sizing: border-box;
 `
 
 const ChatContent = styled.div`
   width: auto;
-  max-height: 30%;
   min-height: 20%;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-right: 0;
   overflow-y: auto;
 `
 
-const ReplyContents = styled.div`
-  height: 60%;
-  overflow-x: auto;
-  overflow-y: auto;
-`
+const ReplyContents = styled.div``
 
 const MessageEditorArea = styled.div`
-  height: calc(10% - 3px);
-
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
+  /* height: calc(10% - 3px); */
 `
 
 export default SideThreadBar

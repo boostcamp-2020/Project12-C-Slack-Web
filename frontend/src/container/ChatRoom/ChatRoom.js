@@ -180,6 +180,7 @@ const ChatHeader = styled.div`
   height: 60px;
   background: ${COLOR.BACKGROUND_CONTENTS};
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
 `
 
 const ChatContents = styled.div`

@@ -1,24 +1,30 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styled from 'styled-components'
+import { convertFromRaw, Editor, EditorState } from 'draft-js'
 import { COLOR } from '../../constant/style'
-const ChatContent = ({
-  displayName,
-  createdAt,
-  contents,
-  handleProfileModal,
-}) => {
-  return (
-    <StyledChatContent>
-      <ChatHeader>
-        <StyledUserName onClick={handleProfileModal}>
-          {displayName}
-        </StyledUserName>
-        <StyledDate>{createdAt}</StyledDate>
-      </ChatHeader>
-      <ChatContentArea>{contents}</ChatContentArea>
-    </StyledChatContent>
-  )
-}
+
+const ChatContent = memo(
+  ({ displayName, createdAt, contents, handleProfileModal }) => {
+    return (
+      <StyledChatContent>
+        <ChatHeader>
+          <StyledUserName onClick={handleProfileModal}>
+            {displayName}
+          </StyledUserName>
+          <StyledDate>{createdAt}</StyledDate>
+        </ChatHeader>
+        <ChatContentArea>
+          <Editor
+            editorState={EditorState.createWithContent(
+              convertFromRaw(JSON.parse(contents)),
+            )}
+            readOnly={true}
+          />
+        </ChatContentArea>
+      </StyledChatContent>
+    )
+  },
+)
 const StyledChatContent = styled.div`
   width: 100%;
   display: flex;
