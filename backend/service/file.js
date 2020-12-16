@@ -28,13 +28,13 @@ const uploadFile = async ({ file, userId }) => {
   verifyRequiredParams(file, userId)
   const fileName = `${file.fieldname}-${Date.now()}-${file.originalname}`
 
-  const result = await S3.putObject({
+  await S3.putObject({
     Bucket: BUCKETNAME,
     Key: fileName,
     ACL: 'public-read',
     Body: file.buffer,
   }).promise()
-
+  const url = `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKETNAME}/${fileName}`
   const data = await dbErrorHandler(() =>
     File.create({
       name: fileName,
@@ -42,8 +42,10 @@ const uploadFile = async ({ file, userId }) => {
       path: '/',
       fileType: file.mimetype,
       creator: userId,
+      url: url,
     }),
   )
+
   return {
     code: statusCode.OK,
     data: {
@@ -51,6 +53,7 @@ const uploadFile = async ({ file, userId }) => {
       fileName: data.originalName,
       fileType: data.fileType,
       creator: data.creator,
+      url: data.url,
     },
     success: true,
   }
