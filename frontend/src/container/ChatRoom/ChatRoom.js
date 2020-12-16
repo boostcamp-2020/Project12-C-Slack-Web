@@ -45,8 +45,8 @@ const ChatRoom = () => {
     const chat = {
       contents: message,
       channelId,
-      fileId: fileData.fileId,
-      fileType: fileData.fileType,
+      fileId: fileData?.fileId,
+      fileType: fileData?.fileType,
       userInfo: {
         _id: workspaceUserInfo._id,
         displayName: workspaceUserInfo.displayName,
