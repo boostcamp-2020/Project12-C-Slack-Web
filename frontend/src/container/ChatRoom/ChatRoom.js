@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import ChatMessage from '../ChatMessage'
 import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
 import MessageEditor from '../MessageEditor/MessageEditor'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import ChannelHeader from '../ChannelHeader'
+import { hasMyReaction, chageReactionState } from '../../util/reactionUpdate'
 
 const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
@@ -16,6 +17,7 @@ const ChatRoom = ({ width }) => {
   const [targetState, setTargetState] = useState()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
   const { workspaceId, channelId } = useParams()
+  const params = useParams()
   const socket = useRecoilValue(socketRecoil)
   const [messages, setMessages] = useState([])
   const load = useRef(false)
@@ -27,7 +29,10 @@ const ChatRoom = ({ width }) => {
       channelId,
       currentCursor,
     })
-    setMessages(messages => [...newMessages, ...messages])
+    setMessages(messages => [
+      ...hasMyReaction(newMessages, workspaceUserInfo),
+      ...messages,
+    ])
     load.current = false
   }
 
@@ -54,55 +59,18 @@ const ChatRoom = ({ width }) => {
     socket.emit('new message', chat)
   }
 
-  const chageReactionState = (messages, reaction) => {
-    let done = false
-    if (reaction.type === false) {
-      return messages
-    }
-    return messages.map(message => {
-      if (message._id === reaction.chatId) {
-        message.reactions &&
-          message.reactions.map(item => {
-            if (item.emoji === reaction.emoji) {
-              if (reaction.type) {
-                item.users = [
-                  ...item.users,
-                  {
-                    _id: reaction.workspaceUserInfoId,
-                    displayName: reaction.displayName,
-                  },
-                ]
-              } else {
-                item.users.map((user, idx) => {
-                  if (user._id === reaction.workspaceUserInfoId) {
-                    item.users.splice(idx, 1)
-                  }
-                })
-              }
-              done = true
-            }
-          })
-        if (!done && reaction.type === 1) {
-          message.reactions.push({
-            emoji: reaction.emoji,
-            users: [
-              {
-                _id: reaction.workspaceUserInfoId,
-                displayName: reaction.displayName,
-              },
-            ],
-          })
-        }
-      }
-      return message
-    })
-  }
+  useEffect(() => {
+    setMessages(messages => [...hasMyReaction(messages, workspaceUserInfo)])
+  }, [workspaceUserInfo])
 
   useEffect(() => {
     if (socket) {
       socket.on('new message', ({ message }) => {
         if (message.channelId === channelId)
-          setMessages(messages => [...messages, message])
+          setMessages(messages => [
+            ...messages,
+            ...hasMyReaction([message], workspaceUserInfo),
+          ])
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
       socket.on('update reaction', ({ reaction }) => {
@@ -115,7 +83,7 @@ const ChatRoom = ({ width }) => {
         socket.off('update reaction')
       }
     }
-  }, [socket, channelId])
+  }, [socket, channelId, params])
 
   useEffect(() => {
     const option = {
