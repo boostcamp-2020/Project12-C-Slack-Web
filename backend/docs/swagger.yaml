@@ -1353,17 +1353,17 @@ paths:
         default:
           description: Default error sample response
 
-  '/api/file/{fileId}':
-    summary: get chat messages
-    description: get chat messages
-    get:
+  '/api/file':
+    summary: file upload
+    description: file upload
+    post:
       tags:
         - file
       operationId: ''
       parameters:
-        - name: fileId
-          in: path
-          description: fileId
+        - name: file
+          in: query
+          description: input form으로 생성된 file object
           required: true
           explode: true
           schema:
@@ -1380,11 +1380,16 @@ paths:
                   data:
                     type: object
                     properties:
-                      url:
+                      name:
                         type: string
                       originalName:
                         type: string
-
+                      fileType:
+                        type: string
+                      creator:
+                        type: string
+                      url:
+                        type: string
           description: success response
         '400':
           content:
@@ -1411,9 +1416,9 @@ paths:
         - file
       operationId: ''
       parameters:
-        - name: fileId
-          in: path
-          description: fileId
+        - name: name
+          in: query
+          description: file name
           required: true
           explode: true
           schema:
@@ -1428,64 +1433,6 @@ paths:
                   success:
                     type: boolean
 
-          description: success response
-        '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-          description: not modified
-        '401':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-          description: unauthorized
-        default:
-          description: Default error sample response
-  '/api/file':
-    summary: file upload
-    description: file upload
-    post:
-      tags:
-        - file
-      operationId: ''
-      parameters:
-        - name: file
-          in: query
-          description: file
-          required: true
-          explode: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      fileId:
-                        type: string
-                      fileName:
-                        type: string
-                      fileType:
-                        type: string
-                      creator:
-                        type: string
-                      etag:
-                        type: string
           description: success response
         '400':
           content:
