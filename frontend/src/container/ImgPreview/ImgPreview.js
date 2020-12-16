@@ -19,7 +19,7 @@ function ImgPreview({ type, setIsRender, file, setFile }) {
 
   const handleDelete = async () => {
     setIsRender(false)
-    await request.DELETE('/api/file', { fileId: file.fileId })
+    await request.DELETE('/api/file', { name: file.name })
     setFile(null)
   }
 
@@ -48,7 +48,7 @@ function ImgPreview({ type, setIsRender, file, setFile }) {
   return (
     <StyledDiv onMouseEnter={enterMouseHandle} onMouseLeave={leaveMouseHandle}>
       <StyledImg
-        alt={file?.name || '이미지'}
+        alt={file?.originalName || '이미지'}
         src={file?.url}
         type={type}
       ></StyledImg>

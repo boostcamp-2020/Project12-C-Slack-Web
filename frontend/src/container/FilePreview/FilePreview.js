@@ -19,7 +19,7 @@ function FilePreview({ type, setIsRender, file, setFile }) {
 
   const handleDelete = async () => {
     setIsRender(false)
-    await request.DELETE('/api/file', { fileId: file?.fileId })
+    await request.DELETE('/api/file', { name: file?.name })
     setFile(null)
   }
 

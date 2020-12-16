@@ -18,7 +18,7 @@ function FileUploader({ file, setFile }) {
       return
     }
     if (!isEmpty(file)) {
-      await request.DELETE('/api/file', { fileId: file.fileId })
+      await request.DELETE('/api/file', { name: file.name })
       setFile(null)
     }
     await handlePost(e.target.files[0])
@@ -32,7 +32,6 @@ function FileUploader({ file, setFile }) {
         formData,
         fileContentType,
       )
-      console.log('data.data: ', data.data)
       setFile(data.data)
     }
   }
