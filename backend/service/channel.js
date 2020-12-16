@@ -7,6 +7,7 @@ import { verifyRequiredParams, dbErrorHandler } from '../util'
 
 const createChannel = async params => {
   verifyRequiredParams(params.creator, params.title, params.channelType)
+  console.log(params)
   const { data } = await checkDuplicate(params)
   if (!data)
     throw {
@@ -51,6 +52,19 @@ const getChannelListDB = async ({ workspaceUserInfoId }) => {
   return {
     code: statusCode.OK,
     result: channelConfig,
+    success: true,
+  }
+}
+
+const getChannelBrowserData = async ({ workspaceId, workspaceUserInfoId }) => {
+  verifyRequiredParams(workspaceId, workspaceUserInfoId)
+  const channelList = await dbErrorHandler(() =>
+    Channel.getChannelBrowserData(workspaceId, workspaceUserInfoId),
+  )
+  console.log(channelList)
+  return {
+    code: statusCode.OK,
+    result: channelList,
     success: true,
   }
 }
@@ -137,4 +151,5 @@ module.exports = {
   inviteUserDB,
   muteChannelDB,
   updateChannelSectionDB,
+  getChannelBrowserData,
 }
