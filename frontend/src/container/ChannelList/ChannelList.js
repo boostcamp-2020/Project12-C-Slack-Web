@@ -35,7 +35,6 @@ function ChannelList() {
           if (channel.channelId.channelType === 2) {
             checkHasKeyAndSetKeyInMap(sectionMap, 'Direct messages', channel)
           } else {
-            console.log('channel: ', channel)
             checkHasKeyAndSetKeyInMap(sectionMap, 'Channels', channel)
           }
         } else {
