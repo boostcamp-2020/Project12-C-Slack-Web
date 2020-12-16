@@ -9,6 +9,15 @@ const getChannelList = asyncWrapper(async (req, res) => {
   return res.status(code).json({ success, result })
 })
 
+const getChannelBrowserData = asyncWrapper(async (req, res) => {
+  const { workspaceUserInfoId, workspaceId } = req.query
+  const { code, success, result } = await service.getChannelBrowserData({
+    workspaceUserInfoId,
+    workspaceId,
+  })
+  return res.status(code).json({ success, result })
+})
+
 const getChannelHeaderInfo = asyncWrapper(async (req, res) => {
   const channelId = req.params.channelId
   const workspaceUserInfoId = req.query.workspaceUserInfoId
@@ -67,6 +76,7 @@ const checkDuplicate = asyncWrapper(async (req, res) => {
 
 module.exports = {
   getChannelList,
+  getChannelBrowserData,
   getChannelHeaderInfo,
   inviteUser,
   muteChannel,
