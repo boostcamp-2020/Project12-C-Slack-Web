@@ -25,15 +25,15 @@ exports.invite = (req, res) => {
 }
 
 exports.invited = asyncWrapper(async (req, res) => {
-  const { code, success, data } = await service.invited({
+  const { success, data } = await service.invited({
     ...req.params,
     userId: req.user.id,
   })
-  const workspaceRedirectURL = `${process.env.FRONTEND_HOST}/workspace/${data.workspaceId}/${data.default_channel}`
   if (success) {
-    return res.status(code).redirect(workspaceRedirectURL)
+    const workspaceRedirectURL = `${process.env.FRONTEND_HOST}/workspace/${data.workspaceId}/${data.default_channel}`
+    return res.redirect(workspaceRedirectURL)
   }
-  return res.status(code).redirect(process.env.FRONTEND_HOST)
+  return res.redirect(process.env.FRONTEND_HOST)
 })
 
 exports.checkDuplicateName = asyncWrapper(async (req, res) => {
