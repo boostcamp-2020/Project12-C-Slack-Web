@@ -1,21 +1,17 @@
 import React from 'react'
+import { useParams, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import EmojiModal from '../../presenter/EmojiModal'
 import Icon from '../../presenter/Icon'
 import { COLOR } from '../../constant/style'
-import {
-  SMILE,
-  COMMENTDOTS,
-  SHARE,
-  BOOKMARK,
-  ELLIPSISV,
-} from '../../constant/icon'
+import { SMILE, COMMENTDOTS, ELLIPSISV } from '../../constant/icon'
 import calcEmojiModalLocation from '../../util/calculateEmojiModalLocation'
 import { modalRecoil } from '../../store'
 import { useSetRecoilState } from 'recoil'
 
-function ActionBar({ setOpenModal, updateReactionHandler }) {
+function ActionBar({ setOpenModal, updateReactionHandler, type, chatId }) {
   const setModal = useSetRecoilState(modalRecoil)
+  const { workspaceId, channelId } = useParams()
 
   const closeHandler = () => {
     setOpenModal(false)
@@ -38,27 +34,29 @@ function ActionBar({ setOpenModal, updateReactionHandler }) {
 
   return (
     <ActionBarStyle>
-      <DefaultReactionBtn onClick={() => updateReactionHandler('👍')}>
-        👍
-      </DefaultReactionBtn>
-      <DefaultReactionBtn onClick={() => updateReactionHandler('👏')}>
-        👏
-      </DefaultReactionBtn>
-      <DefaultReactionBtn onClick={() => updateReactionHandler('😄')}>
-        😄
-      </DefaultReactionBtn>
+      {type !== 'reply' && (
+        <>
+          <DefaultReactionBtn onClick={() => updateReactionHandler('👍')}>
+            👍
+          </DefaultReactionBtn>
+          <DefaultReactionBtn onClick={() => updateReactionHandler('👏')}>
+            👏
+          </DefaultReactionBtn>
+          <DefaultReactionBtn onClick={() => updateReactionHandler('😄')}>
+            😄
+          </DefaultReactionBtn>
+        </>
+      )}
       <DefaultReactionBtn onClick={openEmojiModal}>
         <Icon icon={SMILE} color={COLOR.LABEL_DEFAULT_TEXT} />
       </DefaultReactionBtn>
-      <DefaultReactionBtn>
-        <Icon icon={COMMENTDOTS} color={COLOR.LABEL_DEFAULT_TEXT} />
-      </DefaultReactionBtn>
-      <DefaultReactionBtn>
-        <Icon icon={SHARE} color={COLOR.LABEL_DEFAULT_TEXT} />
-      </DefaultReactionBtn>
-      <DefaultReactionBtn>
-        <Icon icon={BOOKMARK} color={COLOR.LABEL_DEFAULT_TEXT} />
-      </DefaultReactionBtn>
+      {type !== 'reply' && (
+        <Link to={`/workspace/${workspaceId}/${channelId}/${chatId}`}>
+          <DefaultReactionBtn>
+            <Icon icon={COMMENTDOTS} color={COLOR.LABEL_DEFAULT_TEXT} />
+          </DefaultReactionBtn>
+        </Link>
+      )}
       <DefaultReactionBtn>
         <Icon icon={ELLIPSISV} color={COLOR.LABEL_DEFAULT_TEXT} />
       </DefaultReactionBtn>
