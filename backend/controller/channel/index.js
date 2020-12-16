@@ -6,6 +6,9 @@ const { Auth } = require('../../middleware/auth')
 /* GET /api/channle  get channel list  */
 router.get('/', controller.getChannelList)
 
+/* get /api/channle/browser  update channel section */
+router.get('/browser', controller.getChannelBrowserData)
+
 router.get('/check-duplicate-name', controller.checkDuplicate)
 
 router.post('/', Auth, controller.createChannel)
