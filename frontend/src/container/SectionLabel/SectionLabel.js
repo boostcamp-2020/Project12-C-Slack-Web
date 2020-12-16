@@ -12,6 +12,7 @@ import { modalRecoil } from '../../store'
 import { useSetRecoilState } from 'recoil'
 import InviteWorkspaceModal from '../Modal/InviteWorkspaceModal'
 import CreateChannelModal from '../Modal/CreateChannelModal/CreateChannelModal'
+import ChannelBrowserModal from '../Modal/ChannelBrowserModal'
 
 function SectionLabel(props) {
   const [isOpen, setIsOpen] = useState(true)
@@ -67,6 +68,11 @@ function SectionLabel(props) {
     setModal(<InviteWorkspaceModal handleClose={() => setModal(null)} />)
   }
 
+  const openChannelBrowserModal = e => {
+    e.stopPropagation()
+    setModal(<ChannelBrowserModal handleClose={() => setModal(null)} />)
+  }
+
   const addButtons =
     sectionName === 'Direct messages' ? (
       <AddButton
@@ -101,7 +107,7 @@ function SectionLabel(props) {
               />
             </ChannelSectionBtn>
             {sectionName === 'Channels' && (
-              <ChannelSectionBtn onClick={openChannelsMenu}>
+              <ChannelSectionBtn onClick={openChannelBrowserModal}>
                 <Icon
                   icon={PLUS}
                   color={COLOR.LABEL_DEFAULT_TEXT}
