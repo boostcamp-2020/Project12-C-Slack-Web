@@ -3,8 +3,6 @@ import { storiesOf } from '@storybook/react'
 import FileUploader from './FileUploader'
 import styled from 'styled-components'
 import FilePreview from '../FilePreview'
-import ImgPreview from '../ImgPreview'
-import { isImage } from '../../util/index'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -19,15 +17,7 @@ const TestComponent = () => {
   }, [file])
 
   const renderPreview = () => {
-    return isImage(file?.fileType) ? (
-      <ImgPreview
-        type="input"
-        fileId={file?.fileId}
-        file={file}
-        setFile={setFile}
-        setIsRender={setIsRender}
-      />
-    ) : (
+    return (
       <FilePreview
         type="input"
         fileId={file?.fileId}

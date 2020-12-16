@@ -10,7 +10,6 @@ import ViewThreadButton from '../../presenter/Button/ViewThreadButton'
 import { isEmpty, isImage } from '../../util'
 import { SIZE, COLOR } from '../../constant/style'
 import { workspaceRecoil, socketRecoil } from '../../store'
-import ImgPreview from '../ImgPreview'
 import FilePreview from '../FilePreview'
 
 const ChatMessage = forwardRef(
@@ -73,14 +72,8 @@ const ChatMessage = forwardRef(
     }
 
     const renderFilePreview = () => {
-      if (isEmpty(file)) {
-        return
-      }
-      return isImage(file?.fileType) ? (
-        <ImgPreview type="message" file={file} />
-      ) : (
-        <FilePreview type="message" file={file} />
-      )
+      if (isEmpty(file)) return
+      return <FilePreview type="message" file={file} />
     }
 
     return (

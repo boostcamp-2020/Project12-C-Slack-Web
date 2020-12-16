@@ -12,8 +12,6 @@ import 'draft-js/dist/Draft.css'
 import { COLOR } from '../../constant/style'
 import FileUploader from '../FileUploader'
 import FilePreview from '../FilePreview'
-import ImgPreview from '../ImgPreview'
-import { isImage } from '../../util/index'
 
 function MessageEditor({ channelTitle, sendMessage }) {
   const plugins = useRef([createMarkdownShortcutsPlugin()])
@@ -54,14 +52,7 @@ function MessageEditor({ channelTitle, sendMessage }) {
   }
 
   const renderPreview = () => {
-    return isImage(file?.fileType) ? (
-      <ImgPreview
-        type="input"
-        file={file}
-        setFile={setFile}
-        setIsRender={setIsRender}
-      />
-    ) : (
+    return (
       <FilePreview
         type="input"
         file={file}

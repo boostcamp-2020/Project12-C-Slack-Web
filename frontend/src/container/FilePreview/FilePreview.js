@@ -4,7 +4,8 @@ import request from '../../util/request'
 import Icon from '../../presenter/Icon'
 import { CLOSE, FILE } from '../../constant/icon'
 import { COLOR } from '../../constant/style'
-import Button from '../../presenter/Button/Button'
+import Button from '../../presenter/Button'
+import { isImage } from '../../util'
 
 function FilePreview({ type, setIsRender, file, setFile }) {
   const [isHover, setIsHover] = useState(false)
@@ -19,7 +20,7 @@ function FilePreview({ type, setIsRender, file, setFile }) {
 
   const handleDelete = async () => {
     setIsRender(false)
-    await request.DELETE('/api/file', { name: file?.name })
+    await request.DELETE('/api/file', { name: file.name })
     setFile(null)
   }
 
@@ -37,32 +38,66 @@ function FilePreview({ type, setIsRender, file, setFile }) {
     return (
       <DownloadDiv
         onClick={() => {
-          if (file) window.open(file?.url, '_blank')
+          if (file) window.open(file.url, '_blank')
         }}
       >
         <ClickToDownloadSpan>Click to Download</ClickToDownloadSpan>
       </DownloadDiv>
     )
   }
-  return (
-    <StyledDiv onMouseEnter={enterMouseHandle} onMouseLeave={leaveMouseHandle}>
-      <FlexDiv>
-        <Icon icon={FILE} size="24px" color={COLOR.GRAY} />
-        <DescriptionDiv>
-          <span>{file?.originalName}</span>
-        </DescriptionDiv>
+
+  const renderImgPreview = () => {
+    return (
+      <StyledImgDiv
+        onMouseEnter={enterMouseHandle}
+        onMouseLeave={leaveMouseHandle}
+      >
+        <StyledImg
+          alt={file?.originalName || '이미지'}
+          src={file?.url}
+          type={type}
+        ></StyledImg>
         {isHover &&
           (type === 'input'
             ? deleteButton()
             : type === 'message'
             ? downloadButton()
             : null)}
-      </FlexDiv>
-    </StyledDiv>
-  )
+      </StyledImgDiv>
+    )
+  }
+
+  const renderFilePreview = () => {
+    return (
+      <StyledFileDiv
+        onMouseEnter={enterMouseHandle}
+        onMouseLeave={leaveMouseHandle}
+      >
+        <FlexDiv>
+          <Icon icon={FILE} size="24px" color={COLOR.GRAY} />
+          <DescriptionDiv>
+            <span>{file?.originalName}</span>
+          </DescriptionDiv>
+          {isHover &&
+            (type === 'input'
+              ? deleteButton()
+              : type === 'message'
+              ? downloadButton()
+              : null)}
+        </FlexDiv>
+      </StyledFileDiv>
+    )
+  }
+
+  return isImage(file?.fileType) ? renderImgPreview() : renderFilePreview()
 }
 
-const StyledDiv = styled.div`
+const StyledImgDiv = styled.div`
+  display: inline-block;
+  position: relative;
+`
+
+const StyledFileDiv = styled.div`
   display: inline-block;
   position: relative;
   border: 1px solid ${COLOR.LIGHT_GRAY};
@@ -74,6 +109,15 @@ const FlexDiv = styled.div`
   display: flex;
   justify-content: left;
   padding: 5px 5px 5px 10px;
+`
+
+const StyledImg = styled.img`
+  max-width: ${({ type }) => {
+    return type === 'input' ? '80px' : '300px'
+  }};
+  height: auto;
+  border-radius: 2%;
+  background: white;
 `
 
 const ButtonDiv = styled.div`
@@ -97,8 +141,8 @@ const DownloadDiv = styled.div`
 
 const ClickToDownloadSpan = styled.span`
   position: absolute;
-  bottom: 0px;
-  font-size: 12px;
+  bottom: 5px;
+  left: 10px;
   color: ${COLOR.GRAY};
 `
 

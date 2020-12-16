@@ -8,17 +8,51 @@ export default {
 let isRender = true
 const Template = args => <>{isRender && <FilePreview {...args} />}</>
 
-export const inputFilePreview = Template.bind({})
-inputFilePreview.args = {
+export const inputImgPreview = Template.bind({})
+inputImgPreview.args = {
   type: 'input', // input, message
+  file: {
+    fileId: '5fda2fe2e882860557e592fd',
+    name: 'file-1608140339770-슬기.jpg',
+    originalName: '슬기.jpg',
+    fileType: 'image/jpeg',
+    creator: '5fd81c4d630674160961baf4',
+    url:
+      'https://kr.object.ncloudstorage.com/slack-clone-files/file-1608140339770-슬기.jpg',
+  },
   setIsRender: () => {
     isRender = false
   },
+}
+
+export const messageImgPreview = Template.bind({})
+messageImgPreview.args = {
+  type: 'message', // input, message
   file: {
-    fileId: '5fda2f97e882860557e592fc',
-    fileName: '5주 그룹프로젝트 4주차 데모 및 피어세션 그룹 안내.pdf',
-    fileType: 'application/pdf',
+    fileId: '5fda2fe2e882860557e592fd',
+    name: 'file-1608140339770-슬기.jpg',
+    originalName: '슬기.jpg',
+    fileType: 'image/jpeg',
     creator: '5fd81c4d630674160961baf4',
+    url:
+      'https://kr.object.ncloudstorage.com/slack-clone-files/file-1608140339770-슬기.jpg',
+  },
+}
+
+export const inputFilePreview = Template.bind({})
+inputFilePreview.args = {
+  type: 'input', // input, message
+  file: {
+    fileId: '5fda2fe2e882860557e592fd',
+    name: 'file-1608140450582-test.zip',
+    originalName: 'test.zip',
+    fileType: 'application/x-zip-compressed',
+    creator: '5fd81c4d630674160961baf4',
+    url:
+      'https://kr.object.ncloudstorage.com/slack-clone-files/file-1608140450582-test.zip',
+  },
+  setIsRender: () => {
+    isRender = false
   },
 }
 
@@ -26,9 +60,12 @@ export const messageFilePreview = Template.bind({})
 messageFilePreview.args = {
   type: 'message', // input, message
   file: {
-    fileId: '5fda2f97e882860557e592fc',
-    fileName: '5주 그룹프로젝트 4주차 데모 및 피어세션 그룹 안내.pdf',
-    fileType: 'application/pdf',
+    fileId: '5fda2fe2e882860557e592fd',
+    name: 'file-1608140450582-test.zip',
+    originalName: 'test.zip',
+    fileType: 'application/x-zip-compressed',
     creator: '5fd81c4d630674160961baf4',
+    url:
+      'https://kr.object.ncloudstorage.com/slack-clone-files/file-1608140450582-test.zip',
   },
 }
