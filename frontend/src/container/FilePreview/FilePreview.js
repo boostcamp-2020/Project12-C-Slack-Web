@@ -5,21 +5,9 @@ import Icon from '../../presenter/Icon'
 import { CLOSE, FILE } from '../../constant/icon'
 import { COLOR } from '../../constant/style'
 import Button from '../../presenter/Button/Button'
-import { isEmpty } from '../../util'
 
 function FilePreview({ type, setIsRender, file }) {
-  const [fileData, setFileData] = useState({})
   const [isHover, setIsHover] = useState(false)
-
-  useEffect(() => {
-    if (!isEmpty(file)) {
-      ;(async () => {
-        const { data } =
-          (await request.GET('/api/file', { fileId: file?.fileId })) || {}
-        setFileData(data?.data)
-      })()
-    }
-  }, [file])
 
   const enterMouseHandle = () => {
     setIsHover(true)
@@ -48,7 +36,7 @@ function FilePreview({ type, setIsRender, file }) {
     return (
       <DownloadDiv
         onClick={() => {
-          if (fileData) window.open(fileData.url, '_blank')
+          if (file) window.open(file?.url, '_blank')
         }}
       >
         <ClickToDownloadSpan>Click to Download</ClickToDownloadSpan>
@@ -60,7 +48,7 @@ function FilePreview({ type, setIsRender, file }) {
       <FlexDiv>
         <Icon icon={FILE} size="24px" color={COLOR.GRAY} />
         <DescriptionDiv>
-          <span>{fileData?.originalName}</span>
+          <span>{file?.originalName}</span>
         </DescriptionDiv>
         {isHover &&
           (type === 'input'

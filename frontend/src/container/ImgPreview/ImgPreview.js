@@ -5,23 +5,9 @@ import Icon from '../../presenter/Icon'
 import { CLOSE } from '../../constant/icon'
 import { COLOR } from '../../constant/style'
 import Button from '../../presenter/Button'
-import { isEmpty } from '../../util'
 
 function ImgPreview({ type, setIsRender, file }) {
-  // const [fileData, setFileData] = useState({})
-  const [fileURL, setFileURL] = useState(null)
   const [isHover, setIsHover] = useState(false)
-
-  useEffect(() => {
-    if (!isEmpty(file)) {
-      ;(async () => {
-        const { data } =
-          (await request.GET('/api/file', { fileId: file?.fileId })) || {}
-        // console.log('data: ', data)
-        setFileURL(data?.data?.url)
-      })()
-    }
-  }, [file])
 
   const enterMouseHandle = () => {
     setIsHover(true)
@@ -62,7 +48,7 @@ function ImgPreview({ type, setIsRender, file }) {
     <StyledDiv onMouseEnter={enterMouseHandle} onMouseLeave={leaveMouseHandle}>
       <StyledImg
         alt={file?.name || '이미지'}
-        src={fileURL}
+        src={file?.url}
         type={type}
       ></StyledImg>
       {isHover &&

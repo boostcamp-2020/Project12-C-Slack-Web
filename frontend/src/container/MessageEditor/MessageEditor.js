@@ -55,17 +55,9 @@ function MessageEditor({ channelTitle, sendMessage }) {
 
   const renderPreview = () => {
     return isImage(fileData?.fileType) ? (
-      <ImgPreview
-        type="input"
-        fileId={fileData?.fileId}
-        setIsRender={setIsRender}
-      />
+      <ImgPreview type="input" file={fileData} setIsRender={setIsRender} />
     ) : (
-      <FilePreview
-        type="input"
-        fileId={fileData?.fileId}
-        setIsRender={setIsRender}
-      />
+      <FilePreview type="input" file={fileData} setIsRender={setIsRender} />
     )
   }
 
