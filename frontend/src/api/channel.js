@@ -18,6 +18,14 @@ export const getChannelHeaderInfo = async ({
   channelId,
   workspaceUserInfoId,
 }) => {
+  if (
+    channelId === 'threads' ||
+    channelId === 'all-dms' ||
+    channelId === 'saved-page' ||
+    channelId === 'activity-page' ||
+    channelId === 'more'
+  )
+    return null
   const { data } = await Request.GET(`/api/channel/${channelId}/info`, {
     workspaceUserInfoId,
   })
