@@ -86,16 +86,23 @@ function SideThreadBar() {
         <ChatContent>
           {sidebarChat && <ChatMessage {...sidebarChat} type="reply" />}
         </ChatContent>
-        <ReplyContents>
-          {replyContent &&
-            replyContent.map((message, i) => {
-              return <ChatMessage key={i} {...message} type="reply" />
-            })}
-          <div ref={messageEndRef}></div>
-        </ReplyContents>
-        <MessageEditorArea>
-          <MessageEditor channelTitle={'reply'} sendMessage={sendReply} />
-        </MessageEditorArea>
+
+        {replyContent && (
+          <CountReplyArea>
+            <CountReply>
+              {`${replyContent.length} ${
+                replyContent.length === 1 ? 'reply' : 'replies'
+              } `}
+            </CountReply>
+            <Separator />
+          </CountReplyArea>
+        )}
+        {replyContent &&
+          replyContent.map((message, i) => {
+            return <ChatMessage key={i} {...message} type="reply" />
+          })}
+        <div ref={messageEndRef} />
+        <MessageEditor placeholder={'reply...'} sendMessage={sendReply} />
       </SideBarContents>
     </SideThreadBarStyle>
   )
@@ -143,16 +150,24 @@ const SideBarContents = styled.div`
 
 const ChatContent = styled.div`
   width: auto;
-  min-height: 20%;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-right: 0;
   overflow-y: auto;
 `
-
-const ReplyContents = styled.div``
-
-const MessageEditorArea = styled.div`
-  /* height: calc(10% - 3px); */
+const Separator = styled.div`
+  border-bottom: 1px solid ${COLOR.GRAY};
+  width: 100%;
 `
-
+const CountReply = styled.div`
+  min-width: max-content;
+  margin-right: 5px;
+`
+const CountReplyArea = styled.div`
+  font-size: 13px;
+  font-weight: 400;
+  color: ${COLOR.GRAY};
+  display: flex;
+  padding: 16px;
+  align-items: center;
+`
 export default SideThreadBar
