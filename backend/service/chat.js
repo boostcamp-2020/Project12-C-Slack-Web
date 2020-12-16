@@ -20,7 +20,7 @@ const createChatMessage = async ({ channelId, creator, contents, file }) => {
       channel: channelId,
       creator,
       contents,
-      file,
+      file: file === null ? undefined : file,
     }),
   )
   return { data: result }
