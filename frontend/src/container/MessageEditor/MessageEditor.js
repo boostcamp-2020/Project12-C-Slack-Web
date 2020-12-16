@@ -18,12 +18,12 @@ import { isImage } from '../../util/index'
 function MessageEditor({ channelTitle, sendMessage }) {
   const plugins = useRef([createMarkdownShortcutsPlugin()])
   const [message, setMessage] = useState(EditorState.createEmpty())
-  const [fileData, setFileData] = useState(null)
+  const [file, setFile] = useState(null)
   const [isRender, setIsRender] = useState(false)
 
   useEffect(() => {
-    if (fileData) setIsRender(true)
-  }, [fileData])
+    if (file) setIsRender(true)
+  }, [file])
 
   const keyBindingFn = e => {
     if (e.key === 'Enter') return 'send-message'
@@ -33,11 +33,11 @@ function MessageEditor({ channelTitle, sendMessage }) {
   const handleKey = command => {
     if (
       command === 'send-message' &&
-      (message.getCurrentContent().hasText() || fileData)
+      (message.getCurrentContent().hasText() || file)
     ) {
       sendMessage(
         JSON.stringify(convertToRaw(message.getCurrentContent())),
-        fileData,
+        file,
       )
       setMessage(
         EditorState.moveFocusToEnd(
@@ -48,16 +48,26 @@ function MessageEditor({ channelTitle, sendMessage }) {
           ),
         ),
       )
-      setFileData(null)
+      setFile(null)
       setIsRender(false)
     }
   }
 
   const renderPreview = () => {
-    return isImage(fileData?.fileType) ? (
-      <ImgPreview type="input" file={fileData} setIsRender={setIsRender} />
+    return isImage(file?.fileType) ? (
+      <ImgPreview
+        type="input"
+        file={file}
+        setFile={setFile}
+        setIsRender={setIsRender}
+      />
     ) : (
-      <FilePreview type="input" file={fileData} setIsRender={setIsRender} />
+      <FilePreview
+        type="input"
+        file={file}
+        setFile={setFile}
+        setIsRender={setIsRender}
+      />
     )
   }
 
@@ -74,7 +84,7 @@ function MessageEditor({ channelTitle, sendMessage }) {
         />
         <div>{isRender && renderPreview()}</div>
         <div>
-          <FileUploader fileData={fileData} setFileData={setFileData} />
+          <FileUploader file={file} setFile={setFile} />
         </div>
         {/* TODO markdown, chat action 적용 필요 */}
       </MessageEditorArea>

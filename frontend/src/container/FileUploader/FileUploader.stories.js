@@ -11,26 +11,28 @@ import 'react-toastify/dist/ReactToastify.css'
 const stories = storiesOf('Organism', module)
 
 const TestComponent = () => {
-  const [fileData, setFileData] = useState(null)
+  const [file, setFile] = useState(null)
   const [isRender, setIsRender] = useState(false)
 
   useEffect(() => {
-    if (fileData) setIsRender(true)
-  }, [fileData])
+    if (file) setIsRender(true)
+  }, [file])
 
   const renderPreview = () => {
-    return isImage(fileData?.fileType) ? (
+    return isImage(file?.fileType) ? (
       <ImgPreview
         type="input"
-        fileId={fileData?.fileId}
-        file={fileData}
+        fileId={file?.fileId}
+        file={file}
+        setFile={setFile}
         setIsRender={setIsRender}
       />
     ) : (
       <FilePreview
         type="input"
-        fileId={fileData?.fileId}
-        file={fileData}
+        fileId={file?.fileId}
+        file={file}
+        setFile={setFile}
         setIsRender={setIsRender}
       />
     )
@@ -40,7 +42,7 @@ const TestComponent = () => {
     <>
       <ToastContainer />
       <StyledDiv>{isRender && renderPreview()}</StyledDiv>
-      <FileUploader fileData={fileData} setFileData={setFileData} />
+      <FileUploader file={file} setFile={setFile} />
     </>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import request from '../../util/request'
 import Icon from '../../presenter/Icon'
@@ -6,7 +6,7 @@ import { CLOSE, FILE } from '../../constant/icon'
 import { COLOR } from '../../constant/style'
 import Button from '../../presenter/Button/Button'
 
-function FilePreview({ type, setIsRender, file }) {
+function FilePreview({ type, setIsRender, file, setFile }) {
   const [isHover, setIsHover] = useState(false)
 
   const enterMouseHandle = () => {
@@ -20,6 +20,7 @@ function FilePreview({ type, setIsRender, file }) {
   const handleDelete = async () => {
     setIsRender(false)
     await request.DELETE('/api/file', { fileId: file?.fileId })
+    setFile(null)
   }
 
   const deleteButton = () => {

@@ -23,8 +23,7 @@ const ChatMessage = forwardRef(
       createdAt,
       contents,
       type = 'chat',
-      fileId,
-      fileType,
+      file,
     },
     ref,
   ) => {
@@ -74,13 +73,13 @@ const ChatMessage = forwardRef(
     }
 
     const renderFilePreview = () => {
-      if (isEmpty(fileType) || isEmpty(fileId)) {
+      if (isEmpty(file)) {
         return
       }
-      return isImage(fileType) ? (
-        <ImgPreview type="message" fileId={fileId} />
+      return isImage(file?.fileType) ? (
+        <ImgPreview type="message" file={file} />
       ) : (
-        <FilePreview type="message" fileId={fileId} />
+        <FilePreview type="message" file={file} />
       )
     }
 

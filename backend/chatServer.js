@@ -28,13 +28,12 @@ namespace.on('connection', socket => {
       )
   })
   socket.on('new message', async data => {
-    const { contents, channelId, fileId, fileType } = data
+    const { contents, channelId, file } = data
     const { data: result } = await createChatMessage({
       creator: workspaceUserInfoId,
       channelId,
       contents,
-      fileId,
-      fileType,
+      file,
     })
     namespace.in(channelId).emit('new message', {
       message: {
