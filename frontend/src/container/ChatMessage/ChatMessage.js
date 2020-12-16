@@ -12,7 +12,16 @@ import { useRecoilValue } from 'recoil'
 
 const ChatMessage = forwardRef(
   (
-    { userInfo, reply, reactions, _id, createdAt, contents, type = 'chat' },
+    {
+      userInfo,
+      reply,
+      reactions,
+      _id,
+      createdAt,
+      parentId,
+      contents,
+      type = 'chat',
+    },
     ref,
   ) => {
     const { workspaceId, channelId } = useParams()
@@ -26,6 +35,7 @@ const ChatMessage = forwardRef(
         emoji,
         chatId,
         channelId,
+        parentId,
         type,
         userInfo: {
           _id: workspaceUserInfo._id,
@@ -38,7 +48,7 @@ const ChatMessage = forwardRef(
     const updateReactionHandler = emoji => {
       let done = false
       reactions.map(reaction => {
-        if (reaction.emoji === emoji.native || reaction.emoji === emoji) {
+        if (reaction.emoji === emoji) {
           if (reaction.set) {
             updateReaction({
               emoji: emoji.native || emoji,
