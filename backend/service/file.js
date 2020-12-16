@@ -1,28 +1,6 @@
-import { verifyRequiredParams, dbErrorHandler } from '../util/'
+import { verifyRequiredParams } from '../util/'
 import statusCode from '../util/statusCode'
 import { S3, BUCKETNAME } from '../config/s3'
-import { File } from '../model/File'
-import mongoose from 'mongoose'
-const ObjectId = mongoose.Types.ObjectId
-
-const getFileURL = async ({ fileId }) => {
-  verifyRequiredParams(fileId)
-
-  const { name, originalName } = await dbErrorHandler(() =>
-    File.findOne({
-      _id: ObjectId(fileId),
-    }),
-  )
-
-  return {
-    code: statusCode.OK,
-    data: {
-      url: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKETNAME}/${name}`,
-      originalName: originalName,
-    },
-    success: true,
-  }
-}
 
 const uploadFile = async ({ file, userId }) => {
   verifyRequiredParams(file, userId)
@@ -35,35 +13,22 @@ const uploadFile = async ({ file, userId }) => {
     Body: file.buffer,
   }).promise()
   const url = `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKETNAME}/${fileName}`
-  const data = await dbErrorHandler(() =>
-    File.create({
-      name: fileName,
-      originalName: file.originalname,
-      path: '/',
-      fileType: file.mimetype,
-      creator: userId,
-      url: url,
-    }),
-  )
 
   return {
     code: statusCode.OK,
     data: {
-      fileId: data._id,
-      fileName: data.originalName,
-      fileType: data.fileType,
-      creator: data.creator,
-      url: data.url,
+      name: fileName,
+      originalName: file.originalname,
+      fileType: file.mimetype,
+      creator: userId,
+      url: url,
     },
     success: true,
   }
 }
 
-const deleteFile = async ({ fileId }) => {
-  verifyRequiredParams(fileId)
-  const { name } = await dbErrorHandler(() =>
-    File.findOneAndDelete({ _id: ObjectId(fileId) }),
-  )
+const deleteFile = async ({ name }) => {
+  verifyRequiredParams(name)
   await S3.deleteObject({
     Bucket: BUCKETNAME,
     Key: name,
@@ -73,6 +38,5 @@ const deleteFile = async ({ fileId }) => {
 
 module.exports = {
   uploadFile,
-  getFileURL,
   deleteFile,
 }
