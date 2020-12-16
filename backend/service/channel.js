@@ -7,7 +7,6 @@ import { verifyRequiredParams, dbErrorHandler } from '../util'
 
 const createChannel = async params => {
   verifyRequiredParams(params.creator, params.title, params.channelType)
-  console.log(params)
   const { data } = await checkDuplicate(params)
   if (!data)
     throw {
@@ -61,7 +60,6 @@ const getChannelBrowserData = async ({ workspaceId, workspaceUserInfoId }) => {
   const channelList = await dbErrorHandler(() =>
     Channel.getChannelBrowserData(workspaceId, workspaceUserInfoId),
   )
-  console.log(channelList)
   return {
     code: statusCode.OK,
     result: channelList,
@@ -143,6 +141,39 @@ const updateChannelSectionDB = async ({
   }
 }
 
+const leaveChannel = async ({ channelId, workspaceUserInfoId }) => {
+  verifyRequiredParams(channelId, workspaceUserInfoId)
+
+  await dbErrorHandler(() =>
+    ChannelConfig.findOneAndDelete({
+      workspaceUserInfoId,
+      channelId,
+    }),
+  )
+
+  return {
+    code: statusCode.OK,
+    success: true,
+  }
+}
+
+const joinChannel = async ({ channelId, workspaceUserInfoId }) => {
+  verifyRequiredParams(channelId, workspaceUserInfoId)
+  await dbErrorHandler(() =>
+    ChannelConfig.create({
+      workspaceUserInfoId,
+      channelId,
+      isMute: false,
+      notification: 0,
+    }),
+  )
+
+  return {
+    code: statusCode.OK,
+    success: true,
+  }
+}
+
 module.exports = {
   createChannel,
   checkDuplicate,
@@ -152,4 +183,6 @@ module.exports = {
   muteChannelDB,
   updateChannelSectionDB,
   getChannelBrowserData,
+  leaveChannel,
+  joinChannel,
 }

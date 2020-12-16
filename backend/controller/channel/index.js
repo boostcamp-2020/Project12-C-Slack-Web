@@ -13,6 +13,10 @@ router.get('/check-duplicate-name', controller.checkDuplicate)
 
 router.post('/', Auth, controller.createChannel)
 
+router.post('/leave', Auth, controller.leaveChannel)
+
+router.post('/join', Auth, controller.joinChannel)
+
 /* GET /api/channle/{channelId}/info  get channel header info  */
 router.get('/:channelId/info', controller.getChannelHeaderInfo)
 

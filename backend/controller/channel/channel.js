@@ -66,6 +66,20 @@ const createChannel = asyncWrapper(async (req, res) => {
   return res.status(code).json({ success, data })
 })
 
+const leaveChannel = asyncWrapper(async (req, res) => {
+  const { code, success } = await service.leaveChannel({
+    ...req.body,
+  })
+  return res.status(code).json({ success })
+})
+
+const joinChannel = asyncWrapper(async (req, res) => {
+  const { code, success } = await service.joinChannel({
+    ...req.body,
+  })
+  return res.status(code).json({ success })
+})
+
 const checkDuplicate = asyncWrapper(async (req, res) => {
   const { code, success, data } = await service.checkDuplicate({
     title: req.query.title,
@@ -83,4 +97,6 @@ module.exports = {
   updateChannelSection,
   createChannel,
   checkDuplicate,
+  leaveChannel,
+  joinChannel,
 }
