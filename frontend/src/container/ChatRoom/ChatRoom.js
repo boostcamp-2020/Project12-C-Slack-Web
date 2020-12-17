@@ -8,13 +8,15 @@ import { getChatMessage } from '../../api/chat'
 import MessageEditor from '../MessageEditor/MessageEditor'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import ChannelHeader from '../ChannelHeader'
+import useChannelInfo from '../../hooks/useChannelInfo'
 
-const ChatRoom = () => {
+const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
   const target = useRef(null)
   const messageEndRef = useRef(null)
   const [targetState, setTargetState] = useState()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
+  const [channelInfo] = useChannelInfo()
   const { workspaceId, channelId } = useParams()
   const socket = useRecoilValue(socketRecoil)
   const [messages, setMessages] = useState([])
@@ -41,10 +43,11 @@ const ChatRoom = () => {
     targetRef.scrollIntoView()
   }
 
-  const sendMessage = message => {
+  const sendMessage = (message, file) => {
     const chat = {
       contents: message,
       channelId,
+      file: file,
       userInfo: {
         _id: workspaceUserInfo._id,
         displayName: workspaceUserInfo.displayName,
@@ -152,22 +155,30 @@ const ChatRoom = () => {
   }, [])
 
   return (
-    <ChatArea>
+    <ChatArea width={width}>
       <ChatHeader>
         <ChannelHeader />
       </ChatHeader>
       <ChatContents ref={viewport}>
-        {messages.map((message, i) => (
-          <ChatMessage
-            key={i}
-            {...message}
-            ref={i ? null : setTarget}
-            id={message.createdAt}
-          />
-        ))}
+        {messages &&
+          messages.map((message, i) => {
+            return (
+              <ChatMessage
+                key={i}
+                {...message}
+                ref={i ? null : setTarget}
+                id={message.createdAt}
+              />
+            )
+          })}
         <div ref={messageEndRef}></div>
       </ChatContents>
-      <MessageEditor channelTitle={'hello world'} sendMessage={sendMessage} />
+      <MessageEditor
+        sendMessage={sendMessage}
+        placeholder={`Send a message to #${
+          channelInfo?.channelId?.title ? channelInfo?.channelId?.title : '...'
+        }`}
+      />
     </ChatArea>
   )
 }
@@ -175,7 +186,7 @@ const ChatArea = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 70%;
+  width: calc(${props => props.width}% - 2px);
   background: ${COLOR.HOVER_GRAY};
 `
 
@@ -185,6 +196,7 @@ const ChatHeader = styled.div`
   height: 60px;
   background: ${COLOR.BACKGROUND_CONTENTS};
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
 `
 
 const ChatContents = styled.div`

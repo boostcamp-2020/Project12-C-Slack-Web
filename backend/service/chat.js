@@ -13,10 +13,34 @@ const getChatMessages = async ({ channelId, currentCursor, fromDate }) => {
     success: true,
   }
 }
-const createChatMessage = async ({ channelId, creator, contents }) => {
-  verifyRequiredParams(channelId, creator, contents)
+const createChatMessage = async ({ channelId, creator, contents, file }) => {
+  verifyRequiredParams(channelId, creator, contents || file)
   const result = await dbErrorHandler(() =>
-    Chat.create({ channel: channelId, creator, contents }),
+    Chat.create({
+      channel: channelId,
+      creator,
+      contents,
+      file: file === null ? undefined : file,
+    }),
+  )
+  return { data: result }
+}
+const createReplyMessage = async ({
+  channelId,
+  creator,
+  contents,
+  parentId,
+  file,
+}) => {
+  verifyRequiredParams(channelId, creator, contents, parentId)
+  const result = await dbErrorHandler(() =>
+    Chat.create({
+      channel: channelId,
+      parentId: parentId,
+      creator,
+      contents,
+      file: file === null ? undefined : file,
+    }),
   )
   return { data: result }
 }
@@ -29,4 +53,9 @@ const getReplyMessage = async ({ channelId, parentId }) => {
   return { code: statusCode.OK, data: result, success: true }
 }
 
-module.exports = { getChatMessages, createChatMessage, getReplyMessage }
+module.exports = {
+  getChatMessages,
+  createChatMessage,
+  getReplyMessage,
+  createReplyMessage,
+}

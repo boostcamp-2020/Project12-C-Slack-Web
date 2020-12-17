@@ -1,19 +1,29 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import LoginButton from '../../presenter/LoginButton/LoginButton'
 import { GITHUB } from '../../constant/icon'
 import Icon from '../../presenter/Icon'
 import styled from 'styled-components'
 import SlackIcon from '../../presenter/SlackImage'
+import { isEmpty } from '../../util'
+import QueryString from 'qs'
 
 const baseURL =
   process.env.NODE_ENV === 'development'
     ? process.env.REACT_APP_DEV_API_URL
     : process.env.REACT_APP_API_URL
 
-const LoginPage = () => {
+const LoginPage = props => {
   const history = useHistory()
   const githubIcon = <Icon icon={GITHUB} size="1.6rem" />
+  const query = QueryString.parse(props.location.search, {
+    ignoreQueryPrefix: true,
+  })
+  useEffect(() => {
+    if (!isEmpty(query.invitecode)) {
+      localStorage.setItem('invitecode', query.invitecode)
+    }
+  }, [])
 
   const gohomeHandle = () => {
     history.push('/')

@@ -10,7 +10,7 @@ function ThreadReactionCard({ reaction, updateReactionHandler }) {
 
   useEffect(() => {
     setMyReaction(hasMyReaction())
-  }, [reaction.users.length])
+  }, [reaction.users.length, userInfo])
 
   const hasMyReaction = () => {
     if (reaction.users[0] === undefined) {
