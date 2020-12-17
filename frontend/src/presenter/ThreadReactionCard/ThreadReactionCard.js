@@ -26,6 +26,7 @@ const ThreadReactionCardStyle = styled.div`
   justify-content: space-around;
   align-items: center;
   border-radius: 20px;
+  cursor: pointer;
   border: 1px solid
     ${props => {
       return props.myReaction ? COLOR.REACTION_MINE_TEXT_AND_LINE : 'gray'
