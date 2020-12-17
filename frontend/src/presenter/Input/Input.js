@@ -8,9 +8,10 @@ function Input({
   handleKey,
   value,
   maxLength,
+  type = 'default',
 }) {
   return (
-    <StyledInputWrapper tabIndex="-1">
+    <StyledInputWrapper tabIndex="-1" type={type}>
       {children}
       <StyledInput
         placeholder={placeholder}
@@ -26,18 +27,23 @@ function Input({
   )
 }
 const StyledInputWrapper = styled.div`
-  &:focus-within {
-    outline: none;
-    box-shadow: 0 0 0 1px rgba(18, 100, 163, 1),
-      0 0 0 5px rgba(29, 155, 209, 0.3);
-    border-radius: 4px;
-    border-color: transparent;
-  }
-  &:focus-within > div {
-    display: block;
-  }
-  border: 1px solid ${COLOR.TRANSPARENT_GRAY};
-  border-radius: 4px;
+  ${({ type }) => {
+    if (type === 'default')
+      return `
+      &:focus-within {
+        box-shadow: 0 0 0 1px rgba(18, 100, 163, 1),
+          0 0 0 5px rgba(29, 155, 209, 0.3);
+        border-radius: 4px;
+        border-color: transparent;
+      }
+      &:focus-within > div {
+        display: block;
+      }
+      border: 1px solid ${COLOR.TRANSPARENT_GRAY};
+      border-radius: 4px;
+    `
+  }}
+  outline: none;
   justify-content: space-between;
   display: flex;
   padding: 5px;
@@ -57,6 +63,7 @@ const StyledInput = styled.input`
   width: 100%;
   border: none;
   outline: none;
+  background-color: inherit;
 `
 
 export default Input
