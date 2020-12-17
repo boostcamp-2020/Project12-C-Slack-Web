@@ -59,6 +59,7 @@ const StyledUserName = styled.div`
 `
 
 const ChatContentArea = styled.div`
+  display: contents;
   word-break: break-all;
 `
 export default ChatContent

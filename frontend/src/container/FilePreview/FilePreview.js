@@ -103,6 +103,7 @@ const StyledFileDiv = styled.div`
   border: 1px solid ${COLOR.LIGHT_GRAY};
   border-radius: 4px;
   min-width: 200px;
+  max-width: 300px;
 `
 
 const FlexDiv = styled.div`
@@ -144,10 +145,17 @@ const ClickToDownloadSpan = styled.span`
   bottom: 5px;
   left: 10px;
   color: ${COLOR.GRAY};
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 0 4px;
 `
 
 const DescriptionDiv = styled.div`
+  max-width: 200px;
   padding: 10px 15px 10px 20px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `
 
 export default FilePreview
