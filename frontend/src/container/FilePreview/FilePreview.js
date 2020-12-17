@@ -95,6 +95,7 @@ function FilePreview({ type, setIsRender, file, setFile }) {
 const StyledImgDiv = styled.div`
   display: inline-block;
   position: relative;
+  width: fit-content;
 `
 
 const StyledFileDiv = styled.div`
@@ -102,8 +103,7 @@ const StyledFileDiv = styled.div`
   position: relative;
   border: 1px solid ${COLOR.LIGHT_GRAY};
   border-radius: 4px;
-  min-width: 200px;
-  max-width: 300px;
+  width: fit-content;
 `
 
 const FlexDiv = styled.div`
