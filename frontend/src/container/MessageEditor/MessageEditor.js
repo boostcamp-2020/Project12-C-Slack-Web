@@ -43,12 +43,14 @@ function MessageEditor({ sendMessage, placeholder }) {
 
   const renderPreview = () => {
     return (
-      <FilePreview
-        type="input"
-        file={file}
-        setFile={setFile}
-        setIsRender={setIsRender}
-      />
+      <div>
+        <FilePreview
+          type="input"
+          file={file}
+          setFile={setFile}
+          setIsRender={setIsRender}
+        />
+      </div>
     )
   }
 
@@ -60,7 +62,7 @@ function MessageEditor({ sendMessage, placeholder }) {
         handleKey={handleKey}
         value={message}
       />
-      <div>{isRender && renderPreview()}</div>
+      {isRender && renderPreview()}
       <StyledDiv>
         <FileUploader file={file} setFile={setFile} />
         <Button handleClick={sendMessageHanle} disabled={!isSend}>
