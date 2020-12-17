@@ -1,44 +1,55 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import ChatMessage from '../ChatMessage'
 import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
 import MessageEditor from '../MessageEditor/MessageEditor'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import ChannelHeader from '../ChannelHeader'
+import { isEmpty } from '../../util'
 
 const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
-  const target = useRef(null)
+  const observerTargetNode = useRef(null)
   const messageEndRef = useRef(null)
-  const [targetState, setTargetState] = useState()
+  const previousReadMessage = useRef(null)
+  const isLoading = useRef(false)
+  const isAllMessageFetched = useRef(false)
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
   const { workspaceId, channelId } = useParams()
   const socket = useRecoilValue(socketRecoil)
   const [messages, setMessages] = useState([])
-  const load = useRef(false)
+  const [previousReadMessageIndex, setPreviousReadMessageIndex] = useState(0)
 
-  const loadMessage = async (workspaceId, channelId, currentCursor) => {
-    load.current = true
-    const newMessages = await getChatMessage({
-      workspaceId,
-      channelId,
-      currentCursor,
-    })
-    setMessages(messages => [...newMessages, ...messages])
-    load.current = false
-  }
+  const loadMessage = useCallback(
+    async (workspaceId, channelId, currentCursor) => {
+      isLoading.current = true
+      const newMessages = await getChatMessage({
+        workspaceId,
+        channelId,
+        currentCursor,
+      })
+      if (!newMessages.length) isAllMessageFetched.current = true
+      if (!isEmpty(messages)) setPreviousReadMessageIndex(newMessages.length)
+      setMessages(messages => [...newMessages, ...messages])
+      if (previousReadMessage.current) scrollTo(previousReadMessage.current)
+      if (!previousReadMessage.current && newMessages.length !== 0) scrollTo()
+      isLoading.current = false
+    },
+    [messages],
+  )
 
   useEffect(() => {
     setMessages([])
+    isLoading.current = false
+    isAllMessageFetched.current = false
     loadMessage(workspaceId, channelId, new Date())
-    scrollTo()
   }, [workspaceId, channelId])
 
-  const scrollTo = (targetRef = messageEndRef.current) => {
-    targetRef.scrollIntoView()
+  const scrollTo = (target = messageEndRef.current) => {
+    target.scrollIntoView()
   }
 
   const sendMessage = message => {
@@ -118,30 +129,33 @@ const ChatRoom = ({ width }) => {
   }, [socket, channelId])
 
   useEffect(() => {
-    const option = {
-      root: viewport.current,
-      threshold: 0,
-    }
     const handleIntersection = (entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          if (!load.current) {
-            loadMessage(workspaceId, channelId, target.current.id)
+          if (!isLoading.current && !isAllMessageFetched.current) {
+            loadMessage(workspaceId, channelId, observerTargetNode.current.id)
             observer.unobserve(entry.target)
-            observer.observe(target.current)
+            observer.observe(observerTargetNode.current)
           }
         }
       })
     }
-    const IO = new IntersectionObserver(handleIntersection, option)
-    if (target.current) IO.observe(target.current)
+    const IO = new IntersectionObserver(handleIntersection, {
+      root: viewport.current,
+      threshold: 0,
+    })
+    if (observerTargetNode.current) IO.observe(observerTargetNode.current)
     return () => IO && IO.disconnect()
-  }, [viewport, targetState])
+  }, [channelId, workspaceId, loadMessage])
 
-  const setTarget = useCallback(node => {
-    target.current = node
-    setTargetState(node)
-  }, [])
+  const setRef = useCallback(
+    index => {
+      if (index === 0) return node => (observerTargetNode.current = node)
+      if (index === previousReadMessageIndex)
+        return node => (previousReadMessage.current = node)
+    },
+    [previousReadMessageIndex],
+  )
 
   return (
     <ChatArea width={width}>
@@ -155,7 +169,7 @@ const ChatRoom = ({ width }) => {
               <ChatMessage
                 key={i}
                 {...message}
-                ref={i ? null : setTarget}
+                ref={setRef(i)}
                 id={message.createdAt}
               />
             )
