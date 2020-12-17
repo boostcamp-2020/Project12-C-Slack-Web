@@ -179,7 +179,7 @@ const findChannelIdByName = async ({ title }) => {
 
   return {
     code: statusCode.OK,
-    data: channelData._id,
+    data: channelData?._id,
     success: true,
   }
 }
