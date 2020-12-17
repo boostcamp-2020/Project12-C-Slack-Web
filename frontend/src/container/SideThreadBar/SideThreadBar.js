@@ -56,11 +56,12 @@ function SideThreadBar() {
     }
   }, [socket, chatId])
 
-  const sendReply = message => {
+  const sendReply = (message, file) => {
     const reply = {
       contents: message,
       parentId: chatId,
       channelId,
+      file: file,
       userInfo: {
         _id: workspaceUserInfo._id,
         displayName: workspaceUserInfo.displayName,

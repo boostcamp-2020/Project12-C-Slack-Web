@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { COLOR } from '../../constant/style'
 
 const ChatContent = memo(
-  ({ displayName, createdAt, contents, handleProfileModal }) => {
+  ({ displayName, createdAt, contents, handleProfileModal, fileContents }) => {
     return (
       <StyledChatContent>
         <ChatHeader>
@@ -12,7 +12,10 @@ const ChatContent = memo(
           </StyledUserName>
           <StyledDate>{createdAt}</StyledDate>
         </ChatHeader>
-        <ChatContentArea>{contents}</ChatContentArea>
+        <ChatContentArea>
+          {contents}
+          {fileContents}
+        </ChatContentArea>
       </StyledChatContent>
     )
   },

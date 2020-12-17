@@ -7,13 +7,23 @@ import ChatContent from '../../presenter/ChatContent'
 import ThreadReactionList from '../../presenter/ThreadReactionList'
 import ActionBar from '../ActionBar'
 import ViewThreadButton from '../../presenter/Button/ViewThreadButton'
-import { isEmpty } from '../../util'
+import { isEmpty, isImage } from '../../util'
 import { SIZE, COLOR } from '../../constant/style'
 import { workspaceRecoil, socketRecoil } from '../../store'
+import FilePreview from '../FilePreview'
 
 const ChatMessage = forwardRef(
   (
-    { userInfo, reply, reactions, _id, createdAt, contents, type = 'chat' },
+    {
+      userInfo,
+      reply,
+      reactions,
+      _id,
+      createdAt,
+      contents,
+      type = 'chat',
+      file,
+    },
     ref,
   ) => {
     const { workspaceId, channelId } = useParams()
@@ -61,6 +71,11 @@ const ChatMessage = forwardRef(
       }
     }
 
+    const renderFilePreview = () => {
+      if (isEmpty(file)) return
+      return <FilePreview type="message" file={file} />
+    }
+
     return (
       <StyledMessageContainer
         type={type}
@@ -79,6 +94,7 @@ const ChatMessage = forwardRef(
             displayName={userInfo.displayName}
             createdAt={createdAt}
             contents={contents}
+            fileContents={renderFilePreview()}
           />
         </MessageContents>
 
