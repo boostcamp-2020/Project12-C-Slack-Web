@@ -144,6 +144,10 @@ const ClickToDownloadSpan = styled.span`
   bottom: 5px;
   left: 10px;
   color: ${COLOR.GRAY};
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 0 4px;
 `
 
 const DescriptionDiv = styled.div`
