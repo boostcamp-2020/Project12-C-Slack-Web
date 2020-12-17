@@ -40,7 +40,11 @@ function WorkspacePage() {
       setLineWidth(width)
     }
   }
-
+  useEffect(() => {
+    if (Notification.permission !== 'denied') {
+      Notification.requestPermission()
+    }
+  }, [])
   const switching = () => {
     switch (channelId) {
       case 'threads':
@@ -97,8 +101,7 @@ const ConstructionPage = SideBarWidth => {
 }
 
 const PageStyle = styled.div`
-  width: 100vw;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
 `
@@ -129,6 +132,7 @@ const ChannelListHeaderArea = styled.div`
   background: ${COLOR.BACKGROUND_CHANNEL_LIST};
   color: ${COLOR.LABEL_DEFAULT_TEXT};
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
 `
 
 const ChannelListArea = styled.div`

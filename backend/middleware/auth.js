@@ -14,3 +14,15 @@ exports.Auth = (req, res, next) => {
     next()
   })(req, res, next)
 }
+
+exports.InviteAuth = (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, (err, user) => {
+    if (err || !user || !user.success) {
+      const redirectURL = `${process.env.FRONTEND_HOST}/login?invitecode=${req.params.code}`
+      res.status(statusCode.UNAUTHORIZED).redirect(redirectURL)
+      return
+    }
+    req.user = user
+    next()
+  })(req, res, next)
+}

@@ -9,6 +9,7 @@ import MessageEditor from '../MessageEditor/MessageEditor'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import ChannelHeader from '../ChannelHeader'
 import { hasMyReaction, chageReactionState } from '../../util/reactionUpdate'
+import useChannelInfo from '../../hooks/useChannelInfo'
 
 const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
@@ -16,6 +17,7 @@ const ChatRoom = ({ width }) => {
   const messageEndRef = useRef(null)
   const [targetState, setTargetState] = useState()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
+  const [channelInfo] = useChannelInfo()
   const { workspaceId, channelId } = useParams()
   const params = useParams()
   const socket = useRecoilValue(socketRecoil)
@@ -46,10 +48,11 @@ const ChatRoom = ({ width }) => {
     targetRef.scrollIntoView()
   }
 
-  const sendMessage = message => {
+  const sendMessage = (message, file) => {
     const chat = {
       contents: message,
       channelId,
+      file: file,
       userInfo: {
         _id: workspaceUserInfo._id,
         displayName: workspaceUserInfo.displayName,
@@ -71,6 +74,13 @@ const ChatRoom = ({ width }) => {
             ...messages,
             ...hasMyReaction([message], workspaceUserInfo),
           ])
+
+        if (document.hidden) {
+          new Notification('새로운 메시지가 왔습니다.', {
+            body: `${message.userInfo.displayName} : ${message.contents}`,
+          })
+        }
+        
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
       socket.on('update reaction', ({ reaction }) => {
@@ -83,7 +93,7 @@ const ChatRoom = ({ width }) => {
         socket.off('update reaction')
       }
     }
-  }, [socket, channelId, params])
+  }, [socket, channelId, document.hidden, params])
 
   useEffect(() => {
     const option = {
@@ -130,7 +140,12 @@ const ChatRoom = ({ width }) => {
           })}
         <div ref={messageEndRef}></div>
       </ChatContents>
-      <MessageEditor channelTitle={'hello world'} sendMessage={sendMessage} />
+      <MessageEditor
+        sendMessage={sendMessage}
+        placeholder={`Send a message to #${
+          channelInfo?.channelId?.title ? channelInfo?.channelId?.title : '...'
+        }`}
+      />
     </ChatArea>
   )
 }
@@ -148,6 +163,7 @@ const ChatHeader = styled.div`
   height: 60px;
   background: ${COLOR.BACKGROUND_CONTENTS};
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
 `
 
 const ChatContents = styled.div`

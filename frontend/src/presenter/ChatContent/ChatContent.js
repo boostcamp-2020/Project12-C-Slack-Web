@@ -1,24 +1,25 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styled from 'styled-components'
 import { COLOR } from '../../constant/style'
-const ChatContent = ({
-  displayName,
-  createdAt,
-  contents,
-  handleProfileModal,
-}) => {
-  return (
-    <StyledChatContent>
-      <ChatHeader>
-        <StyledUserName onClick={handleProfileModal}>
-          {displayName}
-        </StyledUserName>
-        <StyledDate>{createdAt}</StyledDate>
-      </ChatHeader>
-      <ChatContentArea>{contents}</ChatContentArea>
-    </StyledChatContent>
-  )
-}
+
+const ChatContent = memo(
+  ({ displayName, createdAt, contents, handleProfileModal, fileContents }) => {
+    return (
+      <StyledChatContent>
+        <ChatHeader>
+          <StyledUserName onClick={handleProfileModal}>
+            {displayName}
+          </StyledUserName>
+          <StyledDate>{createdAt}</StyledDate>
+        </ChatHeader>
+        <ChatContentArea>
+          {contents}
+          {fileContents}
+        </ChatContentArea>
+      </StyledChatContent>
+    )
+  },
+)
 const StyledChatContent = styled.div`
   width: 100%;
   display: flex;
