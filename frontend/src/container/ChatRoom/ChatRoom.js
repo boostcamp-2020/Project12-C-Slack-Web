@@ -9,6 +9,8 @@ import MessageEditor from '../MessageEditor/MessageEditor'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import ChannelHeader from '../ChannelHeader'
 import { isEmpty } from '../../util'
+import { hasMyReaction, chageReactionState } from '../../util/reactionUpdate'
+import useChannelInfo from '../../hooks/useChannelInfo'
 
 const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
@@ -18,7 +20,9 @@ const ChatRoom = ({ width }) => {
   const isLoading = useRef(false)
   const isAllMessageFetched = useRef(false)
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
+  const [channelInfo] = useChannelInfo()
   const { workspaceId, channelId } = useParams()
+  const params = useParams()
   const socket = useRecoilValue(socketRecoil)
   const [messages, setMessages] = useState([])
   const [previousReadMessageIndex, setPreviousReadMessageIndex] = useState(0)
@@ -33,13 +37,17 @@ const ChatRoom = ({ width }) => {
       })
       if (!newMessages.length) isAllMessageFetched.current = true
       if (!isEmpty(messages)) setPreviousReadMessageIndex(newMessages.length)
-      setMessages(messages => [...newMessages, ...messages])
+      setMessages(messages => [
+        ...hasMyReaction(newMessages, workspaceUserInfo),
+        ...messages,
+      ])
       if (previousReadMessage.current) scrollTo(previousReadMessage.current)
       if (!previousReadMessage.current && newMessages.length !== 0) scrollTo()
       isLoading.current = false
     },
     [messages],
   )
+
 
   useEffect(() => {
     setMessages([])
@@ -52,10 +60,11 @@ const ChatRoom = ({ width }) => {
     target.scrollIntoView()
   }
 
-  const sendMessage = message => {
+  const sendMessage = (message, file) => {
     const chat = {
       contents: message,
       channelId,
+      file: file,
       userInfo: {
         _id: workspaceUserInfo._id,
         displayName: workspaceUserInfo.displayName,
@@ -65,55 +74,25 @@ const ChatRoom = ({ width }) => {
     socket.emit('new message', chat)
   }
 
-  const chageReactionState = (messages, reaction) => {
-    let done = false
-    if (reaction.type === false) {
-      return messages
-    }
-    return messages.map(message => {
-      if (message._id === reaction.chatId) {
-        message.reactions &&
-          message.reactions.map(item => {
-            if (item.emoji === reaction.emoji) {
-              if (reaction.type) {
-                item.users = [
-                  ...item.users,
-                  {
-                    _id: reaction.workspaceUserInfoId,
-                    displayName: reaction.displayName,
-                  },
-                ]
-              } else {
-                item.users.map((user, idx) => {
-                  if (user._id === reaction.workspaceUserInfoId) {
-                    item.users.splice(idx, 1)
-                  }
-                })
-              }
-              done = true
-            }
-          })
-        if (!done && reaction.type === 1) {
-          message.reactions.push({
-            emoji: reaction.emoji,
-            users: [
-              {
-                _id: reaction.workspaceUserInfoId,
-                displayName: reaction.displayName,
-              },
-            ],
-          })
-        }
-      }
-      return message
-    })
-  }
+  useEffect(() => {
+    setMessages(messages => [...hasMyReaction(messages, workspaceUserInfo)])
+  }, [workspaceUserInfo])
 
   useEffect(() => {
     if (socket) {
       socket.on('new message', ({ message }) => {
         if (message.channelId === channelId)
-          setMessages(messages => [...messages, message])
+          setMessages(messages => [
+            ...messages,
+            ...hasMyReaction([message], workspaceUserInfo),
+          ])
+
+        if (document.hidden) {
+          new Notification('새로운 메시지가 왔습니다.', {
+            body: `${message.userInfo.displayName} : ${message.contents}`,
+          })
+        }
+
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
       socket.on('update reaction', ({ reaction }) => {
@@ -126,7 +105,7 @@ const ChatRoom = ({ width }) => {
         socket.off('update reaction')
       }
     }
-  }, [socket, channelId])
+  }, [socket, channelId, document.hidden, params])
 
   useEffect(() => {
     const handleIntersection = (entries, observer) => {
@@ -176,7 +155,12 @@ const ChatRoom = ({ width }) => {
           })}
         <div ref={messageEndRef}></div>
       </ChatContents>
-      <MessageEditor channelTitle={'hello world'} sendMessage={sendMessage} />
+      <MessageEditor
+        sendMessage={sendMessage}
+        placeholder={`Send a message to #${
+          channelInfo?.channelId?.title ? channelInfo?.channelId?.title : '...'
+        }`}
+      />
     </ChatArea>
   )
 }

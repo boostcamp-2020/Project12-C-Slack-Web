@@ -36,7 +36,7 @@ const InviteWorkspaceModal = ({ handleClose }) => {
           </Button>
         </StyledModalHeader>
         <StyledModalContent>
-          <StyeldTextarea value={inviteURL}></StyeldTextarea>
+          <StyeldTextarea value={inviteURL} readOnly></StyeldTextarea>
         </StyledModalContent>
       </Modal>
     </>

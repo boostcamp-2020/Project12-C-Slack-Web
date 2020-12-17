@@ -40,7 +40,11 @@ function WorkspacePage() {
       setLineWidth(width)
     }
   }
-
+  useEffect(() => {
+    if (Notification.permission !== 'denied') {
+      Notification.requestPermission()
+    }
+  }, [])
   const switching = () => {
     switch (channelId) {
       case 'threads':

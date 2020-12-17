@@ -6,7 +6,7 @@ import { SIZE } from '../../constant/style'
 
 function EmojiModal({ sendHandler, closeHandler, axisX, axisY }) {
   const addEmoji = emoji => {
-    if (emoji !== null) sendHandler(emoji)
+    if (emoji !== null) sendHandler(emoji.native)
     closeHandler()
   }
   const stopPropagation = e => {

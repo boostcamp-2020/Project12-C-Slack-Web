@@ -31,6 +31,7 @@ const StyledButton = styled.button`
   color: ${({ type, disabled }) => {
     if (disabled) return COLOR.GRAY
     if (type === 'transparent') return COLOR.GRAY
+    if (type === 'leave') return COLOR.WHITE
     return COLOR.WHITE
   }};
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
@@ -38,6 +39,7 @@ const StyledButton = styled.button`
     if (disabled) return COLOR.LIGHT_GRAY
     if (type === 'transparent') return 'transparent'
     if (type === 'icon') return 'transparent'
+    if (type === 'leave') return '#D91D57'
     return COLOR.GREEN
   }};
   border: ${({ type }) => {

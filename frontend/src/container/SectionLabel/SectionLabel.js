@@ -12,19 +12,27 @@ import { modalRecoil } from '../../store'
 import { useSetRecoilState } from 'recoil'
 import InviteWorkspaceModal from '../Modal/InviteWorkspaceModal'
 import CreateChannelModal from '../Modal/CreateChannelModal/CreateChannelModal'
+import ChannelBrowserModal from '../Modal/ChannelBrowserModal'
+import InviteUserToChannelModal from '../Modal/InviteUserToChannelModal'
 
 function SectionLabel(props) {
   const [isOpen, setIsOpen] = useState(true)
   const { sectionName, lists } = props
   const { channelId, workspaceId } = useParams()
   const setModal = useSetRecoilState(modalRecoil)
-
   const openSection = () => {
     setIsOpen(!isOpen)
   }
 
   const openChannelsMenu = e => {
     e.stopPropagation()
+  }
+
+  const openAddUserModal = e => {
+    e.stopPropagation()
+    setModal(
+      <InviteUserToChannelModal type="DM" handleClose={() => setModal(null)} />,
+    )
   }
 
   const renderChannelCards =
@@ -67,6 +75,11 @@ function SectionLabel(props) {
     setModal(<InviteWorkspaceModal handleClose={() => setModal(null)} />)
   }
 
+  const openChannelBrowserModal = e => {
+    e.stopPropagation()
+    setModal(<ChannelBrowserModal handleClose={() => setModal(null)} />)
+  }
+
   const addButtons =
     sectionName === 'Direct messages' ? (
       <AddButton
@@ -101,7 +114,7 @@ function SectionLabel(props) {
               />
             </ChannelSectionBtn>
             {sectionName === 'Channels' && (
-              <ChannelSectionBtn onClick={openChannelsMenu}>
+              <ChannelSectionBtn onClick={openChannelBrowserModal}>
                 <Icon
                   icon={PLUS}
                   color={COLOR.LABEL_DEFAULT_TEXT}
@@ -110,7 +123,7 @@ function SectionLabel(props) {
               </ChannelSectionBtn>
             )}
             {sectionName === 'Direct messages' && (
-              <ChannelSectionBtn onClick={openChannelsMenu}>
+              <ChannelSectionBtn onClick={openAddUserModal}>
                 <Icon
                   icon={PLUS}
                   color={COLOR.LABEL_DEFAULT_TEXT}

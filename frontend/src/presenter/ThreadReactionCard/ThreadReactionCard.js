@@ -1,38 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { useRecoilValue } from 'recoil'
-import { workspaceRecoil } from '../../store'
 import { COLOR } from '../../constant/style'
 
 function ThreadReactionCard({ reaction, updateReactionHandler }) {
-  const userInfo = useRecoilValue(workspaceRecoil)
-  const [myReaction, setMyReaction] = useState(false)
-
-  useEffect(() => {
-    setMyReaction(hasMyReaction())
-  }, [reaction.users.length, userInfo])
-
-  const hasMyReaction = () => {
-    if (reaction.users[0] === undefined) {
-      reaction.set = false
-      return false
-    }
-    const result = reaction.users.every(user => {
-      return user?._id !== userInfo?._id
-    })
-    if (!result) {
-      reaction.set = true
-    } else {
-      reaction.set = false
-    }
-    return !result
-  }
-
   return (
     reaction.users.length !== 0 && (
       <ThreadReactionCardStyle
         onClick={() => updateReactionHandler(reaction.emoji)}
-        myReaction={myReaction}
+        myReaction={reaction.set}
       >
         <EmotionArea>{reaction.emoji}</EmotionArea>
         <UserNumArea>{reaction.users.length}</UserNumArea>
@@ -51,6 +26,7 @@ const ThreadReactionCardStyle = styled.div`
   justify-content: space-around;
   align-items: center;
   border-radius: 20px;
+  cursor: pointer;
   border: 1px solid
     ${props => {
       return props.myReaction ? COLOR.REACTION_MINE_TEXT_AND_LINE : 'gray'

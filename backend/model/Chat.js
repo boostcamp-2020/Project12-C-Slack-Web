@@ -27,6 +27,9 @@ const chatSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    file: {
+      type: Object,
+    },
   },
   { timestamps: true },
 )
