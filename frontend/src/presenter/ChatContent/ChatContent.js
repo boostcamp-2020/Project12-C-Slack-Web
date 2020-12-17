@@ -1,6 +1,5 @@
 import React, { memo } from 'react'
 import styled from 'styled-components'
-import { convertFromRaw, Editor, EditorState } from 'draft-js'
 import { COLOR } from '../../constant/style'
 
 const ChatContent = memo(
@@ -14,12 +13,7 @@ const ChatContent = memo(
           <StyledDate>{createdAt}</StyledDate>
         </ChatHeader>
         <ChatContentArea>
-          <Editor
-            editorState={EditorState.createWithContent(
-              convertFromRaw(JSON.parse(contents)),
-            )}
-            readOnly={true}
-          />
+          {contents}
           {fileContents}
         </ChatContentArea>
       </StyledChatContent>
