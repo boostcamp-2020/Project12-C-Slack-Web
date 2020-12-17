@@ -4,25 +4,42 @@ import Input from '../../presenter/Input'
 import FileUploader from '../FileUploader'
 import FilePreview from '../FilePreview'
 import styled from 'styled-components'
+import Icon from '../../presenter/Icon'
+import { PAPERPLANE } from '../../constant/icon'
+import Button from '../../presenter/Button'
 
 function MessageEditor({ sendMessage, placeholder }) {
   const [message, setMessage] = useState('')
   const [file, setFile] = useState(null)
   const [isRender, setIsRender] = useState(false)
+  const [isSend, setIsSend] = useState(false)
 
   useEffect(() => {
-    if (file) setIsRender(true)
+    if (file) {
+      setIsRender(true)
+      setIsSend(true)
+    }
   }, [file])
 
   const handleInput = e => {
     setMessage(e.target.value)
+    console.log('e.target.value: ', e.target.value)
+    console.log('e.target.value.lenght: ', e.target.value.length)
+    if (e.target.value.length > 0) setIsSend(true)
+    else setIsSend(false)
   }
+
+  const sendMessageHanle = () => {
+    sendMessage(message, file)
+    setMessage('')
+    setFile(null)
+    setIsRender(false)
+    setIsSend(false)
+  }
+
   const handleKey = e => {
     if (e.key === 'Enter' && (e.target.value || file)) {
-      sendMessage(message, file)
-      setMessage('')
-      setFile(null)
-      setIsRender(false)
+      sendMessageHanle()
     }
   }
 
@@ -46,15 +63,23 @@ function MessageEditor({ sendMessage, placeholder }) {
         value={message}
       />
       <div>{isRender && renderPreview()}</div>
-      <div>
+      <StyledDiv>
         <FileUploader file={file} setFile={setFile} />
-      </div>
+        <Button handleClick={sendMessageHanle} disabled={!isSend}>
+          <Icon icon={PAPERPLANE} color="white" />
+        </Button>
+      </StyledDiv>
       {/* TODO markdown, chat action 적용 필요 */}
     </MessageEditorContainer>
   )
 }
+
 const MessageEditorContainer = styled.div`
   padding: 20px;
   background-color: ${COLOR.WHITE};
+`
+
+const StyledDiv = styled.div`
+  float: right;
 `
 export default MessageEditor
