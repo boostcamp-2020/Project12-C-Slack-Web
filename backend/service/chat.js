@@ -30,10 +30,17 @@ const createReplyMessage = async ({
   creator,
   contents,
   parentId,
+  file,
 }) => {
   verifyRequiredParams(channelId, creator, contents, parentId)
   const result = await dbErrorHandler(() =>
-    Chat.create({ channel: channelId, parentId: parentId, creator, contents }),
+    Chat.create({
+      channel: channelId,
+      parentId: parentId,
+      creator,
+      contents,
+      file: file === null ? undefined : file,
+    }),
   )
   return { data: result }
 }

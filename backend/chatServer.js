@@ -45,12 +45,13 @@ namespace.on('connection', socket => {
     })
   })
   socket.on('new reply', async data => {
-    const { contents, channelId, parentId } = data
+    const { contents, channelId, parentId, file } = data
     const { data: result } = await createReplyMessage({
       creator: workspaceUserInfoId,
       channelId,
       contents,
       parentId,
+      file,
     })
     namespace.in(channelId).emit('new reply', {
       message: {
