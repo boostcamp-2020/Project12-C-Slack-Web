@@ -22,6 +22,7 @@ function FileUploader({ file, setFile }) {
       setFile(null)
     }
     await handlePost(e.target.files[0])
+    e.target.value = ''
   }
   const handlePost = async selectedFile => {
     if (selectedFile) {
