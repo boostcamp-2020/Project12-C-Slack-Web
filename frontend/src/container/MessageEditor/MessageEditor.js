@@ -23,8 +23,6 @@ function MessageEditor({ sendMessage, placeholder }) {
 
   const handleInput = e => {
     setMessage(e.target.value)
-    console.log('e.target.value: ', e.target.value)
-    console.log('e.target.value.lenght: ', e.target.value.length)
     if (e.target.value.length > 0) setIsSend(true)
     else setIsSend(false)
   }
