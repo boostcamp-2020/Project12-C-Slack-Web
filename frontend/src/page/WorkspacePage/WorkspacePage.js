@@ -4,7 +4,6 @@ import { useParams, Route } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
 import { modalRecoil } from '../../store'
 
-import { throttle } from '../../util'
 import ChannelList from '../../container/ChannelList'
 import ChannelListHeader from '../../presenter/ChannelListHeader'
 import ChatRoom from '../../container/ChatRoom'
@@ -14,51 +13,37 @@ import Icon from '../../presenter/Icon'
 import { TOOLS } from '../../constant/icon'
 import useWorkspace from '../../hooks/useWorkspace'
 import useSocket from '../../hooks/useSocket'
+import DraggableBoundaryLine from '../../presenter/DraggableBoundaryLine'
 
 function WorkspacePage() {
-  const { channelId, chatId } = useParams()
-  const [lineWidth, setLineWidth] = useState(20)
-  const [sideBarWidth, setSideBarWidth] = useState(30)
+  const { channelId } = useParams()
+  const [listWidth, setListWidth] = useState(250)
+  const [sidebarWidth, setSidebarWidth] = useState(350)
   const modal = useRecoilValue(modalRecoil)
   const [workspaceUserInfo] = useWorkspace()
+
   useSocket()
 
-  useEffect(() => {
-    if (chatId !== undefined) setSideBarWidth(30)
-    else setSideBarWidth(0)
-  }, [chatId])
-
-  const moveLine = e => {
-    if (e.pageX === 0) return false
-    let mouse = e.pageX
-    let viewWidth = e.view.innerWidth
-
-    let width = (mouse / viewWidth) * 100
-    if (width < 20) {
-      setLineWidth(20)
-    } else {
-      setLineWidth(width)
-    }
-  }
   useEffect(() => {
     if (Notification.permission !== 'denied') {
       Notification.requestPermission()
     }
   }, [])
+
   const switching = () => {
     switch (channelId) {
       case 'threads':
-        return ConstructionPage(100 - sideBarWidth)
+        return ConstructionPage()
       case 'all-dms':
-        return ConstructionPage(100 - sideBarWidth)
+        return ConstructionPage()
       case 'saved-page':
-        return ConstructionPage(100 - sideBarWidth)
+        return ConstructionPage()
       case 'activity-page':
-        return ConstructionPage(100 - sideBarWidth)
+        return ConstructionPage()
       case 'more':
-        return ConstructionPage(100 - sideBarWidth)
+        return ConstructionPage()
       default:
-        return <ChatRoom width={100 - sideBarWidth} />
+        return <ChatRoom width={sidebarWidth} />
     }
   }
 
@@ -67,7 +52,7 @@ function WorkspacePage() {
       {modal}
       <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
       <MainArea>
-        <ChannelListSection width={lineWidth}>
+        <ChannelListSection width={listWidth}>
           <ChannelListHeaderArea>
             <ChannelListHeader workspaceUserInfo={workspaceUserInfo} />
           </ChannelListHeaderArea>
@@ -75,23 +60,26 @@ function WorkspacePage() {
             <ChannelList />
           </ChannelListArea>
         </ChannelListSection>
-        <ListLine draggable="true" onDrag={throttle(moveLine, 100)} />
-        <ContentsArea width={lineWidth}>
+        <DraggableBoundaryLine setWidth={setListWidth} min="150" max="450" />
+
+        <ContentsArea width={listWidth}>
           {switching()}
 
-          <Route
-            path={'/workspace/:workspaceId/:channelId/:chatId'}
-            component={SideThreadBar}
-          />
+          <Route exact path={'/workspace/:workspaceId/:channelId/:chatId'}>
+            <SideThreadBar
+              sidebarWidth={sidebarWidth}
+              setSidebarWidth={setSidebarWidth}
+            />
+          </Route>
         </ContentsArea>
       </MainArea>
     </PageStyle>
   )
 }
 
-const ConstructionPage = SideBarWidth => {
+const ConstructionPage = () => {
   return (
-    <SwitchContentsArea width={SideBarWidth}>
+    <SwitchContentsArea>
       <p>
         <Icon icon={TOOLS} size="100px" color={COLOR.LABEL_SELECT_TEXT} />
       </p>
@@ -121,7 +109,7 @@ const MainArea = styled.div`
 const ChannelListSection = styled.div`
   display: flex;
   flex-direction: column;
-  width: ${props => props.width}%;
+  width: ${props => props.width}px;
   color: ${COLOR.LABEL_DEFAULT_TEXT};
   height: 100%;
 `
@@ -146,42 +134,15 @@ const ChannelListArea = styled.div`
   font-size: 15px;
 `
 
-const ListLine = styled.div`
-  opacity: 0;
-  width: 4px;
-  height: 100%;
-  cursor: col-resize;
-  margin: 0 -2px;
-  &:hover {
-    background: black;
-    opacity: 100;
-    position: relative;
-    ::after {
-      content: ' ';
-      position: absolute;
-      display: block;
-      width: 4px;
-      height: 100%;
-      left: 0;
-      top: 0;
-      background-color: white;
-    }
-  }
-
-  &:active {
-    opacity: 0;
-  }
-`
-
 const ContentsArea = styled.div`
   display: flex;
   flex-direction: row;
-  width: ${props => 100 - props.width}%;
+  width: ${props => `calc(100% - ${props.width}px)`};
   height: 100%;
 `
 const SwitchContentsArea = styled.div`
   height: 100%;
-  width: ${props => props.width}%;
+  width: 100%;
   font-size: 20px;
   color: ${COLOR.LABEL_DEFAULT_TEXT};
   display: flex;

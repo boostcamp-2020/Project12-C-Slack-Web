@@ -153,7 +153,7 @@ const ChatArea = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: calc(${props => props.width}% - 2px);
+  width: ${props => `calc( 100% - ${props.width}px)`};
   background: ${COLOR.HOVER_GRAY};
 `
 
