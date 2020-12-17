@@ -7,7 +7,7 @@ export const chageReactionState = (messages, reaction) =>
 
     draft.forEach(chat => {
       if (chat._id === reaction.chatId) {
-        chat.reactions.forEach(element => {
+        chat.reactions.forEach((element, index) => {
           if (element.emoji === reaction.emoji) {
             if (reaction.type) {
               element.users.push({
@@ -22,6 +22,9 @@ export const chageReactionState = (messages, reaction) =>
                   element.set = false
                 }
               })
+              if (element.users.length === 0) {
+                chat.reactions.splice(index, 1)
+              }
             }
             done = true
           }
