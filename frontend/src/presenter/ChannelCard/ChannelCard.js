@@ -19,7 +19,7 @@ function ChannelCard(props) {
         />
       </IconImgArea>
       <TitleLabel color={color}>
-        {props.channel.channelType == 2
+        {props.channel.channelType === 2
           ? dmTitleGenerator(props.member)
           : title}
       </TitleLabel>

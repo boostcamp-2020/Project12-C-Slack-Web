@@ -129,6 +129,17 @@ const updateChannelSectionDB = async ({
   }
 }
 
+const findChannelIdByName = async ({ title }) => {
+  verifyRequiredParams(title)
+  const channelData = await dbErrorHandler(() => Channel.findOne({ title }))
+
+  return {
+    code: statusCode.OK,
+    data: channelData._id,
+    success: true,
+  }
+}
+
 module.exports = {
   createChannel,
   checkDuplicate,
@@ -137,4 +148,5 @@ module.exports = {
   inviteUserDB,
   muteChannelDB,
   updateChannelSectionDB,
+  findChannelIdByName,
 }
