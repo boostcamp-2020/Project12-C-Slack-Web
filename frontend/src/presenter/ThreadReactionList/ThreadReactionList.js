@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import ThreadReactionCard from '../../container/ThreadReactionCard'
+import ThreadReactionCard from '../ThreadReactionCard'
 import AddReactionButton from '../../container/AddReactionButton'
 
 function ThreadReactionList({ reactions, chatId, updateReactionHandler }) {
@@ -36,6 +36,7 @@ const ThreadReactionListStyle = styled.div`
   align-items: center;
   padding: 0 10px;
   border-radius: 5px;
+  cursor: pointer;
 `
 
 export default ThreadReactionList

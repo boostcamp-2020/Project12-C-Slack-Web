@@ -59,11 +59,12 @@ namespace.on('connection', socket => {
         _id: result._id,
         createdAt: result.createdAt,
         chatId: parentId,
+        reactions: [],
       },
     })
   })
   socket.on('update reaction', async data => {
-    const { emoji, chatId, userInfo, channelId, type } = data
+    const { emoji, chatId, userInfo, channelId, type, parentId } = data
     //1 = add, 0 = remove
     const result =
       type === 1
@@ -85,6 +86,7 @@ namespace.on('connection', socket => {
         workspaceUserInfoId: userInfo._id,
         displayName: userInfo.displayName,
         type: result ? type : false,
+        parentId: parentId,
       },
     })
   })

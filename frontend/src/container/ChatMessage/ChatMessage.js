@@ -20,6 +20,7 @@ const ChatMessage = forwardRef(
       reactions,
       _id,
       createdAt,
+      parentId,
       contents,
       type = 'chat',
       file,
@@ -37,6 +38,7 @@ const ChatMessage = forwardRef(
         emoji,
         chatId,
         channelId,
+        parentId,
         type,
         userInfo: {
           _id: workspaceUserInfo._id,
@@ -49,7 +51,7 @@ const ChatMessage = forwardRef(
     const updateReactionHandler = emoji => {
       let done = false
       reactions.map(reaction => {
-        if (reaction.emoji === emoji.native || reaction.emoji === emoji) {
+        if (reaction.emoji === emoji) {
           if (reaction.set) {
             updateReaction({
               emoji: emoji.native || emoji,
