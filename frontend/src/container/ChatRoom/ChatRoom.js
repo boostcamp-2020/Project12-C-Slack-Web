@@ -19,6 +19,7 @@ const ChatRoom = ({ width }) => {
   const previousReadMessage = useRef(null)
   const isLoading = useRef(false)
   const isAllMessageFetched = useRef(false)
+  const isReading = useRef(false)
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
   const [channelInfo] = useChannelInfo()
   const { workspaceId, channelId } = useParams()
@@ -80,11 +81,13 @@ const ChatRoom = ({ width }) => {
   useEffect(() => {
     if (socket) {
       socket.on('new message', ({ message }) => {
-        if (message.channelId === channelId)
+        if (message.channelId === channelId) {
           setMessages(messages => [
             ...messages,
             ...hasMyReaction([message], workspaceUserInfo),
           ])
+          if (isReading.current) scrollTo()
+        }
 
         if (document.hidden) {
           new Notification('새로운 메시지가 왔습니다.', {
@@ -105,12 +108,19 @@ const ChatRoom = ({ width }) => {
       }
     }
   }, [socket, channelId, document.hidden, params])
-
   useEffect(() => {
     const handleIntersection = (entries, observer) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          if (!isLoading.current && !isAllMessageFetched.current) {
+        if (entry.target === messageEndRef.current) {
+          if (entry.isIntersecting) isReading.current = true
+          else isReading.current = false
+        }
+        if (entry.target === observerTargetNode.current) {
+          if (
+            entry.isIntersecting &&
+            !isLoading.current &&
+            !isAllMessageFetched.current
+          ) {
             loadMessage(workspaceId, channelId, observerTargetNode.current.id)
             observer.unobserve(entry.target)
             observer.observe(observerTargetNode.current)
@@ -123,6 +133,7 @@ const ChatRoom = ({ width }) => {
       threshold: 0,
     })
     if (observerTargetNode.current) IO.observe(observerTargetNode.current)
+    if (messageEndRef.current) IO.observe(messageEndRef.current)
     return () => IO && IO.disconnect()
   }, [channelId, workspaceId, loadMessage])
 
