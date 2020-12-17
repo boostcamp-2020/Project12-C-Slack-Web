@@ -32,6 +32,33 @@ export const getChannelHeaderInfo = async ({
   return data.result
 }
 
+export const getChannelBrowserData = async ({
+  workspaceUserInfoId,
+  workspaceId,
+}) => {
+  const { data } = await Request.GET('/api/channel/browser', {
+    workspaceUserInfoId,
+    workspaceId,
+  })
+  return data.result
+}
+
+export const leaveChannel = async ({ workspaceUserInfoId, channelId }) => {
+  const result = await Request.POST('/api/channel/leave', {
+    workspaceUserInfoId,
+    channelId,
+  })
+  return result
+}
+
+export const joinChannel = async ({ workspaceUserInfoId, channelId }) => {
+  const result = await Request.POST('/api/channel/join', {
+    workspaceUserInfoId,
+    channelId,
+  })
+  return result
+}
+
 export const findChannelIdByName = async ({ title }) => {
   const { data } = await Request.GET(`/api/channel/info?title=${title}`)
   return data?.data

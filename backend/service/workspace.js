@@ -40,6 +40,7 @@ const createWorkspace = async params => {
     Channel.create({
       creator: workspaceUserInfoData._id,
       title: params.channelName,
+      workspaceId: workspaceData._id,
       channelType: 1,
     }),
   )

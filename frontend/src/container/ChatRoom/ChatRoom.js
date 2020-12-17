@@ -80,7 +80,7 @@ const ChatRoom = ({ width }) => {
             body: `${message.userInfo.displayName} : ${message.contents}`,
           })
         }
-        
+
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
       socket.on('update reaction', ({ reaction }) => {

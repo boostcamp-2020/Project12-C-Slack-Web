@@ -1140,6 +1140,7 @@ paths:
                           type: number
 
           description: get user mention and reaction
+
   '/api/chat/{workspaceId}/{channelId}':
     summary: get chat messages
     description: get chat messages
@@ -1247,6 +1248,160 @@ paths:
                                       type: string
                                     profileUrl:
                                       type: string
+          description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: not modified
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: unauthorized
+        default:
+          description: Default error sample response
+
+  /api/channel/browser:
+    summary: get channel list in workspace
+    description: get channel list in workspace
+    get:
+      tags:
+        - channel
+      summary: get channel list in workspace
+      description: get channel list in workspace
+      operationId: ''
+      parameters:
+        - name: workspaceId
+          in: query
+          description: workspaceId
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: workspaceUserInfoId
+          in: query
+          description: workspaceUserInfoId
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        title:
+                          type: string
+                        channelType:
+                          type: integer
+                        joined:
+                          type: boolean
+          description: success response
+
+  '/api/channel/leave':
+    summary: leave channel
+    description: leave channel
+    post:
+      tags:
+        - channel
+      operationId: ''
+      parameters:
+        - name: workspaceId
+          in: query
+          description: workspaceId
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: workspaceUserInfoId
+          in: query
+          description: workspaceUserInfoId
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: not modified
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: unauthorized
+        default:
+          description: Default error sample response
+
+  '/api/channel/join':
+    summary: join channel
+    description: join channel
+    post:
+      tags:
+        - channel
+      operationId: ''
+      parameters:
+        - name: workspaceId
+          in: query
+          description: workspaceId
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: workspaceUserInfoId
+          in: query
+          description: workspaceUserInfoId
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
           description: success response
         '400':
           content:
