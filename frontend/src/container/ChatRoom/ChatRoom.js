@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import ChatMessage from '../ChatMessage'
 import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
 import MessageEditor from '../MessageEditor/MessageEditor'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import ChannelHeader from '../ChannelHeader'
+import useChannelInfo from '../../hooks/useChannelInfo'
 
 const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
@@ -15,6 +16,7 @@ const ChatRoom = ({ width }) => {
   const messageEndRef = useRef(null)
   const [targetState, setTargetState] = useState()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
+  const [channelInfo] = useChannelInfo()
   const { workspaceId, channelId } = useParams()
   const socket = useRecoilValue(socketRecoil)
   const [messages, setMessages] = useState([])
@@ -162,7 +164,12 @@ const ChatRoom = ({ width }) => {
           })}
         <div ref={messageEndRef}></div>
       </ChatContents>
-      <MessageEditor channelTitle={'hello world'} sendMessage={sendMessage} />
+      <MessageEditor
+        sendMessage={sendMessage}
+        placeholder={`Send a message to #${
+          channelInfo?.channelId?.title ? channelInfo?.channelId?.title : '...'
+        }`}
+      />
     </ChatArea>
   )
 }
