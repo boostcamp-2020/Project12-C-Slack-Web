@@ -79,5 +79,6 @@ const MessageEditorContainer = styled.div`
 
 const StyledDiv = styled.div`
   float: right;
+  margin-top: 5px;
 `
 export default MessageEditor
