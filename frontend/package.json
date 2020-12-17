@@ -19,6 +19,7 @@
     "draft-js-markdown-shortcuts-plugin": "^0.6.1",
     "draft-js-plugins-editor": "^3.0.0",
     "emoji-mart": "^3.0.0",
+    "immer": "^8.0.0",
     "qs": "^6.9.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

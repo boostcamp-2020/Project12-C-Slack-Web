@@ -88,6 +88,13 @@ const checkDuplicate = asyncWrapper(async (req, res) => {
   return res.status(code).json({ success, data })
 })
 
+const findChannelIdByName = asyncWrapper(async (req, res) => {
+  const { code, success, data } = await service.findChannelIdByName({
+    ...req.query,
+  })
+  return res.status(code).json({ success, data })
+})
+
 module.exports = {
   getChannelList,
   getChannelBrowserData,
@@ -99,4 +106,5 @@ module.exports = {
   checkDuplicate,
   leaveChannel,
   joinChannel,
+  findChannelIdByName,
 }

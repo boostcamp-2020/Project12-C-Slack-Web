@@ -1,62 +1,84 @@
-import React, { useState, useRef } from 'react'
-import Editor from 'draft-js-plugins-editor'
-import createMarkdownShortcutsPlugin from 'draft-js-markdown-shortcuts-plugin'
-import {
-  ContentState,
-  EditorState,
-  getDefaultKeyBinding,
-  convertToRaw,
-} from 'draft-js'
-import styled from 'styled-components'
-import 'draft-js/dist/Draft.css'
+import React, { useState, useEffect } from 'react'
 import { COLOR } from '../../constant/style'
+import Input from '../../presenter/Input'
+import FileUploader from '../FileUploader'
+import FilePreview from '../FilePreview'
+import styled from 'styled-components'
+import Icon from '../../presenter/Icon'
+import { PAPERPLANE } from '../../constant/icon'
+import Button from '../../presenter/Button'
 
-function MessageEditor({ channelTitle, sendMessage }) {
-  const plugins = useRef([createMarkdownShortcutsPlugin()])
-  const [message, setMessage] = useState(EditorState.createEmpty())
+function MessageEditor({ sendMessage, placeholder }) {
+  const [message, setMessage] = useState('')
+  const [file, setFile] = useState(null)
+  const [isRender, setIsRender] = useState(false)
+  const [isSend, setIsSend] = useState(false)
 
-  const keyBindingFn = e => {
-    if (e.key === 'Enter') return 'send-message'
-    return getDefaultKeyBinding(e)
+  useEffect(() => {
+    if (file) {
+      setIsRender(true)
+      setIsSend(true)
+    }
+  }, [file])
+
+  const handleInput = e => {
+    setMessage(e.target.value)
+    if (e.target.value.length > 0) setIsSend(true)
+    else setIsSend(false)
   }
-  const handleKey = command => {
-    if (command === 'send-message' && message.getCurrentContent().hasText()) {
-      sendMessage(JSON.stringify(convertToRaw(message.getCurrentContent())))
-      setMessage(
-        EditorState.moveFocusToEnd(
-          EditorState.push(
-            message,
-            ContentState.createFromText(''),
-            'remove-range',
-          ),
-        ),
-      )
+
+  const sendMessageHanle = () => {
+    sendMessage(message, file)
+    setMessage('')
+    setFile(null)
+    setIsRender(false)
+    setIsSend(false)
+  }
+
+  const handleKey = e => {
+    if (e.key === 'Enter' && (e.target.value || file)) {
+      sendMessageHanle()
     }
   }
+
+  const renderPreview = () => {
+    return (
+      <FilePreview
+        type="input"
+        file={file}
+        setFile={setFile}
+        setIsRender={setIsRender}
+      />
+    )
+  }
+
   return (
     <MessageEditorContainer>
-      <MessageEditorArea>
-        <Editor
-          placeholder={`Send a message to #${channelTitle}`}
-          editorState={message}
-          onChange={setMessage}
-          plugins={plugins.current}
-          handleKeyCommand={handleKey}
-          keyBindingFn={keyBindingFn}
-        />
-
-        {/* TODO markdown, chat action 적용 필요 */}
-      </MessageEditorArea>
+      <Input
+        placeholder={placeholder}
+        handleChange={handleInput}
+        handleKey={handleKey}
+        value={message}
+      />
+      <div>{isRender && renderPreview()}</div>
+      <StyledDiv>
+        <FileUploader file={file} setFile={setFile} />
+        <Button handleClick={sendMessageHanle} disabled={!isSend}>
+          <Icon icon={PAPERPLANE} color="white" />
+        </Button>
+      </StyledDiv>
+      {/* TODO markdown, chat action 적용 필요 */}
     </MessageEditorContainer>
   )
 }
+
 const MessageEditorContainer = styled.div`
   padding: 20px;
   background-color: ${COLOR.WHITE};
 `
-const MessageEditorArea = styled.div`
-  border: 1px solid ${COLOR.LIGHT_GRAY};
-  padding: 10px;
-  border-radius: 5px;
+
+const StyledDiv = styled.div`
+  float: right;
+  margin-top: 5px;
 `
 export default MessageEditor

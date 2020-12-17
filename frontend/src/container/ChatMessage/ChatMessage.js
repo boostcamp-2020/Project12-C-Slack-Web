@@ -7,13 +7,24 @@ import ChatContent from '../../presenter/ChatContent'
 import ThreadReactionList from '../../presenter/ThreadReactionList'
 import ActionBar from '../ActionBar'
 import ViewThreadButton from '../../presenter/Button/ViewThreadButton'
-import { isEmpty } from '../../util'
+import { isEmpty, isImage } from '../../util'
 import { SIZE, COLOR } from '../../constant/style'
 import { workspaceRecoil, socketRecoil } from '../../store'
+import FilePreview from '../FilePreview'
 
 const ChatMessage = forwardRef(
   (
-    { userInfo, reply, reactions, _id, createdAt, contents, type = 'chat' },
+    {
+      userInfo,
+      reply,
+      reactions,
+      _id,
+      createdAt,
+      parentId,
+      contents,
+      type = 'chat',
+      file,
+    },
     ref,
   ) => {
     const { workspaceId, channelId } = useParams()
@@ -27,6 +38,7 @@ const ChatMessage = forwardRef(
         emoji,
         chatId,
         channelId,
+        parentId,
         type,
         userInfo: {
           _id: workspaceUserInfo._id,
@@ -39,7 +51,7 @@ const ChatMessage = forwardRef(
     const updateReactionHandler = emoji => {
       let done = false
       reactions.map(reaction => {
-        if (reaction.emoji === emoji.native || reaction.emoji === emoji) {
+        if (reaction.emoji === emoji) {
           if (reaction.set) {
             updateReaction({
               emoji: emoji.native || emoji,
@@ -61,6 +73,11 @@ const ChatMessage = forwardRef(
       }
     }
 
+    const renderFilePreview = () => {
+      if (isEmpty(file)) return
+      return <FilePreview type="message" file={file} />
+    }
+
     return (
       <StyledMessageContainer
         type={type}
@@ -79,6 +96,7 @@ const ChatMessage = forwardRef(
             displayName={userInfo.displayName}
             createdAt={createdAt}
             contents={contents}
+            fileContents={renderFilePreview()}
           />
         </MessageContents>
 

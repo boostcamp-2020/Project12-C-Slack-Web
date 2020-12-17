@@ -28,11 +28,12 @@ namespace.on('connection', socket => {
       )
   })
   socket.on('new message', async data => {
-    const { contents, channelId } = data
+    const { contents, channelId, file } = data
     const { data: result } = await createChatMessage({
       creator: workspaceUserInfoId,
       channelId,
       contents,
+      file,
     })
     namespace.in(channelId).emit('new message', {
       message: {
@@ -44,12 +45,13 @@ namespace.on('connection', socket => {
     })
   })
   socket.on('new reply', async data => {
-    const { contents, channelId, parentId } = data
+    const { contents, channelId, parentId, file } = data
     const { data: result } = await createReplyMessage({
       creator: workspaceUserInfoId,
       channelId,
       contents,
       parentId,
+      file,
     })
     namespace.in(channelId).emit('new reply', {
       message: {
@@ -57,11 +59,12 @@ namespace.on('connection', socket => {
         _id: result._id,
         createdAt: result.createdAt,
         chatId: parentId,
+        reactions: [],
       },
     })
   })
   socket.on('update reaction', async data => {
-    const { emoji, chatId, userInfo, channelId, type } = data
+    const { emoji, chatId, userInfo, channelId, type, parentId } = data
     //1 = add, 0 = remove
     const result =
       type === 1
@@ -83,6 +86,7 @@ namespace.on('connection', socket => {
         workspaceUserInfoId: userInfo._id,
         displayName: userInfo.displayName,
         type: result ? type : false,
+        parentId: parentId,
       },
     })
   })

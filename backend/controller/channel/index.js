@@ -20,6 +20,8 @@ router.post('/join', Auth, controller.joinChannel)
 /* GET /api/channle/{channelId}/info  get channel header info  */
 router.get('/:channelId/info', controller.getChannelHeaderInfo)
 
+router.get('/info', controller.findChannelIdByName)
+
 /* POST /api/channle/invite  invite user to channel  */
 router.post('/invite', controller.inviteUser)
 

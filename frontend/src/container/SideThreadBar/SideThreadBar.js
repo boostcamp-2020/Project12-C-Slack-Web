@@ -9,13 +9,14 @@ import MessageEditor from '../MessageEditor'
 import Icon from '../../presenter/Icon'
 import { CLOSE } from '../../constant/icon'
 import { workspaceRecoil, socketRecoil } from '../../store'
+import { hasMyReaction, chageReactionState } from '../../util/reactionUpdate'
 
 function SideThreadBar() {
   const { workspaceId, channelId, chatId } = useParams()
   const [sidebarChat, setSidebarChat] = useState(null)
   const [replyContent, setReplyContent] = useState(null)
   const socket = useRecoilValue(socketRecoil)
-  const messageEndRef = useRef(null)
+  const messageEndRef = useRef()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
 
   const history = useHistory()
@@ -27,8 +28,8 @@ function SideThreadBar() {
       chatId,
     })
     if (data) {
-      setReplyContent(data.reply)
-      setSidebarChat(data)
+      setReplyContent(hasMyReaction(data.reply, workspaceUserInfo))
+      setSidebarChat(hasMyReaction([data], workspaceUserInfo))
     }
     if (data === false) history.push(`/workspace/${workspaceId}/${channelId}`)
   }
@@ -38,29 +39,39 @@ function SideThreadBar() {
   }
 
   const scrollTo = (targetRef = messageEndRef.current) => {
-    targetRef.scrollIntoView()
+    if (targetRef) targetRef.scrollIntoView()
   }
 
   useEffect(() => {
-    socket &&
+    if (socket) {
       socket.on('new reply', ({ message }) => {
         if (message.chatId === chatId) {
           setReplyContent(messages => [...messages, message])
         }
         scrollTo()
       })
+      socket.on('update reaction', ({ reaction }) => {
+        if (reaction.chatId === chatId)
+          setSidebarChat(chat => chageReactionState(chat, reaction))
+        if (reaction.parentId) {
+          setReplyContent(reply => chageReactionState(reply, reaction))
+        }
+      })
+    }
     return () => {
       if (socket) {
-        socket.off('new reply')
+        socket.off('new message')
+        socket.off('update reaction')
       }
     }
   }, [socket, chatId])
 
-  const sendReply = message => {
+  const sendReply = (message, file) => {
     const reply = {
       contents: message,
       parentId: chatId,
       channelId,
+      file: file,
       userInfo: {
         _id: workspaceUserInfo._id,
         displayName: workspaceUserInfo.displayName,
@@ -69,6 +80,12 @@ function SideThreadBar() {
     }
     socket.emit('new reply', reply)
   }
+
+  useEffect(() => {
+    setReplyContent(reply => hasMyReaction(reply, workspaceUserInfo))
+    setSidebarChat(chat => hasMyReaction(chat, workspaceUserInfo))
+    scrollTo()
+  }, [workspaceUserInfo])
 
   useEffect(() => {
     if (chatId !== undefined) loadReplyMessage(workspaceId, channelId, chatId)
@@ -84,18 +101,25 @@ function SideThreadBar() {
       </SideBarHeader>
       <SideBarContents>
         <ChatContent>
-          {sidebarChat && <ChatMessage {...sidebarChat} type="reply" />}
+          {sidebarChat && <ChatMessage {...sidebarChat[0]} type="reply" />}
         </ChatContent>
-        <ReplyContents>
-          {replyContent &&
-            replyContent.map((message, i) => {
-              return <ChatMessage key={i} {...message} type="reply" />
-            })}
-          <div ref={messageEndRef}></div>
-        </ReplyContents>
-        <MessageEditorArea>
-          <MessageEditor channelTitle={'reply'} sendMessage={sendReply} />
-        </MessageEditorArea>
+
+        {replyContent && (
+          <CountReplyArea>
+            <CountReply>
+              {`${replyContent.length} ${
+                replyContent.length === 1 ? 'reply' : 'replies'
+              } `}
+            </CountReply>
+            <Separator />
+          </CountReplyArea>
+        )}
+        {replyContent &&
+          replyContent.map((message, i) => {
+            return <ChatMessage key={i} {...message} type="reply" />
+          })}
+        <div ref={messageEndRef} />
+        <MessageEditor placeholder={'reply...'} sendMessage={sendReply} />
       </SideBarContents>
     </SideThreadBarStyle>
   )
@@ -143,16 +167,24 @@ const SideBarContents = styled.div`
 
 const ChatContent = styled.div`
   width: auto;
-  min-height: 20%;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-right: 0;
   overflow-y: auto;
 `
-
-const ReplyContents = styled.div``
-
-const MessageEditorArea = styled.div`
-  /* height: calc(10% - 3px); */
+const Separator = styled.div`
+  border-bottom: 1px solid ${COLOR.GRAY};
+  width: 100%;
 `
-
+const CountReply = styled.div`
+  min-width: max-content;
+  margin-right: 5px;
+`
+const CountReplyArea = styled.div`
+  font-size: 13px;
+  font-weight: 400;
+  color: ${COLOR.GRAY};
+  display: flex;
+  padding: 16px;
+  align-items: center;
+`
 export default SideThreadBar

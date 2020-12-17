@@ -58,3 +58,8 @@ export const joinChannel = async ({ workspaceUserInfoId, channelId }) => {
   })
   return result
 }
+
+export const findChannelIdByName = async ({ title }) => {
+  const { data } = await Request.GET(`/api/channel/info?title=${title}`)
+  return data?.data
+}

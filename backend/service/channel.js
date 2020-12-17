@@ -173,6 +173,16 @@ const joinChannel = async ({ channelId, workspaceUserInfoId }) => {
     success: true,
   }
 }
+const findChannelIdByName = async ({ title }) => {
+  verifyRequiredParams(title)
+  const channelData = await dbErrorHandler(() => Channel.findOne({ title }))
+
+  return {
+    code: statusCode.OK,
+    data: channelData._id,
+    success: true,
+  }
+}
 
 module.exports = {
   createChannel,
@@ -185,4 +195,5 @@ module.exports = {
   getChannelBrowserData,
   leaveChannel,
   joinChannel,
+  findChannelIdByName,
 }
