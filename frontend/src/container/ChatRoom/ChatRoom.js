@@ -48,7 +48,6 @@ const ChatRoom = ({ width }) => {
     [messages],
   )
 
-
   useEffect(() => {
     setMessages([])
     isLoading.current = false

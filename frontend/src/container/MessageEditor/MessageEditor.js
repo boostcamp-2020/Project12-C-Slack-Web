@@ -56,13 +56,16 @@ function MessageEditor({ sendMessage, placeholder }) {
 
   return (
     <MessageEditorContainer>
-      <Input
-        placeholder={placeholder}
-        handleChange={handleInput}
-        handleKey={handleKey}
-        value={message}
-      />
-      {isRender && renderPreview()}
+      <EditorArea>
+        <Input
+          placeholder={placeholder}
+          handleChange={handleInput}
+          handleKey={handleKey}
+          value={message}
+          type="messageEditor"
+        />
+        {isRender && renderPreview()}
+      </EditorArea>
       <StyledDiv>
         <FileUploader file={file} setFile={setFile} />
         <Button handleClick={sendMessageHanle} disabled={!isSend}>
@@ -82,5 +85,18 @@ const MessageEditorContainer = styled.div`
 const StyledDiv = styled.div`
   float: right;
   margin-top: 5px;
+`
+const EditorArea = styled.div`
+  &:focus-within {
+    box-shadow: 0 0 0 1px rgba(18, 100, 163, 1),
+      0 0 0 5px rgba(29, 155, 209, 0.3);
+    border-radius: 4px;
+    border-color: transparent;
+  }
+  &:focus-within > div {
+    display: block;
+  }
+  border: 1px solid ${COLOR.TRANSPARENT_GRAY};
+  border-radius: 4px;
 `
 export default MessageEditor
