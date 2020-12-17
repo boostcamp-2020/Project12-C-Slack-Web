@@ -7,6 +7,9 @@ import { COLOR } from '../../constant/style'
 import Button from '../../presenter/Button'
 import { isImage } from '../../util'
 
+const INPUT_MAX_IMG_WIDTH = 80
+const MAX_IMG_WIDTH = 300
+
 function FilePreview({ type, setIsRender, file, setFile }) {
   const [isHover, setIsHover] = useState(false)
 
@@ -46,17 +49,37 @@ function FilePreview({ type, setIsRender, file, setFile }) {
     )
   }
 
+  const onImgLoad = e => {
+    const ratio = MAX_IMG_WIDTH / e.target.naturalWidth
+    setFile({
+      ...file,
+      width: e.target.naturalWidth * ratio,
+      height: e.target.naturalHeight * ratio,
+    })
+  }
+
   const renderImgPreview = () => {
     return (
       <StyledImgDiv
         onMouseEnter={enterMouseHandle}
         onMouseLeave={leaveMouseHandle}
       >
-        <StyledImg
-          alt={file?.originalName || '이미지'}
-          src={file?.url}
-          type={type}
-        ></StyledImg>
+        {type === 'input' ? (
+          <StyledImg
+            alt={file?.originalName || '이미지'}
+            src={file?.url}
+            type={type}
+            onLoad={onImgLoad}
+          ></StyledImg>
+        ) : (
+          <StyledImg
+            alt={file?.originalName || '이미지'}
+            src={file?.url}
+            type={type}
+            width={file?.width}
+            height={file?.height}
+          ></StyledImg>
+        )}
         {isHover &&
           (type === 'input'
             ? deleteButton()
@@ -114,7 +137,7 @@ const FlexDiv = styled.div`
 
 const StyledImg = styled.img`
   max-width: ${({ type }) => {
-    return type === 'input' ? '80px' : '300px'
+    return type === 'input' ? `${INPUT_MAX_IMG_WIDTH}px` : `${MAX_IMG_WIDTH}px`
   }};
   height: auto;
   border-radius: 2%;

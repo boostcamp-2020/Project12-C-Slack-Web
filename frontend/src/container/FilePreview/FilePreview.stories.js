@@ -20,6 +20,7 @@ inputImgPreview.args = {
     url:
       'https://kr.object.ncloudstorage.com/slack-clone-files/file-1608140339770-슬기.jpg',
   },
+  setFile: () => {},
   setIsRender: () => {
     isRender = false
   },
@@ -36,6 +37,8 @@ messageImgPreview.args = {
     creator: '5fd81c4d630674160961baf4',
     url:
       'https://kr.object.ncloudstorage.com/slack-clone-files/file-1608140339770-슬기.jpg',
+    width: '700px',
+    height: '500px',
   },
 }
 
