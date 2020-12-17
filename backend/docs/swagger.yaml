@@ -607,7 +607,7 @@ paths:
     get:
       tags:
         - channel
-      summary: get channel list //get userId from JWT
+      summary: get channel list
       description: get channel list
       operationId: ''
       parameters:
@@ -632,27 +632,68 @@ paths:
                     items:
                       type: object
                       properties:
+                        _id:
+                          type: object
                         channelId:
-                          type: string
-                        title:
-                          type: string
-                        channelType:
-                          type: number
-                        section:
                           type: object
                           properties:
-                            sectionId:
+                            _id:
+                              type: object
+                            title:
                               type: string
-                            name:
+                            description:
                               type: string
+                            topic:
+                              type: string
+                            channelType:
+                              type: integer
+                            creator:
+                              type: object
+                            isDeleted:
+                              type: boolean
+                            createdAt:
+                              format: date-time
+                              type: string
+                            updatedAt:
+                              format: date-time
+                              type: string
+                            member:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  workspaceUserInfoId:
+                                    type: object
+                                  displayName:
+                                    type: string
+                                  profileUrl:
+                                    type: string
+                                  isActive:
+                                    type: boolean
+                        sectionName:
+                          type: string
                         readChatId:
                           type: string
                         isMute:
                           type: boolean
                         notification:
                           type: number
-
+                        createdAt:
+                          format: date-time
+                          type: string
+                        updatedAt:
+                          format: date-time
+                          type: string
           description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: bad request
 
   /api/user/sign-in/github:
     summary: workspace user login
@@ -768,30 +809,76 @@ paths:
                   result:
                     type: object
                     properties:
+                      _id:
+                        type: string
                       channelId:
-                        type: string
-                      title:
-                        type: string
-                      topic:
-                        type: string
-                      channelType:
-                        type: number
-                      pinnedNum:
-                        type: number
-                      memberNum:
-                        type: number
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                          title:
+                            type: string
+                          description:
+                            type: string
+                          topic:
+                            type: string
+                          channelType:
+                            type: integer
+                          creator:
+                            type: string
+                          isDeleted:
+                            type: boolean
+                          createdAt:
+                            format: date-time
+                            type: string
+                          updatedAt:
+                            format: date-time
+                            type: string
                       member:
                         type: array
                         items:
                           type: object
                           properties:
-                            userId:
+                            _id:
+                              type: string
+                            fullName:
+                              type: string
+                            displayName:
                               type: string
                             profileUrl:
                               type: string
-                            workspaceURL:
+                            isActive:
+                              type: boolean
+                            userId:
                               type: string
+                      sectionName:
+                        type: string
+                      readChatId:
+                        type: string
+                      isMute:
+                        type: boolean
+                      notification:
+                        type: number
+                      createdAt:
+                        format: date-time
+                        type: string
+                      updatedAt:
+                        format: date-time
+                        type: string
+                      workspaceUserInfoId:
+                        type: object
+                      pinnedCount:
+                        type: number
           description: get channel info for channel header
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: bad request
 
   /api/channel/invite:
     summary: invite user to channel
@@ -873,18 +960,34 @@ paths:
           description: update channel mute option
 
   /api/search/userId:
-    summary: invite user to channel
-    description: invite user to channel
+    summary: search user for inviting
+    description: search user for inviting
     post:
       tags:
         - search
-      summary: invite user to channel
-      description: invite user to channel
+      summary: search user for inviting
+      description: search user for inviting
       operationId: ''
       parameters:
         - name: keyword
           in: query
           description: keyword
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: workspaceId
+          in: query
+          description: workspaceId
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: channelId
+          in: query
+          description: channelId
           required: true
           style: form
           explode: true
@@ -904,7 +1007,9 @@ paths:
                     items:
                       type: object
                       properties:
-                        workspaceUserInfoId:
+                        _id:
+                          type: string
+                        fullName:
                           type: string
                         displayName:
                           type: string
@@ -912,7 +1017,16 @@ paths:
                           type: string
                         isActive:
                           type: boolean
-          description: invite user to channel
+          description: search user for inviting
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: not modified
 
   /api/direct-message:
     summary: get users last dm
@@ -1026,6 +1140,7 @@ paths:
                           type: number
 
           description: get user mention and reaction
+
   '/api/chat/{workspaceId}/{channelId}':
     summary: get chat messages
     description: get chat messages
@@ -1155,17 +1270,255 @@ paths:
         default:
           description: Default error sample response
 
-  '/api/file/{fileId}':
+  /api/channel/browser:
+    summary: get channel list in workspace
+    description: get channel list in workspace
+    get:
+      tags:
+        - channel
+      summary: get channel list in workspace
+      description: get channel list in workspace
+      operationId: ''
+      parameters:
+        - name: workspaceId
+          in: query
+          description: workspaceId
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: workspaceUserInfoId
+          in: query
+          description: workspaceUserInfoId
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        title:
+                          type: string
+                        channelType:
+                          type: integer
+                        joined:
+                          type: boolean
+          description: success response
+
+  '/api/channel/leave':
+    summary: leave channel
+    description: leave channel
+    post:
+      tags:
+        - channel
+      operationId: ''
+      parameters:
+        - name: workspaceId
+          in: query
+          description: workspaceId
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: workspaceUserInfoId
+          in: query
+          description: workspaceUserInfoId
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: not modified
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: unauthorized
+        default:
+          description: Default error sample response
+
+  '/api/channel/join':
+    summary: join channel
+    description: join channel
+    post:
+      tags:
+        - channel
+      operationId: ''
+      parameters:
+        - name: workspaceId
+          in: query
+          description: workspaceId
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: workspaceUserInfoId
+          in: query
+          description: workspaceUserInfoId
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: not modified
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: unauthorized
+        default:
+          description: Default error sample response
+
+  '/api/chat/{workspaceId}/{channelId}/reply':
     summary: get chat messages
     description: get chat messages
     get:
       tags:
+        - chat
+      operationId: ''
+      parameters:
+        - name: workspaceId
+          in: path
+          description: workspaceId
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: channelId
+          in: path
+          description: channelId
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: parentId
+          in: query
+          description: parent chat Id
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        isDelete:
+                          type: boolean
+                        contents:
+                          type: string
+                        createdAt:
+                          format: date-time
+                          type: string
+                        updatedAt:
+                          format: date-time
+                          type: string
+                        userInfo:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                            displayName:
+                              type: string
+                            profileUrl:
+                              type: string
+          description: success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: not modified
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+          description: unauthorized
+        default:
+          description: Default error sample response
+
+  '/api/file':
+    summary: file upload
+    description: file upload
+    post:
+      tags:
         - file
       operationId: ''
       parameters:
-        - name: fileId
-          in: path
-          description: fileId
+        - name: file
+          in: query
+          description: input form으로 생성된 file object
           required: true
           explode: true
           schema:
@@ -1182,11 +1535,16 @@ paths:
                   data:
                     type: object
                     properties:
-                      url:
+                      name:
                         type: string
                       originalName:
                         type: string
-
+                      fileType:
+                        type: string
+                      creator:
+                        type: string
+                      url:
+                        type: string
           description: success response
         '400':
           content:
@@ -1213,9 +1571,9 @@ paths:
         - file
       operationId: ''
       parameters:
-        - name: fileId
-          in: path
-          description: fileId
+        - name: name
+          in: query
+          description: file name
           required: true
           explode: true
           schema:
@@ -1230,64 +1588,6 @@ paths:
                   success:
                     type: boolean
 
-          description: success response
-        '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-          description: not modified
-        '401':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-          description: unauthorized
-        default:
-          description: Default error sample response
-  '/api/file':
-    summary: file upload
-    description: file upload
-    post:
-      tags:
-        - file
-      operationId: ''
-      parameters:
-        - name: file
-          in: query
-          description: file
-          required: true
-          explode: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      fileId:
-                        type: string
-                      fileName:
-                        type: string
-                      fileType:
-                        type: string
-                      creator:
-                        type: string
-                      etag:
-                        type: string
           description: success response
         '400':
           content:

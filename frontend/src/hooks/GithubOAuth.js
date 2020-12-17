@@ -4,7 +4,12 @@ import QueryString from 'qs'
 import { toast } from 'react-toastify'
 import { useHistory } from 'react-router'
 
-export default function GithubOAuth(Component, loginRequired) {
+const baseURL =
+  process.env.NODE_ENV === 'development'
+    ? process.env.REACT_APP_DEV_API_URL
+    : process.env.REACT_APP_API_URL
+
+export default function GithubOAuth(Component) {
   function Authentication(props) {
     const [loading, setloading] = useState(true)
     const history = useHistory()
@@ -14,15 +19,16 @@ export default function GithubOAuth(Component, loginRequired) {
           const query = QueryString.parse(props.location.search, {
             ignoreQueryPrefix: true,
           })
+          const invitecode = localStorage.getItem('invitecode')
           await request.GET(
             '/api/user/sign-in/github/callback?code=' + query.code,
           )
-          if (loginRequired) {
-            history.push('/login')
+          if (invitecode) {
+            localStorage.removeItem('invitecode')
+            window.location.href = `${baseURL}/api/workspace/invite/${invitecode}`
+            return
           }
-          if (!loginRequired) {
-            history.push('/')
-          }
+          history.push('/')
           setloading(false)
         } catch (err) {
           toast.error('인증이 실패하였습니다', {

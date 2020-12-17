@@ -1,5 +1,5 @@
 import { addDecorator } from '@storybook/react'
-import GlobalStyle from '../src/atom/GlobalStyle/GlobalStyle'
+import GlobalStyle from '../src/presenter/GlobalStyle/GlobalStyle'
 import { RecoilRoot } from 'recoil'
 import { MemoryRouter } from 'react-router-dom'
 export const parameters = {

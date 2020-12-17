@@ -33,12 +33,14 @@ const createWorkspace = async params => {
       fullName: findedUser.fullName,
       displayName: findedUser.fullName,
       profileUrl: findedUser.profileUrl,
+      isActive: false,
     }),
   )
   const channelData = await dbErrorHandler(() =>
     Channel.create({
       creator: workspaceUserInfoData._id,
       title: params.channelName,
+      workspaceId: workspaceData._id,
       channelType: 1,
     }),
   )
@@ -118,6 +120,7 @@ const invited = async ({ userId, code }) => {
           fullName: findedUser?.fullName,
           displayName: findedUser?.fullName,
           profileUrl: findedUser?.profileUrl,
+          isActive: false,
         }),
       )
       const workspaceData = await dbErrorHandler(() =>
@@ -175,6 +178,17 @@ const getWorkspaceUserInfo = async ({ userId, workspaceId }) => {
   }
 }
 
+const getWorkspaceUserInfoByInfoId = async ({ workspaceUserInfoId }) => {
+  const workspaceUserInfoData = await dbErrorHandler(() =>
+    WorkspaceUserInfo.getWorkspaceUserInfo(workspaceUserInfoId),
+  )
+  return {
+    code: statusCode.OK,
+    data: workspaceUserInfoData[0],
+    success: true,
+  }
+}
+
 module.exports = {
   createWorkspace,
   getWorkspaces,
@@ -182,4 +196,5 @@ module.exports = {
   invited,
   checkDuplicateName,
   getWorkspaceUserInfo,
+  getWorkspaceUserInfoByInfoId,
 }

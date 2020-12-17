@@ -27,6 +27,9 @@ const chatSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    file: {
+      type: Object,
+    },
   },
   { timestamps: true },
 )
@@ -91,7 +94,7 @@ chatSchema.statics.getChatMessages = ({ channelId, currentCursor, fromDate }) =>
                 {
                   $match: { $expr: { $eq: ['$_id', '$$workspaceUserInfoId'] } },
                 },
-                { $project: { profileUrl: 1, displayName: 1, _id: 1 } },
+                { $project: { displayName: 1, _id: 1 } },
               ],
               as: 'workspaceUserInfoId',
             },
@@ -118,12 +121,123 @@ chatSchema.statics.getChatMessages = ({ channelId, currentCursor, fromDate }) =>
     { $limit: MAX_CHAT_MESSAGE },
   ])
 
-chatSchema.statics.getReplyMessages = ({ channelId, parentId }) =>
-  Chat.aggregate([
+chatSchema.statics.getReplyMessages = ({ channelId, parentId }) => {
+  return Chat.aggregate([
     {
       $match: {
-        channel: ObjectId(channelId),
-        parentId: ObjectId(parentId),
+        _id: ObjectId(parentId),
+      },
+    },
+    {
+      $lookup: {
+        from: 'chats',
+        let: { chatId: '$_id' },
+        pipeline: [
+          {
+            $match: {
+              channel: ObjectId(channelId),
+              parentId: ObjectId(parentId),
+            },
+          },
+          {
+            $lookup: {
+              from: 'workspaceuserinfos',
+              let: { creator: '$creator' },
+              pipeline: [
+                { $match: { $expr: { $eq: ['$_id', '$$creator'] } } },
+                { $project: { profileUrl: 1, displayName: 1, _id: 1 } },
+              ],
+              as: 'userInfo',
+            },
+          },
+          { $unwind: '$userInfo' },
+          {
+            $lookup: {
+              from: 'reactions',
+              let: { chatId: '$_id' },
+              pipeline: [
+                { $match: { $expr: { $eq: ['$chatId', '$$chatId'] } } },
+                {
+                  $lookup: {
+                    from: 'workspaceuserinfos',
+                    let: { workspaceUserInfoId: '$workspaceUserInfoId' },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$workspaceUserInfoId'],
+                          },
+                        },
+                      },
+                      {
+                        $project: {
+                          profileUrl: 1,
+                          displayName: 1,
+                          _id: 1,
+                        },
+                      },
+                    ],
+                    as: 'workspaceUserInfoId',
+                  },
+                },
+                { $unwind: '$workspaceUserInfoId' },
+                {
+                  $group: {
+                    _id: { emotion: '$emoticon' },
+                    users: { $push: '$workspaceUserInfoId' },
+                  },
+                },
+                {
+                  $project: {
+                    _id: 0,
+                    emoji: '$_id.emotion',
+                    users: 1,
+                  },
+                },
+              ],
+              as: 'reactions',
+            },
+          },
+          { $sort: { createdAt: 1 } },
+        ],
+        as: 'reply',
+      },
+    },
+    {
+      $lookup: {
+        from: 'reactions',
+        let: { chatId: '$_id' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$chatId', '$$chatId'] } } },
+          {
+            $lookup: {
+              from: 'workspaceuserinfos',
+              let: { workspaceUserInfoId: '$workspaceUserInfoId' },
+              pipeline: [
+                {
+                  $match: { $expr: { $eq: ['$_id', '$$workspaceUserInfoId'] } },
+                },
+                { $project: { displayName: 1, _id: 1 } },
+              ],
+              as: 'workspaceUserInfoId',
+            },
+          },
+          { $unwind: '$workspaceUserInfoId' },
+          {
+            $group: {
+              _id: { emotion: '$emoticon' },
+              users: { $push: '$workspaceUserInfoId' },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              emoji: '$_id.emotion',
+              users: 1,
+            },
+          },
+        ],
+        as: 'reactions',
       },
     },
     {
@@ -138,16 +252,8 @@ chatSchema.statics.getReplyMessages = ({ channelId, parentId }) =>
       },
     },
     { $unwind: '$userInfo' },
-    {
-      $project: {
-        isDelete: 1,
-        contents: 1,
-        createdAt: 1,
-        updatedAt: 1,
-        userInfo: 1,
-      },
-    },
   ])
+}
 
 const Chat = mongoose.model('Chat', chatSchema)
 module.exports = { Chat }

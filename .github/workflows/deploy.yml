@@ -1,0 +1,30 @@
+name: deploy
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  push:
+    branches: master
+
+jobs:
+  build:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy backend server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.BACKEND_HOST }}
+          username: ${{ secrets.BACKEND_USERNAME }}
+          password: ${{ secrets.BACKEND_PASSWORD }}
+          script: |
+            bash deploy-backend.sh
+            
+      - name: Deploy frontend server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.FRONTEND_HOST }}
+          username: ${{ secrets.FRONTEND_USERNAME }}
+          password: ${{ secrets.FRONTEND_PASSWORD }}
+          script: |
+            bash deploy-frontend.sh

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import CreateWorkspacecName from '../../organism/CreateWorkspaceName'
-import CreateWorkspaceInitChannel from '../../organism/CreateWorkspaceInitChannel'
+import CreateWorkspacecName from '../../container/CreateWorkspaceName'
+import CreateWorkspaceInitChannel from '../../container/CreateWorkspaceInitChannel'
 
 const CreateWorkspace = () => {
   const [workspaceName, setWorkspaceName] = useState('')

@@ -9,15 +9,15 @@ const debounce = (callback, wait) => {
 function throttle(func, delay) {
   let lastFunc
   let lastRan
-  return function (...args) {
+  return function (event) {
     if (!lastRan) {
-      func()
+      func(event)
       lastRan = Date.now()
     } else {
       if (lastFunc) clearTimeout(lastFunc)
       lastFunc = setTimeout(function () {
         if (Date.now() - lastRan >= delay) {
-          func()
+          func(event)
           lastRan = Date.now()
         }
       }, delay - (Date.now() - lastRan))
@@ -33,4 +33,8 @@ const isEmpty = value => {
   return false
 }
 
-export { debounce, throttle, isEmpty }
+const isImage = type => {
+  return type?.includes('image/')
+}
+
+export { debounce, throttle, isEmpty, isImage }

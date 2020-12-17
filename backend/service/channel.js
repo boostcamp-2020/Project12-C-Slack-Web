@@ -55,6 +55,18 @@ const getChannelListDB = async ({ workspaceUserInfoId }) => {
   }
 }
 
+const getChannelBrowserData = async ({ workspaceId, workspaceUserInfoId }) => {
+  verifyRequiredParams(workspaceId, workspaceUserInfoId)
+  const channelList = await dbErrorHandler(() =>
+    Channel.getChannelBrowserData(workspaceId, workspaceUserInfoId),
+  )
+  return {
+    code: statusCode.OK,
+    result: channelList,
+    success: true,
+  }
+}
+
 const getChannelHeaderInfoDB = async ({ channelId, workspaceUserInfoId }) => {
   verifyRequiredParams(channelId, workspaceUserInfoId)
   const [result] = await dbErrorHandler(() =>
@@ -129,6 +141,49 @@ const updateChannelSectionDB = async ({
   }
 }
 
+const leaveChannel = async ({ channelId, workspaceUserInfoId }) => {
+  verifyRequiredParams(channelId, workspaceUserInfoId)
+
+  await dbErrorHandler(() =>
+    ChannelConfig.findOneAndDelete({
+      workspaceUserInfoId,
+      channelId,
+    }),
+  )
+
+  return {
+    code: statusCode.OK,
+    success: true,
+  }
+}
+
+const joinChannel = async ({ channelId, workspaceUserInfoId }) => {
+  verifyRequiredParams(channelId, workspaceUserInfoId)
+  await dbErrorHandler(() =>
+    ChannelConfig.create({
+      workspaceUserInfoId,
+      channelId,
+      isMute: false,
+      notification: 0,
+    }),
+  )
+
+  return {
+    code: statusCode.OK,
+    success: true,
+  }
+}
+const findChannelIdByName = async ({ title }) => {
+  verifyRequiredParams(title)
+  const channelData = await dbErrorHandler(() => Channel.findOne({ title }))
+
+  return {
+    code: statusCode.OK,
+    data: channelData?._id,
+    success: true,
+  }
+}
+
 module.exports = {
   createChannel,
   checkDuplicate,
@@ -137,4 +192,8 @@ module.exports = {
   inviteUserDB,
   muteChannelDB,
   updateChannelSectionDB,
+  getChannelBrowserData,
+  leaveChannel,
+  joinChannel,
+  findChannelIdByName,
 }

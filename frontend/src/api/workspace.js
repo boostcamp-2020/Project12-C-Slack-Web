@@ -4,6 +4,13 @@ export const getWorkspaceUserInfo = async ({ workspaceId }) => {
   return data.data
 }
 
+export const getWorkspaceUserInfoByInfoId = async ({ workspaceUserInfoId }) => {
+  const { data } = await Request.GET(
+    `/api/workspace/info?workspaceUserInfoId=${workspaceUserInfoId}`,
+  )
+  return data.data
+}
+
 export const inviteWorkspace = async ({ workspaceId }) => {
   const { data } = await Request.POST('/api/workspace/invite', {
     workspaceId: workspaceId,
