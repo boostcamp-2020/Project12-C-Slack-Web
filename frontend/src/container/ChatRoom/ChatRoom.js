@@ -11,6 +11,8 @@ import ChannelHeader from '../ChannelHeader'
 import { isEmpty } from '../../util'
 import { hasMyReaction, chageReactionState } from '../../util/reactionUpdate'
 import useChannelInfo from '../../hooks/useChannelInfo'
+import Icon from '../../presenter/Icon'
+import { ArrowDown } from '../../constant/icon'
 
 const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
@@ -151,7 +153,9 @@ const ChatRoom = ({ width }) => {
     },
     [previousReadMessageIndex],
   )
-
+  const handleUnreadMessageButton = () => {
+    scrollTo()
+  }
   return (
     <ChatArea width={width}>
       <ChatHeader>
@@ -169,7 +173,11 @@ const ChatRoom = ({ width }) => {
               />
             )
           })}
-        {hasUnreadMessage && <UnreadMessage> Unread messages..</UnreadMessage>}
+        {hasUnreadMessage && (
+          <UnreadMessage onClick={handleUnreadMessageButton}>
+            <Icon icon={ArrowDown} color={COLOR.WHITE} /> Unread messages..
+          </UnreadMessage>
+        )}
         <div ref={messageEndRef}></div>
       </ChatContents>
       <MessageEditor
@@ -210,7 +218,8 @@ const ChatContents = styled.div`
 const UnreadMessage = styled.div`
   border-radius: 30px;
   border: 1px solid ${COLOR.LIGHT_GRAY};
-  background-color: ${COLOR.HOVER_GRAY};
+  background-color: ${COLOR.STARBLUE};
+  color: ${COLOR.WHITE};
   width: 170px;
   height: 50px;
   margin-left: auto;
@@ -220,5 +229,6 @@ const UnreadMessage = styled.div`
   text-align: center;
   padding: 5px;
   font-weight: 700;
+  cursor: pointer;
 `
 export default ChatRoom
