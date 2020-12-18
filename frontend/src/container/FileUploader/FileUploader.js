@@ -11,9 +11,10 @@ const fileContentType = 'multipart/form-data'
 
 function FileUploader({ file, setFile }) {
   const fileInput = useRef(null)
-  const handleFileInput = async e => {
-    if (!e.target.files[0]) return
-    if (e.target.files[0].size > 8192000) {
+
+  const handleFileInput = async () => {
+    if (!fileInput.current.files[0]) return
+    if (fileInput.current.files[0].size > 8192000) {
       toast.error('8MB 이하의 파일만 업로드 할 수 있습니다!')
       return
     }
@@ -21,8 +22,8 @@ function FileUploader({ file, setFile }) {
       await request.DELETE('/api/file', { name: file.name })
       setFile(null)
     }
-    await handlePost(e.target.files[0])
-    e.target.value = ''
+    await handlePost(fileInput.current.files[0])
+    fileInput.current.value = null
   }
   const handlePost = async selectedFile => {
     if (selectedFile) {
@@ -46,7 +47,7 @@ function FileUploader({ file, setFile }) {
         type="file"
         name="fileData"
         ref={fileInput}
-        onChange={e => handleFileInput(e)}
+        onChange={handleFileInput}
       ></StyeldInput>
     </>
   )
