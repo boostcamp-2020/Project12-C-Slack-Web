@@ -189,6 +189,7 @@ const StyleLink = styled(NavLink)`
   text-decoration: none;
   color: ${COLOR.STARBLUE};
   background-color: ${COLOR.WHITE};
+  border: 1px solid transparent;
   padding: 5px;
   margin-left: 15px;
   &:hover {
