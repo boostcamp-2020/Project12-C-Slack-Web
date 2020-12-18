@@ -89,7 +89,7 @@ const ChatRoom = ({ width }) => {
             ...messages,
             ...hasMyReaction([message], workspaceUserInfo),
           ])
-          if (isReading.current) {
+          if (isReading.current && document.hasFocus()) {
             setHasUnreadMessage(false)
             scrollTo()
           } else if (message.userInfo._id !== workspaceUserInfo._id)
@@ -119,10 +119,13 @@ const ChatRoom = ({ width }) => {
     const handleIntersection = (entries, observer) => {
       entries.forEach(entry => {
         if (entry.target === messageEndRef.current) {
+          if (!entry.isIntersecting || !document.hasFocus()) {
+            isReading.current = false
+          }
           if (entry.isIntersecting) {
             setHasUnreadMessage(false)
             isReading.current = true
-          } else isReading.current = false
+          }
         }
         if (entry.target === observerTargetNode.current) {
           if (
