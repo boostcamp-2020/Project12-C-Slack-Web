@@ -10,15 +10,15 @@ import Icon from '../../presenter/Icon'
 import { CLOSE } from '../../constant/icon'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import { hasMyReaction, chageReactionState } from '../../util/reactionUpdate'
+import DraggableBoundaryLine from '../../presenter/DraggableBoundaryLine'
 
-function SideThreadBar() {
+function SideThreadBar({ sidebarWidth, setSidebarWidth }) {
   const { workspaceId, channelId, chatId } = useParams()
   const [sidebarChat, setSidebarChat] = useState(null)
   const [replyContent, setReplyContent] = useState(null)
   const socket = useRecoilValue(socketRecoil)
   const messageEndRef = useRef()
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
-
   const history = useHistory()
 
   const loadReplyMessage = async (workspaceId, channelId, chatId) => {
@@ -92,43 +92,52 @@ function SideThreadBar() {
   }, [chatId])
 
   return (
-    <SideThreadBarStyle>
-      <SideBarHeader>
-        Thread
-        <CloseBtn onClick={closeSideBar}>
-          <Icon icon={CLOSE} color={COLOR.LABEL_SELECT_TEXT} />
-        </CloseBtn>
-      </SideBarHeader>
-      <SideBarContents>
-        <ChatContent>
-          {sidebarChat && <ChatMessage {...sidebarChat[0]} type="reply" />}
-        </ChatContent>
+    <>
+      <DraggableBoundaryLine
+        setWidth={setSidebarWidth}
+        reverse={true}
+        min="300"
+        max="700"
+        color={COLOR.TRANSPARENT_GRAY}
+      />
+      <SideThreadBarStyle width={sidebarWidth}>
+        <SideBarHeader>
+          Thread
+          <CloseBtn onClick={closeSideBar}>
+            <Icon icon={CLOSE} color={COLOR.LABEL_SELECT_TEXT} />
+          </CloseBtn>
+        </SideBarHeader>
+        <SideBarContents>
+          <ChatContent>
+            {sidebarChat && <ChatMessage {...sidebarChat[0]} type="reply" />}
+          </ChatContent>
 
-        {replyContent && (
-          <CountReplyArea>
-            <CountReply>
-              {`${replyContent.length} ${
-                replyContent.length === 1 ? 'reply' : 'replies'
-              } `}
-            </CountReply>
-            <Separator />
-          </CountReplyArea>
-        )}
-        {replyContent &&
-          replyContent.map((message, i) => {
-            return <ChatMessage key={i} {...message} type="reply" />
-          })}
-        <div ref={messageEndRef} />
-        <MessageEditor placeholder={'reply...'} sendMessage={sendReply} />
-      </SideBarContents>
-    </SideThreadBarStyle>
+          {replyContent && (
+            <CountReplyArea>
+              <CountReply>
+                {`${replyContent.length} ${
+                  replyContent.length === 1 ? 'reply' : 'replies'
+                } `}
+              </CountReply>
+              <Separator />
+            </CountReplyArea>
+          )}
+          {replyContent &&
+            replyContent.map((message, i) => {
+              return <ChatMessage key={i} {...message} type="reply" />
+            })}
+          <div ref={messageEndRef} />
+          <MessageEditor placeholder={'reply...'} sendMessage={sendReply} />
+        </SideBarContents>
+      </SideThreadBarStyle>
+    </>
   )
 }
 
 const SideThreadBarStyle = styled.div`
-  width: auto;
+  width: ${props => props.width}px;
   height: 100%;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid ${COLOR.TRANSPARENT_GRAY};
   box-sizing: border-box;
 `
 
