@@ -92,7 +92,8 @@ const ChatRoom = ({ width }) => {
           if (isReading.current) {
             setHasUnreadMessage(false)
             scrollTo()
-          } else setHasUnreadMessage(true)
+          } else if (message.userInfo._id !== workspaceUserInfo._id)
+            setHasUnreadMessage(true)
         }
 
         if (document.hidden) {
