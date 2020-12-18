@@ -226,7 +226,7 @@ const UnreadMessage = styled.div`
   margin-left: auto;
   margin-right: auto;
   position: sticky;
-  bottom: 0;
+  bottom: 15px;
   text-align: center;
   padding: 5px;
   font-weight: 700;
