@@ -18,7 +18,7 @@ import DraggableBoundaryLine from '../../presenter/DraggableBoundaryLine'
 function WorkspacePage() {
   const { channelId } = useParams()
   const [listWidth, setListWidth] = useState(250)
-  const [sidebarWidth, setSidebarWidth] = useState(350)
+  const [sidebarWidth, setSidebarWidth] = useState(0)
   const modal = useRecoilValue(modalRecoil)
   const [workspaceUserInfo] = useWorkspace()
 
