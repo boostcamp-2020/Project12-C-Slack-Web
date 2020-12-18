@@ -11,6 +11,8 @@ import ChannelHeader from '../ChannelHeader'
 import { isEmpty } from '../../util'
 import { hasMyReaction, chageReactionState } from '../../util/reactionUpdate'
 import useChannelInfo from '../../hooks/useChannelInfo'
+import Icon from '../../presenter/Icon'
+import { ArrowDown } from '../../constant/icon'
 
 const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
@@ -19,6 +21,7 @@ const ChatRoom = ({ width }) => {
   const previousReadMessage = useRef(null)
   const isLoading = useRef(false)
   const isAllMessageFetched = useRef(false)
+  const isReading = useRef(false)
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
   const [channelInfo] = useChannelInfo()
   const { workspaceId, channelId } = useParams()
@@ -26,6 +29,7 @@ const ChatRoom = ({ width }) => {
   const socket = useRecoilValue(socketRecoil)
   const [messages, setMessages] = useState([])
   const [previousReadMessageIndex, setPreviousReadMessageIndex] = useState(0)
+  const [hasUnreadMessage, setHasUnreadMessage] = useState(false)
 
   const loadMessage = useCallback(
     async (workspaceId, channelId, currentCursor) => {
@@ -80,11 +84,17 @@ const ChatRoom = ({ width }) => {
   useEffect(() => {
     if (socket) {
       socket.on('new message', ({ message }) => {
-        if (message.channelId === channelId)
+        if (message.channelId === channelId) {
           setMessages(messages => [
             ...messages,
             ...hasMyReaction([message], workspaceUserInfo),
           ])
+          if (isReading.current && document.hasFocus()) {
+            setHasUnreadMessage(false)
+            scrollTo()
+          } else if (message.userInfo._id !== workspaceUserInfo._id)
+            setHasUnreadMessage(true)
+        }
 
         if (document.hidden) {
           new Notification('새로운 메시지가 왔습니다.', {
@@ -105,12 +115,24 @@ const ChatRoom = ({ width }) => {
       }
     }
   }, [socket, channelId, document.hidden, params])
-
   useEffect(() => {
     const handleIntersection = (entries, observer) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          if (!isLoading.current && !isAllMessageFetched.current) {
+        if (entry.target === messageEndRef.current) {
+          if (!entry.isIntersecting || !document.hasFocus()) {
+            isReading.current = false
+          }
+          if (entry.isIntersecting) {
+            setHasUnreadMessage(false)
+            isReading.current = true
+          }
+        }
+        if (entry.target === observerTargetNode.current) {
+          if (
+            entry.isIntersecting &&
+            !isLoading.current &&
+            !isAllMessageFetched.current
+          ) {
             loadMessage(workspaceId, channelId, observerTargetNode.current.id)
             observer.unobserve(entry.target)
             observer.observe(observerTargetNode.current)
@@ -123,6 +145,7 @@ const ChatRoom = ({ width }) => {
       threshold: 0,
     })
     if (observerTargetNode.current) IO.observe(observerTargetNode.current)
+    if (messageEndRef.current) IO.observe(messageEndRef.current)
     return () => IO && IO.disconnect()
   }, [channelId, workspaceId, loadMessage])
 
@@ -134,7 +157,9 @@ const ChatRoom = ({ width }) => {
     },
     [previousReadMessageIndex],
   )
-
+  const handleUnreadMessageButton = () => {
+    scrollTo()
+  }
   return (
     <ChatArea width={width}>
       <ChatHeader>
@@ -152,6 +177,11 @@ const ChatRoom = ({ width }) => {
               />
             )
           })}
+        {hasUnreadMessage && (
+          <UnreadMessage onClick={handleUnreadMessageButton}>
+            <Icon icon={ArrowDown} color={COLOR.WHITE} /> Unread messages..
+          </UnreadMessage>
+        )}
         <div ref={messageEndRef}></div>
       </ChatContents>
       <MessageEditor
@@ -189,5 +219,20 @@ const ChatContents = styled.div`
   background: ${COLOR.WHITE};
   border: 1px solid rgba(255, 255, 255, 0.1);
 `
-
+const UnreadMessage = styled.div`
+  border-radius: 30px;
+  border: 1px solid ${COLOR.LIGHT_GRAY};
+  background-color: ${COLOR.STARBLUE};
+  color: ${COLOR.WHITE};
+  width: 170px;
+  height: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  position: sticky;
+  bottom: 15px;
+  text-align: center;
+  padding: 5px;
+  font-weight: 700;
+  cursor: pointer;
+`
 export default ChatRoom
