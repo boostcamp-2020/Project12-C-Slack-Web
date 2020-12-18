@@ -21,6 +21,14 @@ function SideThreadBar({ sidebarWidth, setSidebarWidth }) {
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
   const history = useHistory()
 
+  useEffect(() => {
+    setSidebarWidth(350)
+
+    return () => {
+      setSidebarWidth(0)
+    }
+  }, [])
+
   const loadReplyMessage = async (workspaceId, channelId, chatId) => {
     const [data] = await getChatReplyMessage({
       workspaceId,
