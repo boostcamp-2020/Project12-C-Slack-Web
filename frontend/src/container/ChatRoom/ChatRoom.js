@@ -27,6 +27,7 @@ const ChatRoom = ({ width }) => {
   const socket = useRecoilValue(socketRecoil)
   const [messages, setMessages] = useState([])
   const [previousReadMessageIndex, setPreviousReadMessageIndex] = useState(0)
+  const [hasUnreadMessage, setHasUnreadMessage] = useState(false)
 
   const loadMessage = useCallback(
     async (workspaceId, channelId, currentCursor) => {
@@ -86,7 +87,10 @@ const ChatRoom = ({ width }) => {
             ...messages,
             ...hasMyReaction([message], workspaceUserInfo),
           ])
-          if (isReading.current) scrollTo()
+          if (isReading.current) {
+            setHasUnreadMessage(false)
+            scrollTo()
+          } else setHasUnreadMessage(true)
         }
 
         if (document.hidden) {
@@ -112,8 +116,10 @@ const ChatRoom = ({ width }) => {
     const handleIntersection = (entries, observer) => {
       entries.forEach(entry => {
         if (entry.target === messageEndRef.current) {
-          if (entry.isIntersecting) isReading.current = true
-          else isReading.current = false
+          if (entry.isIntersecting) {
+            setHasUnreadMessage(false)
+            isReading.current = true
+          } else isReading.current = false
         }
         if (entry.target === observerTargetNode.current) {
           if (
@@ -163,6 +169,7 @@ const ChatRoom = ({ width }) => {
               />
             )
           })}
+        {hasUnreadMessage && <UnreadMessage> Unread messages..</UnreadMessage>}
         <div ref={messageEndRef}></div>
       </ChatContents>
       <MessageEditor
@@ -200,5 +207,18 @@ const ChatContents = styled.div`
   background: ${COLOR.WHITE};
   border: 1px solid rgba(255, 255, 255, 0.1);
 `
-
+const UnreadMessage = styled.div`
+  border-radius: 30px;
+  border: 1px solid ${COLOR.LIGHT_GRAY};
+  background-color: ${COLOR.HOVER_GRAY};
+  width: 170px;
+  height: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  position: sticky;
+  bottom: 0;
+  text-align: center;
+  padding: 5px;
+  font-weight: 700;
+`
 export default ChatRoom
