@@ -12,15 +12,14 @@ import request from '../../../util/request'
 import Modal from '../../../presenter/Modal'
 import SearchUserList from '../../../presenter/SearchUserList'
 import SelectedUserList from '../../../presenter/SelectedUserList'
-import useChannelInfo from '../../../hooks/useChannelInfo'
 import dmTitleGenerator from '../../../util/dmTitleGenerator'
-import { workspaceRecoil } from '../../../store'
+import { workspaceRecoil, currentChannelInfoRecoil } from '../../../store'
 import { createChannel, findChannelIdByName } from '../../../api/channel'
 import { getWorkspaceUserInfoByInfoId } from '../../../api/workspace'
 import useChannelList from '../../../hooks/useChannelList'
 
 function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
-  const [channelInfo] = useChannelInfo()
+  const channelInfo = useRecoilValue(currentChannelInfoRecoil)
   const setModal = useSetRecoilState(modalRecoil)
   const socket = useRecoilValue(socketRecoil)
   const [searchResult, setSearchResult] = useState(null)
