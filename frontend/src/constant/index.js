@@ -1,4 +1,3 @@
-export const MAX_CHAT_MESSAGE = 20
 export const SOCKET_EVENT = {
   INVITE_CHANNEL: 'invite channel',
   INVITED_CHANNEL: 'invited channel',
