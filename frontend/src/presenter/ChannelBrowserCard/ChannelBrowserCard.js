@@ -40,7 +40,6 @@ function ChannelBrowserCard({
     setChannels()
     handleClose()
   }
-
   return (
     <ChannelBrowserCardStyle>
       <ContentsArea>{title}</ContentsArea>
@@ -48,9 +47,9 @@ function ChannelBrowserCard({
         <Button
           handleClick={clickEvent}
           type={joined ? 'leave' : undefined}
-          disabled={channelType == 0 || _id === defaultChannel}
+          disabled={_id === defaultChannel || (channelType === 0 && !joined)}
           children={
-            channelType == 0
+            channelType === 0
               ? 'private'
               : _id === defaultChannel
               ? 'Default channel'

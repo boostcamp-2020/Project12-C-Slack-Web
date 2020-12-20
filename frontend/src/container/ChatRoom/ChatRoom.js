@@ -108,11 +108,12 @@ const ChatRoom = ({ width }) => {
             ...messages,
             ...hasMyReaction([message], workspaceUserInfo),
           ])
-          if (isReading.current && document.hasFocus()) {
+          if (message.userInfo._id === workspaceUserInfo._id) {
             setHasUnreadMessage(false)
             scrollTo()
-          } else if (message.userInfo._id !== workspaceUserInfo._id)
+          } else if (!isReading.current && !document.hasFocus()) {
             setHasUnreadMessage(true)
+          }
         }
 
         if (document.hidden) {
@@ -257,7 +258,6 @@ const UnreadMessage = styled.div`
   background-color: ${COLOR.STARBLUE};
   color: ${COLOR.WHITE};
   width: 170px;
-  height: 50px;
   margin-left: auto;
   margin-right: auto;
   position: sticky;
