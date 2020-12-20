@@ -33,6 +33,7 @@ const channelSchema = mongoose.Schema(
   },
   { timestamps: true },
 )
+channelSchema.index({ workspaceId: 1, channelType: 1 })
 
 channelSchema.statics.getChannelBrowserData = async function (
   workspaceId,

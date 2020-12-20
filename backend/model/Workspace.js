@@ -20,5 +20,7 @@ const workspaceSchema = mongoose.Schema(
   },
   { timestamps: true },
 )
+workspaceSchema.index({ name: 1 })
+
 const Workspace = mongoose.model('Workspace', workspaceSchema)
 module.exports = { Workspace }

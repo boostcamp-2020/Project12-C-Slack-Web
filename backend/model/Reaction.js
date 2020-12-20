@@ -14,5 +14,8 @@ const reactionSchema = mongoose.Schema({
     type: String,
   },
 })
+reactionSchema.index({ workspaceUserInfoId: 1, chatId: 1 })
+reactionSchema.index({ chatId: 1 })
+
 const Reaction = mongoose.model('Reaction', reactionSchema)
 module.exports = { Reaction }

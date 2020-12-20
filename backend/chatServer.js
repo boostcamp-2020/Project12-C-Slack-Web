@@ -4,6 +4,7 @@ import { createServer } from 'http'
 import createChatServer from 'socket.io'
 import { createChatMessage, createReplyMessage } from './service/chat'
 import { addReaction, removeReaction } from './service/reaction'
+import { SOCKET_EVENT } from './util/constant'
 dotenv()
 
 const server = createServer(express())
@@ -20,14 +21,16 @@ namespace.use((socket, next) => {
 namespace.on('connection', socket => {
   const { workspaceUserInfoId } = socket.handshake.query
   socket.join(workspaceUserInfoId)
-  socket.on('invite channel', ({ channelId, origin, newMember }) => {
+  socket.on(SOCKET_EVENT.INVITE_CHANNEL, ({ channelId, origin, newMember }) => {
     origin
       .concat(newMember)
       .forEach(member =>
-        namespace.in(member).emit('invited channel', { channelId, newMember }),
+        namespace
+          .in(member)
+          .emit(SOCKET_EVENT.INVITED_CHANNEL, { channelId, newMember }),
       )
   })
-  socket.on('new message', async data => {
+  socket.on(SOCKET_EVENT.NEW_MESSAGE, async data => {
     const { contents, channelId, file } = data
     const { data: result } = await createChatMessage({
       creator: workspaceUserInfoId,
@@ -35,16 +38,17 @@ namespace.on('connection', socket => {
       contents,
       file,
     })
-    namespace.in(channelId).emit('new message', {
+    namespace.in(channelId).emit(SOCKET_EVENT.NEW_MESSAGE, {
       message: {
         ...data,
         _id: result._id,
         createdAt: result.createdAt,
         reactions: [],
+        reply: [],
       },
     })
   })
-  socket.on('new reply', async data => {
+  socket.on(SOCKET_EVENT.NEW_REPLY, async data => {
     const { contents, channelId, parentId, file } = data
     const { data: result } = await createReplyMessage({
       creator: workspaceUserInfoId,
@@ -53,7 +57,7 @@ namespace.on('connection', socket => {
       parentId,
       file,
     })
-    namespace.in(channelId).emit('new reply', {
+    namespace.in(channelId).emit(SOCKET_EVENT.NEW_REPLY, {
       message: {
         ...data,
         _id: result._id,
@@ -63,7 +67,7 @@ namespace.on('connection', socket => {
       },
     })
   })
-  socket.on('update reaction', async data => {
+  socket.on(SOCKET_EVENT.UPDAETE_REACTION, async data => {
     const { emoji, chatId, userInfo, channelId, type, parentId } = data
     //1 = add, 0 = remove
     const result =
@@ -79,7 +83,7 @@ namespace.on('connection', socket => {
             emoticon: emoji,
           })
 
-    namespace.in(channelId).emit('update reaction', {
+    namespace.in(channelId).emit(SOCKET_EVENT.UPDAETE_REACTION, {
       reaction: {
         chatId: chatId,
         emoji: emoji,
@@ -91,10 +95,10 @@ namespace.on('connection', socket => {
     })
   })
 
-  socket.on('join-room', (channelList = []) => {
+  socket.on(SOCKET_EVENT.JOIN_ROOM, (channelList = []) => {
     socket.join(channelList)
   })
-  socket.on('leave-room', roomId => {
+  socket.on(SOCKET_EVENT.LEAVE_ROOM, roomId => {
     socket.leave(roomId)
   })
 })

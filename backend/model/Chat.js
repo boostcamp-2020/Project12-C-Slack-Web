@@ -33,6 +33,12 @@ const chatSchema = mongoose.Schema(
   },
   { timestamps: true },
 )
+
+chatSchema.index({ createdAt: 1, channel: 1 })
+chatSchema.index({ channel: 1, parentId: 1 })
+chatSchema.index({ pinned: 1 })
+chatSchema.index({ parentId: 1 })
+
 chatSchema.statics.getChatMessages = ({ channelId, currentCursor, fromDate }) =>
   Chat.aggregate([
     { $sort: { createdAt: -1 } },

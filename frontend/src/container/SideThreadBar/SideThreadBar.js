@@ -11,7 +11,7 @@ import { CLOSE } from '../../constant/icon'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import { hasMyReaction, chageReactionState } from '../../util/reactionUpdate'
 import DraggableBoundaryLine from '../../presenter/DraggableBoundaryLine'
-
+import { SOCKET_EVENT } from '../../constant'
 function SideThreadBar({ sidebarWidth, setSidebarWidth }) {
   const { workspaceId, channelId, chatId } = useParams()
   const [sidebarChat, setSidebarChat] = useState(null)
@@ -52,24 +52,28 @@ function SideThreadBar({ sidebarWidth, setSidebarWidth }) {
 
   useEffect(() => {
     if (socket) {
-      socket.on('new reply', ({ message }) => {
+      socket.on(SOCKET_EVENT.NEW_REPLY, ({ message }) => {
         if (message.chatId === chatId) {
           setReplyContent(messages => [...messages, message])
         }
         scrollTo()
       })
-      socket.on('update reaction', ({ reaction }) => {
+      socket.on(SOCKET_EVENT.UPDAETE_REACTION, ({ reaction }) => {
         if (reaction.chatId === chatId)
-          setSidebarChat(chat => chageReactionState(chat, reaction))
+          setSidebarChat(chat =>
+            chageReactionState(chat, reaction, workspaceUserInfo),
+          )
         if (reaction.parentId) {
-          setReplyContent(reply => chageReactionState(reply, reaction))
+          setReplyContent(reply =>
+            chageReactionState(reply, reaction, workspaceUserInfo),
+          )
         }
       })
     }
     return () => {
       if (socket) {
-        socket.off('new message')
-        socket.off('update reaction')
+        socket.off(SOCKET_EVENT.NEW_REPLY)
+        socket.off(SOCKET_EVENT.UPDAETE_REACTION)
       }
     }
   }, [socket, chatId])
@@ -86,7 +90,7 @@ function SideThreadBar({ sidebarWidth, setSidebarWidth }) {
         profileUrl: workspaceUserInfo.profileUrl,
       },
     }
-    socket.emit('new reply', reply)
+    socket.emit(SOCKET_EVENT.NEW_REPLY, reply)
   }
 
   useEffect(() => {

@@ -14,6 +14,7 @@ import { TOOLS } from '../../constant/icon'
 import useWorkspace from '../../hooks/useWorkspace'
 import useSocket from '../../hooks/useSocket'
 import DraggableBoundaryLine from '../../presenter/DraggableBoundaryLine'
+import GlobalHeader from '../../container/GlobalHeader'
 
 function WorkspacePage() {
   const { channelId } = useParams()
@@ -43,14 +44,14 @@ function WorkspacePage() {
       case 'more':
         return ConstructionPage()
       default:
-        return <ChatRoom width={sidebarWidth} />
+        return workspaceUserInfo && <ChatRoom width={sidebarWidth} />
     }
   }
 
   return (
     <PageStyle>
       {modal}
-      <GlobalHeader>글로벌 헤더 위치</GlobalHeader>
+      <GlobalHeader />
       <MainArea>
         <ChannelListSection width={listWidth}>
           <ChannelListHeaderArea>
@@ -93,12 +94,7 @@ const PageStyle = styled.div`
   display: flex;
   flex-direction: column;
 `
-const GlobalHeader = styled.div`
-  display: flex;
-  width: 100%;
-  height: 40px;
-  background: ${COLOR.GLOBAL_HEADER_BACKGROUND};
-`
+
 const MainArea = styled.div`
   display: flex;
   flex-direction: row;
