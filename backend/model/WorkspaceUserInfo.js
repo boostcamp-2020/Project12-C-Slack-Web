@@ -52,6 +52,9 @@ const workspaceUserInfoSchema = mongoose.Schema(
   { timestamps: true },
 )
 
+workspaceUserInfoSchema.index({ workspaceId: 1, userId: 1 })
+workspaceUserInfoSchema.index({ userId: 1 })
+
 workspaceUserInfoSchema.statics.getWorkspaceUserInfo = async function (
   workspaceUserInfoId,
 ) {
