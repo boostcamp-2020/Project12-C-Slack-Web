@@ -1,18 +1,22 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import ChatMessage from '../ChatMessage'
 import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
 import MessageEditor from '../MessageEditor/MessageEditor'
-import { workspaceRecoil, socketRecoil } from '../../store'
+import {
+  workspaceRecoil,
+  socketRecoil,
+  currentChannelInfoRecoil,
+} from '../../store'
 import ChannelHeader from '../ChannelHeader'
 import { isEmpty } from '../../util'
 import { hasMyReaction, chageReactionState } from '../../util/reactionUpdate'
-import useChannelInfo from '../../hooks/useChannelInfo'
 import Icon from '../../presenter/Icon'
 import { ArrowDown } from '../../constant/icon'
+import { getChannelHeaderInfo } from '../../api/channel'
 import { SOCKET_EVENT } from '../../constant'
 
 const ChatRoom = ({ width }) => {
@@ -24,7 +28,7 @@ const ChatRoom = ({ width }) => {
   const isAllMessageFetched = useRef(false)
   const isReading = useRef(false)
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
-  const [channelInfo] = useChannelInfo()
+  const [channelInfo, setChannelInfo] = useRecoilState(currentChannelInfoRecoil)
   const { workspaceId, channelId } = useParams()
   const params = useParams()
   const socket = useRecoilValue(socketRecoil)
@@ -52,6 +56,20 @@ const ChatRoom = ({ width }) => {
     },
     [messages],
   )
+
+  const updateChannelInfo = useCallback(async () => {
+    if (workspaceUserInfo && channelId)
+      setChannelInfo(
+        await getChannelHeaderInfo({
+          workspaceUserInfoId: workspaceUserInfo._id,
+          channelId,
+        }),
+      )
+  }, [channelId, workspaceUserInfo, setChannelInfo])
+
+  useEffect(() => {
+    updateChannelInfo()
+  }, [channelId, workspaceUserInfo, updateChannelInfo])
 
   useEffect(() => {
     setMessages([])

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useSetRecoilState } from 'recoil'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
 
 import Icon from '../../presenter/Icon'
 import { ADDUSER, INFOCIRCLE } from '../../constant/icon'
@@ -9,15 +9,14 @@ import ChannelStarBtn from '../ChannelStarBtn'
 import ChannelPinBtn from '../../presenter/ChannelPinBtn'
 import ChannelTopicBtn from '../../presenter/ChannelTopicBtn'
 import ChannelMemberThumbnail from '../../presenter/ChannelMemberThumbnail'
-import { modalRecoil } from '../../store'
+import { modalRecoil, currentChannelInfoRecoil } from '../../store'
 import InviteUserToChannelModal from '../Modal/InviteUserToChannelModal'
 import { COLOR } from '../../constant/style'
-import useChannelInfo from '../../hooks/useChannelInfo'
 import { isEmpty } from '../../util'
 
 function ChannelHeader() {
   const setModal = useSetRecoilState(modalRecoil)
-  const [channelInfo] = useChannelInfo()
+  const channelInfo = useRecoilValue(currentChannelInfoRecoil)
   const openAddUserModal = () => {
     setModal(<InviteUserToChannelModal handleClose={() => setModal(null)} />)
   }
