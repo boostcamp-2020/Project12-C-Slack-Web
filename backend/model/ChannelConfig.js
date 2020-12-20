@@ -29,6 +29,9 @@ const channelConfigSchema = mongoose.Schema(
   { timestamps: true },
 )
 
+channelConfigSchema.index({ channelId: 1, workspaceUserInfoId: 1 })
+channelConfigSchema.index({ workspaceUserInfoId: 1 })
+
 channelConfigSchema.statics.getChannelHeaderInfo = async function (
   channelId,
   workspaceUserInfoId,
