@@ -60,9 +60,13 @@ function SideThreadBar({ sidebarWidth, setSidebarWidth }) {
       })
       socket.on('update reaction', ({ reaction }) => {
         if (reaction.chatId === chatId)
-          setSidebarChat(chat => chageReactionState(chat, reaction))
+          setSidebarChat(chat =>
+            chageReactionState(chat, reaction, workspaceUserInfo),
+          )
         if (reaction.parentId) {
-          setReplyContent(reply => chageReactionState(reply, reaction))
+          setReplyContent(reply =>
+            chageReactionState(reply, reaction, workspaceUserInfo),
+          )
         }
       })
     }

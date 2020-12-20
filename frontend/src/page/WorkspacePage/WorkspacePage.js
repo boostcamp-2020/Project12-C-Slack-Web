@@ -43,7 +43,7 @@ function WorkspacePage() {
       case 'more':
         return ConstructionPage()
       default:
-        return <ChatRoom width={sidebarWidth} />
+        return workspaceUserInfo && <ChatRoom width={sidebarWidth} />
     }
   }
 
