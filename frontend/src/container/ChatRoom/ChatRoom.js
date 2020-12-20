@@ -18,7 +18,6 @@ import Icon from '../../presenter/Icon'
 import { ArrowDown } from '../../constant/icon'
 import { getChannelHeaderInfo } from '../../api/channel'
 import { SOCKET_EVENT } from '../../constant'
-import produce from 'immer'
 
 const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
