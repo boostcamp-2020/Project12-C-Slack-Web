@@ -108,11 +108,12 @@ const ChatRoom = ({ width }) => {
             ...messages,
             ...hasMyReaction([message], workspaceUserInfo),
           ])
-          if (isReading.current && document.hasFocus()) {
+          if (message.userInfo._id === workspaceUserInfo._id) {
             setHasUnreadMessage(false)
             scrollTo()
-          } else if (message.userInfo._id !== workspaceUserInfo._id)
+          } else if (!isReading.current && !document.hasFocus()) {
             setHasUnreadMessage(true)
+          }
         }
 
         if (document.hidden) {
@@ -123,6 +124,15 @@ const ChatRoom = ({ width }) => {
 
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
+      socket.on(SOCKET_EVENT.NEW_REPLY, ({ message }) => {
+        setMessages(messages =>
+          messages.map(target =>
+            target._id === message.parentId
+              ? { ...target, reply: [...target.reply, message] }
+              : target,
+          ),
+        )
+      })
       socket.on(SOCKET_EVENT.UPDAETE_REACTION, ({ reaction }) => {
         setMessages(messages =>
           chageReactionState(messages, reaction, workspaceUserInfo),
@@ -131,11 +141,13 @@ const ChatRoom = ({ width }) => {
     }
     return () => {
       if (socket) {
+        socket.off(SOCKET_EVENT.NEW_REPLY)
         socket.off(SOCKET_EVENT.NEW_MESSAGE)
         socket.off(SOCKET_EVENT.UPDAETE_REACTION)
       }
     }
   }, [socket, channelId, document.hidden, params])
+
   useEffect(() => {
     const handleIntersection = (entries, observer) => {
       entries.forEach(entry => {
@@ -246,7 +258,6 @@ const UnreadMessage = styled.div`
   background-color: ${COLOR.STARBLUE};
   color: ${COLOR.WHITE};
   width: 170px;
-  height: 50px;
   margin-left: auto;
   margin-right: auto;
   position: sticky;
