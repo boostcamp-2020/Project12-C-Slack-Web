@@ -1,6 +1,6 @@
 import produce from 'immer'
 
-export const chageReactionState = (messages, reaction) =>
+export const chageReactionState = (messages, reaction, workspaceUserInfoId) =>
   produce(messages, draft => {
     let done = false
     if (reaction.type === false) return
@@ -14,12 +14,14 @@ export const chageReactionState = (messages, reaction) =>
                 _id: reaction.workspaceUserInfoId,
                 displayName: reaction.displayName,
               })
-              element.set = true
+              if (reaction.workspaceUserInfoId === workspaceUserInfoId._id)
+                element.set = true
             } else {
               element.users.forEach((user, idx) => {
                 if (user._id === reaction.workspaceUserInfoId) {
                   element.users.splice(idx, 1)
-                  element.set = false
+                  if (reaction.workspaceUserInfoId === workspaceUserInfoId._id)
+                    element.set = false
                 }
               })
               if (element.users.length === 0) {
@@ -38,7 +40,10 @@ export const chageReactionState = (messages, reaction) =>
                 displayName: reaction.displayName,
               },
             ],
-            set: true,
+            set:
+              reaction.workspaceUserInfoId === workspaceUserInfoId._id
+                ? true
+                : false,
           })
         }
       }
