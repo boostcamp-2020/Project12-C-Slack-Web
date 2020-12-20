@@ -7,10 +7,11 @@ const Button = ({
   type = 'default',
   disabled = false,
   size = 'default',
+  onClick,
 }) => {
   return (
     <StyledButton
-      onClick={handleClick}
+      onClick={handleClick || onClick}
       type={type}
       disabled={disabled}
       size={size}
