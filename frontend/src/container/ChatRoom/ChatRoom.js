@@ -124,7 +124,9 @@ const ChatRoom = ({ width }) => {
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
       socket.on(SOCKET_EVENT.UPDAETE_REACTION, ({ reaction }) => {
-        setMessages(messages => chageReactionState(messages, reaction))
+        setMessages(messages =>
+          chageReactionState(messages, reaction, workspaceUserInfo),
+        )
       })
     }
     return () => {
