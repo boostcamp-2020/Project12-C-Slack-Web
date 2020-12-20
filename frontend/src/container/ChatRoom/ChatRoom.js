@@ -1,18 +1,23 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import ChatMessage from '../ChatMessage'
 import { COLOR } from '../../constant/style'
 import { getChatMessage } from '../../api/chat'
 import MessageEditor from '../MessageEditor/MessageEditor'
-import { workspaceRecoil, socketRecoil } from '../../store'
+import {
+  workspaceRecoil,
+  socketRecoil,
+  currentChannelInfoRecoil,
+} from '../../store'
 import ChannelHeader from '../ChannelHeader'
 import { isEmpty } from '../../util'
 import { hasMyReaction, chageReactionState } from '../../util/reactionUpdate'
-import useChannelInfo from '../../hooks/useChannelInfo'
 import Icon from '../../presenter/Icon'
 import { ArrowDown } from '../../constant/icon'
+import { getChannelHeaderInfo } from '../../api/channel'
+import { SOCKET_EVENT } from '../../constant'
 
 const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
@@ -23,7 +28,7 @@ const ChatRoom = ({ width }) => {
   const isAllMessageFetched = useRef(false)
   const isReading = useRef(false)
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
-  const [channelInfo] = useChannelInfo()
+  const [channelInfo, setChannelInfo] = useRecoilState(currentChannelInfoRecoil)
   const { workspaceId, channelId } = useParams()
   const params = useParams()
   const socket = useRecoilValue(socketRecoil)
@@ -52,6 +57,20 @@ const ChatRoom = ({ width }) => {
     [messages],
   )
 
+  const updateChannelInfo = useCallback(async () => {
+    if (workspaceUserInfo && channelId)
+      setChannelInfo(
+        await getChannelHeaderInfo({
+          workspaceUserInfoId: workspaceUserInfo._id,
+          channelId,
+        }),
+      )
+  }, [channelId, workspaceUserInfo, setChannelInfo])
+
+  useEffect(() => {
+    updateChannelInfo()
+  }, [channelId, workspaceUserInfo, updateChannelInfo])
+
   useEffect(() => {
     setMessages([])
     isLoading.current = false
@@ -74,7 +93,7 @@ const ChatRoom = ({ width }) => {
         profileUrl: workspaceUserInfo.profileUrl,
       },
     }
-    socket.emit('new message', chat)
+    socket.emit(SOCKET_EVENT.NEW_MESSAGE, chat)
   }
 
   useEffect(() => {
@@ -83,7 +102,7 @@ const ChatRoom = ({ width }) => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('new message', ({ message }) => {
+      socket.on(SOCKET_EVENT.NEW_MESSAGE, ({ message }) => {
         if (message.channelId === channelId) {
           setMessages(messages => [
             ...messages,
@@ -104,16 +123,14 @@ const ChatRoom = ({ width }) => {
 
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
-      socket.on('update reaction', ({ reaction }) => {
-        setMessages(messages =>
-          chageReactionState(messages, reaction, workspaceUserInfo),
-        )
+      socket.on(SOCKET_EVENT.UPDAETE_REACTION, ({ reaction }) => {
+        setMessages(messages => chageReactionState(messages, reaction))
       })
     }
     return () => {
       if (socket) {
-        socket.off('new message')
-        socket.off('update reaction')
+        socket.off(SOCKET_EVENT.NEW_MESSAGE)
+        socket.off(SOCKET_EVENT.UPDAETE_REACTION)
       }
     }
   }, [socket, channelId, document.hidden, params])

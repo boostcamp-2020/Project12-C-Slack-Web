@@ -12,15 +12,14 @@ import request from '../../../util/request'
 import Modal from '../../../presenter/Modal'
 import SearchUserList from '../../../presenter/SearchUserList'
 import SelectedUserList from '../../../presenter/SelectedUserList'
-import useChannelInfo from '../../../hooks/useChannelInfo'
 import dmTitleGenerator from '../../../util/dmTitleGenerator'
-import { workspaceRecoil } from '../../../store'
+import { workspaceRecoil, currentChannelInfoRecoil } from '../../../store'
 import { createChannel, findChannelIdByName } from '../../../api/channel'
 import { getWorkspaceUserInfoByInfoId } from '../../../api/workspace'
 import useChannelList from '../../../hooks/useChannelList'
-
+import { SOCKET_EVENT } from '../../../constant'
 function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
-  const [channelInfo] = useChannelInfo()
+  const channelInfo = useRecoilValue(currentChannelInfoRecoil)
   const setModal = useSetRecoilState(modalRecoil)
   const socket = useRecoilValue(socketRecoil)
   const [searchResult, setSearchResult] = useState(null)
@@ -48,7 +47,7 @@ function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
     })
 
     if (data.success) {
-      socket.emit('invite channel', {
+      socket.emit(SOCKET_EVENT.INVITE_CHANNEL, {
         channelId: channelInfo.channelId._id,
         origin: channelInfo.member.map(user => user._id),
         newMember: inviteUserList.map(user => user._id),
@@ -83,7 +82,7 @@ function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
     })
 
     if (data.success) {
-      socket.emit('invite channel', {
+      socket.emit(SOCKET_EVENT.INVITE_CHANNEL, {
         channelId: channelId,
         origin: [],
         newMember: inviteUserList.map(user => user._id),

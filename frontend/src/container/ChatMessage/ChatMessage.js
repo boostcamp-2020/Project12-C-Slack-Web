@@ -7,11 +7,11 @@ import ChatContent from '../../presenter/ChatContent'
 import ThreadReactionList from '../../presenter/ThreadReactionList'
 import ActionBar from '../ActionBar'
 import ViewThreadButton from '../../presenter/Button/ViewThreadButton'
-import { isEmpty, isImage } from '../../util'
+import { isEmpty } from '../../util'
 import { SIZE, COLOR } from '../../constant/style'
 import { workspaceRecoil, socketRecoil } from '../../store'
 import FilePreview from '../FilePreview'
-
+import { SOCKET_EVENT } from '../../constant'
 const ChatMessage = forwardRef(
   (
     {
@@ -45,7 +45,7 @@ const ChatMessage = forwardRef(
           displayName: workspaceUserInfo.displayName,
         },
       }
-      socket.emit('update reaction', reaction)
+      socket.emit(SOCKET_EVENT.UPDAETE_REACTION, reaction)
     }
 
     const updateReactionHandler = emoji => {

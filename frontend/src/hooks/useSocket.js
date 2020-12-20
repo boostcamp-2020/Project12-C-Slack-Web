@@ -1,11 +1,16 @@
 import { useEffect } from 'react'
-import { socketRecoil, workspaceRecoil } from '../store'
+import {
+  currentChannelInfoRecoil,
+  socketRecoil,
+  workspaceRecoil,
+} from '../store'
 import { useParams } from 'react-router-dom'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { isEmpty } from '../util'
+import { SOCKET_EVENT } from '../constant'
 import io from 'socket.io-client'
-import useChannelInfo from './useChannelInfo'
 import useChannelList from './useChannelList'
+import { getChannelHeaderInfo } from '../api/channel'
 
 const baseURL =
   process.env.NODE_ENV === 'development'
@@ -17,7 +22,17 @@ const useSocket = () => {
   const workspaceUserInfo = useRecoilValue(workspaceRecoil)
   const [socket, setSocket] = useRecoilState(socketRecoil)
   const [channelList, setChannels] = useChannelList()
-  const [channelInfo, updateChannelInfo] = useChannelInfo()
+  const [channelInfo, setChannelInfo] = useRecoilState(currentChannelInfoRecoil)
+
+  const updateChannelInfo = async ({ channelId, workspaceUserInfo }) => {
+    if (workspaceUserInfo && channelId)
+      setChannelInfo(
+        await getChannelHeaderInfo({
+          workspaceUserInfoId: workspaceUserInfo._id,
+          channelId,
+        }),
+      )
+  }
 
   useEffect(() => {
     if (workspaceId && workspaceUserInfo) {
@@ -35,37 +50,42 @@ const useSocket = () => {
   useEffect(() => {
     if (socket && !isEmpty(channelList)) {
       socket.emit(
-        'join-room',
+        SOCKET_EVENT.JOIN_ROOM,
         channelList.map(channel => channel.channelId._id),
       )
-      socket.on('invited channel', ({ channelId, newMember }) => {
-        console.log('invited')
+      socket.on(SOCKET_EVENT.INVITED_CHANNEL, ({ channelId, newMember }) => {
         if (channelId === channelInfo.channelId._id)
-          updateChannelInfo(channelId)
+          updateChannelInfo({
+            channelId,
+            workspaceUserInfo,
+          })
         if (newMember === workspaceUserInfo._id) setChannels()
       })
     }
     return () => {
       if (socket)
         socket.emit(
-          'leave-room',
+          SOCKET_EVENT.LEAVE_ROOM,
           channelList.map(channel => channel.channelId._id),
         )
     }
-  }, [socket, channelList])
+  }, [socket, channelList, updateChannelInfo])
 
   useEffect(() => {
     if (socket && !isEmpty(channelInfo) && !isEmpty(workspaceUserInfo)) {
-      socket.on('invited channel', ({ channelId, newMember }) => {
+      socket.on(SOCKET_EVENT.INVITED_CHANNEL, ({ channelId, newMember }) => {
         if (channelId === channelInfo.channelId._id)
-          updateChannelInfo(channelId)
+          updateChannelInfo({
+            channelId,
+            workspaceUserInfo,
+          })
         if (newMember.includes(workspaceUserInfo._id)) setChannels()
       })
     }
     return () => {
-      if (socket) socket.off('invited channel')
+      if (socket) socket.off(SOCKET_EVENT.INVITED_CHANNEL)
     }
-  }, [socket, channelInfo, workspaceUserInfo])
+  }, [socket, channelInfo, workspaceUserInfo, updateChannelInfo])
 
   return [socket]
 }
