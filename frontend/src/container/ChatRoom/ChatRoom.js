@@ -17,6 +17,7 @@ import { hasMyReaction, chageReactionState } from '../../util/reactionUpdate'
 import Icon from '../../presenter/Icon'
 import { ArrowDown } from '../../constant/icon'
 import { getChannelHeaderInfo } from '../../api/channel'
+import { SOCKET_EVENT } from '../../constant'
 
 const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
@@ -92,7 +93,7 @@ const ChatRoom = ({ width }) => {
         profileUrl: workspaceUserInfo.profileUrl,
       },
     }
-    socket.emit('new message', chat)
+    socket.emit(SOCKET_EVENT.NEW_MESSAGE, chat)
   }
 
   useEffect(() => {
@@ -101,7 +102,7 @@ const ChatRoom = ({ width }) => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('new message', ({ message }) => {
+      socket.on(SOCKET_EVENT.NEW_MESSAGE, ({ message }) => {
         if (message.channelId === channelId) {
           setMessages(messages => [
             ...messages,
@@ -122,14 +123,14 @@ const ChatRoom = ({ width }) => {
 
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
-      socket.on('update reaction', ({ reaction }) => {
+      socket.on(SOCKET_EVENT.UPDAETE_REACTION, ({ reaction }) => {
         setMessages(messages => chageReactionState(messages, reaction))
       })
     }
     return () => {
       if (socket) {
-        socket.off('new message')
-        socket.off('update reaction')
+        socket.off(SOCKET_EVENT.NEW_MESSAGE)
+        socket.off(SOCKET_EVENT.UPDAETE_REACTION)
       }
     }
   }, [socket, channelId, document.hidden, params])

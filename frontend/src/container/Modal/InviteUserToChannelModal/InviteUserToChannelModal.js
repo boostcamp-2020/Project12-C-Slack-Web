@@ -17,7 +17,7 @@ import { workspaceRecoil, currentChannelInfoRecoil } from '../../../store'
 import { createChannel, findChannelIdByName } from '../../../api/channel'
 import { getWorkspaceUserInfoByInfoId } from '../../../api/workspace'
 import useChannelList from '../../../hooks/useChannelList'
-
+import { SOCKET_EVENT } from '../../../constant'
 function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
   const channelInfo = useRecoilValue(currentChannelInfoRecoil)
   const setModal = useSetRecoilState(modalRecoil)
@@ -47,7 +47,7 @@ function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
     })
 
     if (data.success) {
-      socket.emit('invite channel', {
+      socket.emit(SOCKET_EVENT.INVITE_CHANNEL, {
         channelId: channelInfo.channelId._id,
         origin: channelInfo.member.map(user => user._id),
         newMember: inviteUserList.map(user => user._id),
@@ -82,7 +82,7 @@ function InviteUserToChannelModal({ handleClose, type = 'channel' }) {
     })
 
     if (data.success) {
-      socket.emit('invite channel', {
+      socket.emit(SOCKET_EVENT.INVITE_CHANNEL, {
         channelId: channelId,
         origin: [],
         newMember: inviteUserList.map(user => user._id),

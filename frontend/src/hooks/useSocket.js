@@ -7,6 +7,7 @@ import {
 import { useParams } from 'react-router-dom'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { isEmpty } from '../util'
+import { SOCKET_EVENT } from '../constant'
 import io from 'socket.io-client'
 import useChannelList from './useChannelList'
 import { getChannelHeaderInfo } from '../api/channel'
@@ -49,10 +50,10 @@ const useSocket = () => {
   useEffect(() => {
     if (socket && !isEmpty(channelList)) {
       socket.emit(
-        'join-room',
+        SOCKET_EVENT.JOIN_ROOM,
         channelList.map(channel => channel.channelId._id),
       )
-      socket.on('invited channel', ({ channelId, newMember }) => {
+      socket.on(SOCKET_EVENT.INVITED_CHANNEL, ({ channelId, newMember }) => {
         if (channelId === channelInfo.channelId._id)
           updateChannelInfo({
             channelId,
@@ -64,7 +65,7 @@ const useSocket = () => {
     return () => {
       if (socket)
         socket.emit(
-          'leave-room',
+          SOCKET_EVENT.LEAVE_ROOM,
           channelList.map(channel => channel.channelId._id),
         )
     }
@@ -72,7 +73,7 @@ const useSocket = () => {
 
   useEffect(() => {
     if (socket && !isEmpty(channelInfo) && !isEmpty(workspaceUserInfo)) {
-      socket.on('invited channel', ({ channelId, newMember }) => {
+      socket.on(SOCKET_EVENT.INVITED_CHANNEL, ({ channelId, newMember }) => {
         if (channelId === channelInfo.channelId._id)
           updateChannelInfo({
             channelId,
@@ -82,7 +83,7 @@ const useSocket = () => {
       })
     }
     return () => {
-      if (socket) socket.off('invited channel')
+      if (socket) socket.off(SOCKET_EVENT.INVITED_CHANNEL)
     }
   }, [socket, channelInfo, workspaceUserInfo, updateChannelInfo])
 
