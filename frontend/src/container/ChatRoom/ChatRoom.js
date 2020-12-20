@@ -18,6 +18,7 @@ import Icon from '../../presenter/Icon'
 import { ArrowDown } from '../../constant/icon'
 import { getChannelHeaderInfo } from '../../api/channel'
 import { SOCKET_EVENT } from '../../constant'
+import produce from 'immer'
 
 const ChatRoom = ({ width }) => {
   const viewport = useRef(null)
@@ -123,6 +124,15 @@ const ChatRoom = ({ width }) => {
 
         if (message.userInfo._id === workspaceUserInfo._id) scrollTo()
       })
+      socket.on(SOCKET_EVENT.NEW_REPLY, ({ message }) => {
+        setMessages(messages =>
+          messages.map(target =>
+            target._id === message.parentId
+              ? { ...target, reply: [...target.reply, message] }
+              : target,
+          ),
+        )
+      })
       socket.on(SOCKET_EVENT.UPDAETE_REACTION, ({ reaction }) => {
         setMessages(messages =>
           chageReactionState(messages, reaction, workspaceUserInfo),
@@ -131,11 +141,13 @@ const ChatRoom = ({ width }) => {
     }
     return () => {
       if (socket) {
+        socket.off(SOCKET_EVENT.NEW_REPLY)
         socket.off(SOCKET_EVENT.NEW_MESSAGE)
         socket.off(SOCKET_EVENT.UPDAETE_REACTION)
       }
     }
   }, [socket, channelId, document.hidden, params])
+
   useEffect(() => {
     const handleIntersection = (entries, observer) => {
       entries.forEach(entry => {

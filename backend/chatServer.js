@@ -44,6 +44,7 @@ namespace.on('connection', socket => {
         _id: result._id,
         createdAt: result.createdAt,
         reactions: [],
+        reply: [],
       },
     })
   })
