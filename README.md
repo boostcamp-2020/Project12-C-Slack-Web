@@ -23,7 +23,7 @@
 </p>
 <br>
 
-### 배포 주소
+### 배포 주소 (현재는 비용 문제로 서비스 중단)
 - https://slack-clone.kro.kr
 - api docs: https://api.slack-clone.kro.kr/docs
 
